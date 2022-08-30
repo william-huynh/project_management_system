@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RookieOnlineAssetManagement.Data;
+using ProjectManagementSystem.Data;
 
-namespace RookieOnlineAssetManagement.Migrations
+namespace ProjectManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20210429222316_Init")]

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace RookieOnlineAssetManagement.Entities
+namespace ProjectManagementSystem.Entities
 {
     public class User : IdentityUser
     {

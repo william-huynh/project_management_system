@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using RookieOnlineAssetManagement.Data;
-using RookieOnlineAssetManagement.Models;
+using ProjectManagementSystem.Data;
+using ProjectManagementSystem.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RookieOnlineAssetManagement.Controllers
+namespace ProjectManagementSystem.Controllers
 {
     [Authorize]
     [Produces("application/json")]

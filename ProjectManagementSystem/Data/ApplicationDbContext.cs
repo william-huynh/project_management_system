@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using RookieOnlineAssetManagement.Entities;
+using ProjectManagementSystem.Entities;
 
-namespace RookieOnlineAssetManagement.Data
+namespace ProjectManagementSystem.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {

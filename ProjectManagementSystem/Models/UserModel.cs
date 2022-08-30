@@ -1,4 +1,4 @@
-﻿namespace RookieOnlineAssetManagement.Models
+﻿namespace ProjectManagementSystem.Models
 {
     public class UserModel
     {
