@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectManagementSystem.Data;
 using ProjectManagementSystem.Entities;
+using ProjectManagementSystem.Initializer;
 using System.Threading.Tasks;
 
 namespace ProjectManagementSystem
@@ -54,6 +55,8 @@ namespace ProjectManagementSystem
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            services.AddScoped<IDbInitializer, DbInitializer>();
+
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -62,7 +65,7 @@ namespace ProjectManagementSystem
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
@@ -89,6 +92,9 @@ namespace ProjectManagementSystem
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            dbInitializer.Initialize();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
