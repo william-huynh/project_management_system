@@ -6,7 +6,7 @@
 }
 
 <section class="vh-100 login-form">
-    <div class="container py-5 h-100">
+    <div class="container py-4 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-xl-10">
                 <div class="card rounded-3 text-black">
@@ -16,11 +16,13 @@
                                 
                                 <div class="text-center">
                                     <img src="~/asset/image/clipboard.png" class="login-logo" alt="logo">
-                                    <h4 class="mt-1 mb-5 pb-1">Project Management System</h4>
+                                    <h4 class="mt-1 mb-4 pb-1">Project Management System</h4>
                                 </div>
                                 
                                 <form id="account" method="post">
                                     <p>Please login to your account</p>
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                                     <div class="form-outline mb-4">
                                         <input type="text" asp-for="Input.Username" class="form-control" placeholder="Username" />
