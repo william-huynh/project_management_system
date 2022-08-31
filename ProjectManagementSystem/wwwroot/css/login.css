@@ -1,0 +1,14 @@
+﻿.login-form {
+    background-color: #eee;
+}
+
+.login-logo {
+    width: auto;
+    height: 130px;
+}
+
+.login-image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}

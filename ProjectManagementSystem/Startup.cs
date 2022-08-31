@@ -35,7 +35,7 @@ namespace ProjectManagementSystem
             {
                 options.SignIn.RequireConfirmedAccount = false;
             })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -53,7 +53,7 @@ namespace ProjectManagementSystem
             });
 
             services.AddControllersWithViews();
-            services.AddRazorPages();
+            services.AddRazorPages().AddRazorRuntimeCompilation(); ;
 
             services.AddScoped<IDbInitializer, DbInitializer>();
 
