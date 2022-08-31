@@ -24,8 +24,8 @@ namespace ProjectManagementSystem.Initializer
         {
             var projectOwner = new User()
             {
-                UserName = "advisor@gmail.com",
-                NormalizedUserName = "advisor@gmail.com",
+                UserName = "advisor",
+                NormalizedUserName = "advisor",
                 Email = "advisor@gmail.com",
                 NormalizedEmail = "advisor@gmail.com",
                 FirstName = "Advisor",
