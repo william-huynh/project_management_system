@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectManagementSystem.Data;
+using ProjectManagementSystem.Entities;
 using ProjectManagementSystem.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,24 +19,45 @@ namespace ProjectManagementSystem.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ILogger _logger;
-        private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public UsersController(ILogger<UsersController> logger, ApplicationDbContext dbContext)
+        public UsersController(ILogger<UsersController> logger, UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _logger = logger;
-            _dbContext = dbContext;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserModel>>> Get()
+        [Route("get-user")]
+        public async Task<IActionResult> Get()
         {
-            _logger.LogInformation("Getting all products");
-            return Ok(await _dbContext.Users.Select(x => new UserModel
+            var user = await GetCurrentUserAsync();
+            var role = await GetCurrentUserRoleAsync(user);
+            return Ok(new UserModel
             {
-                Id = x.Id,
-                UserName = x.UserName,
-                Email = x.Email
-            }).ToListAsync());
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                Role = role,
+            });
+        }
+
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok();
+        }
+
+        private async Task<User> GetCurrentUserAsync() {
+            return await _userManager.GetUserAsync(HttpContext.User);
+        }
+
+        private async Task<IList<string>> GetCurrentUserRoleAsync(User user) {
+            return await _userManager.GetRolesAsync(user);
         }
     }
 }
