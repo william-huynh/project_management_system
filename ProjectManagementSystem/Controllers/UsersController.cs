@@ -20,11 +20,13 @@ namespace ProjectManagementSystem.Controllers
     {
         private readonly ILogger _logger;
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public UsersController(ILogger<UsersController> logger, UserManager<User> userManager)
+        public UsersController(ILogger<UsersController> logger, UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _logger = logger;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [HttpGet]
@@ -40,6 +42,14 @@ namespace ProjectManagementSystem.Controllers
                 Email = user.Email,
                 Role = role,
             });
+        }
+
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok();
         }
 
         private async Task<User> GetCurrentUserAsync() {
