@@ -1,14 +1,23 @@
 import { NavLink } from "react-router-dom";
 
-import logo from "../../assets/logoNasTech.svg";
 import "./Sidebar.css";
 
-function Sidebar(props) {
+const Sidebar = (props) => {
+  const user = props.user;
+
   return (
-    <div className="sidebar">
-      <img src={logo} alt="NasTech logo" className="logo" />
-      <p>Online Asset Mangement</p>
-      {props.role === "Admin" ? (
+    <div
+      className={
+        user.role[0] === "ProjectOwner"
+          ? "sidebar red-sidebar"
+          : user.role[0] === "ScrumMaster"
+          ? "sidebar blue-sidebar"
+          : "sidebar green-sidebar"
+      }
+    >
+      {/* <img src={logo} alt="NasTech logo" className="logo" /> */}
+      <p>Project Management System</p>
+      {user.role[0] === "ProjectOwner" ? (
         <div className="navigation">
           <ul>
             <NavLink to="/">
@@ -17,17 +26,16 @@ function Sidebar(props) {
             <NavLink to="/users">
               <li>Manage User</li>
             </NavLink>
-            <NavLink to="/assets">
-              <li>Manage Asset</li>
+          </ul>
+        </div>
+      ) : user.role[0] === "ScrumMaster" ? (
+        <div className="navigation">
+          <ul>
+            <NavLink to="/">
+              <li>Home</li>
             </NavLink>
-            <NavLink to="/assignments">
-              <li>Manage Assignment</li>
-            </NavLink>
-            <NavLink to="/requests">
-              <li>Request for Returning</li>
-            </NavLink>
-            <NavLink to="/reports">
-              <li>Report</li>
+            <NavLink to="/users">
+              <li>Manage User</li>
             </NavLink>
           </ul>
         </div>
@@ -37,11 +45,14 @@ function Sidebar(props) {
             <NavLink to="/">
               <li>Home</li>
             </NavLink>
+            <NavLink to="/users">
+              <li>Manage User</li>
+            </NavLink>
           </ul>
         </div>
       )}
     </div>
   );
-}
+};
 
 export default Sidebar;

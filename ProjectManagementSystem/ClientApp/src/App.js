@@ -5,6 +5,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import "./App.css";
 import loading from "./assets/loading.gif";
 import Navbar from "./components/Navbar/Navbar";
+import Sidebar from "./components/Sidebar/Sidebar";
 
 axios.interceptors.request.use((config) => {
   return config;
@@ -39,18 +40,35 @@ const App = () => {
       {role === "ProjectOwner" ? (
         <>
           <Navbar user={user} />
-          <div>Hello Project Owner!</div>
-          <Routes>{/* <Route exact path="/" element={<Home />} /> */}</Routes>
+          <div className="body">
+            <Sidebar user={user} />
+            <div>Hello Project Owner!</div>
+            <Routes>
+              <Route exact path="/" />
+            </Routes>
+          </div>
         </>
       ) : role === "ScrumMaster" ? (
         <>
           <Navbar user={user} />
-          <div>Hello Scrum Master!</div>
+          <div className="body">
+            <Sidebar user={user} />
+            <div>Hello Scrum Master!</div>
+            <Routes>
+              <Route exact path="/" />
+            </Routes>
+          </div>
         </>
       ) : role === "Developer" ? (
         <>
           <Navbar user={user} />
-          <div>Hello Developer!</div>
+          <div className="body">
+            <Sidebar user={user} />
+            <div>Hello Developer!</div>
+            <Routes>
+              <Route exact path="/" />
+            </Routes>
+          </div>
         </>
       ) : (
         <>

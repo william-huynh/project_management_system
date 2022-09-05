@@ -10,9 +10,20 @@
 .sidebar p {
   font-weight: bold;
   font-size: 16px;
-  color: #cf2338;
   margin-top: 0;
   margin-bottom: 21px;
+}
+
+.red-sidebar p {
+  color: #cf2338;
+}
+
+.blue-sidebar p {
+  color: #2346cf;
+}
+
+.green-sidebar p {
+  color: #67cf23;
 }
 
 .navigation ul {
@@ -43,8 +54,20 @@
   color: white;
 }
 
-.navigation a.active li,
-.navigation a:hover li {
+.red-sidebar .navigation a.active li,
+.red-sidebar .navigation a:hover li {
   transition: 0s;
   background-color: #cf2338;
+}
+
+.blue-sidebar .navigation a.active li,
+.blue-sidebar .navigation a:hover li {
+  transition: 0s;
+  background-color: #2346cf;
+}
+
+.green-sidebar .navigation a.active li,
+.green-sidebar .navigation a:hover li {
+  transition: 0s;
+  background-color: #67cf23;
 }
