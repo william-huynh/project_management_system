@@ -1,0 +1,50 @@
+.sidebar {
+  min-width: 210px;
+}
+
+.logo {
+  width: 70px;
+  height: 70px;
+}
+
+.sidebar p {
+  font-weight: bold;
+  font-size: 16px;
+  color: #cf2338;
+  margin-top: 0;
+  margin-bottom: 21px;
+}
+
+.navigation ul {
+  list-style: none;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navigation ul li {
+  min-height: 50px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  background-color: #eff1f5;
+  padding-left: 18px;
+  margin-bottom: 2px;
+}
+
+.navigation a {
+  text-decoration: none;
+  color: black;
+}
+
+.navigation a.active,
+.navigation a:hover {
+  transition: 0s;
+  color: white;
+}
+
+.navigation a.active li,
+.navigation a:hover li {
+  transition: 0s;
+  background-color: #cf2338;
+}

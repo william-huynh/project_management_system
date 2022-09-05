@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 
-import loading from "./assets/loading.gif";
 import "./App.css";
+import loading from "./assets/loading.gif";
+import Navbar from "./components/Navbar/Navbar";
 
 axios.interceptors.request.use((config) => {
   return config;
@@ -22,24 +24,34 @@ axios.interceptors.response.use(
 );
 
 const App = () => {
-    const [user, setUser] = useState(null);
-    const [role, setRole] = useState("");
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     axios.get("/api/users/get-user").then((response) => {
-        setUser(response.data);
-        setRole(response.data.role[0]);
+      setUser(response.data);
+      setRole(response.data.role[0]);
     });
   }, []);
 
   return (
     <div>
       {role === "ProjectOwner" ? (
-        <div>Hello Project Owner!</div>
-          ) : role === "ScrumMaster" ? (
-        <div>Hello Scrum Master!</div>
-              ) : role === "Developer" ? (
-        <div>Hello Developer!</div>
+        <>
+          <Navbar user={user} />
+          <div>Hello Project Owner!</div>
+          <Routes>{/* <Route exact path="/" element={<Home />} /> */}</Routes>
+        </>
+      ) : role === "ScrumMaster" ? (
+        <>
+          <Navbar user={user} />
+          <div>Hello Scrum Master!</div>
+        </>
+      ) : role === "Developer" ? (
+        <>
+          <Navbar user={user} />
+          <div>Hello Developer!</div>
+        </>
       ) : (
         <>
           <div className="loading">
