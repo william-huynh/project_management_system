@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectManagementSystem.Data;
 using ProjectManagementSystem.Entities;
-using ProjectManagementSystem.Models;
+using ProjectManagementSystem.Models.Misc;
+using ProjectManagementSystem.Service.IServices;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,15 +19,15 @@ namespace ProjectManagementSystem.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly ILogger _logger;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IUserService _userService;
 
-        public UsersController(ILogger<UsersController> logger, UserManager<User> userManager, SignInManager<User> signInManager)
+        public UsersController(UserManager<User> userManager, SignInManager<User> signInManager, IUserService userService)
         {
-            _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -50,6 +51,16 @@ namespace ProjectManagementSystem.Controllers
         {
             await _signInManager.SignOutAsync();
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("getlist")]
+        // [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetList(int? page, int? pageSize, string keyword, [FromQuery] string[] roles, string sortField, string sortOrder)
+        {
+           var users = await _userService.GetUsersListAsync(page, pageSize, keyword, roles, sortField, sortOrder);
+           if (users == null) return BadRequest(users);
+           return Ok(users);
         }
 
         private async Task<User> GetCurrentUserAsync() {

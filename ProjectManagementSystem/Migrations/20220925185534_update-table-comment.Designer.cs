@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectManagementSystem.Data;
 
@@ -11,9 +12,10 @@ using ProjectManagementSystem.Data;
 namespace ProjectManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220925185534_update-table-comment")]
+    partial class updatetablecomment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -252,13 +254,13 @@ namespace ProjectManagementSystem.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AssociatedId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("Disable")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ImageName")
+                    b.Property<string>("URL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -331,6 +333,9 @@ namespace ProjectManagementSystem.Migrations
                     b.Property<bool>("Disable")
                         .HasColumnType("bit");
 
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("EndedDate")
                         .HasColumnType("datetime2");
 
@@ -359,6 +364,9 @@ namespace ProjectManagementSystem.Migrations
                     b.Property<int>("Attitude")
                         .HasColumnType("int");
 
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Interaction")
                         .HasColumnType("int");
 
@@ -373,9 +381,6 @@ namespace ProjectManagementSystem.Migrations
 
                     b.Property<int>("ProblemSolving")
                         .HasColumnType("int");
-
-                    b.Property<string>("RatingContent")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TimeManagement")
                         .HasColumnType("int");

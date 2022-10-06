@@ -9,6 +9,10 @@ using Microsoft.Extensions.Hosting;
 using ProjectManagementSystem.Data;
 using ProjectManagementSystem.Entities;
 using ProjectManagementSystem.Initializer;
+using ProjectManagementSystem.Service.IServices;
+using ProjectManagementSystem.Service.Services;
+using System;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ProjectManagementSystem
@@ -25,6 +29,12 @@ namespace ProjectManagementSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddControllers().AddJsonOptions(opt =>
+            {
+                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -53,7 +63,9 @@ namespace ProjectManagementSystem
             });
 
             services.AddControllersWithViews();
-            services.AddRazorPages().AddRazorRuntimeCompilation(); ;
+            services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            services.AddTransient<IUserService, UserService>();
 
             services.AddScoped<IDbInitializer, DbInitializer>();
 
@@ -62,6 +74,7 @@ namespace ProjectManagementSystem
             {
                 configuration.RootPath = "ClientApp/build";
             });
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

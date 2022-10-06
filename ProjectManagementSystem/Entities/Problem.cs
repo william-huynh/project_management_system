@@ -14,9 +14,9 @@ namespace ProjectManagementSystem.Entities
         public DateTime EndedDate { get; set; }
         public int Point { get; set; }
         public Status Status { get; set; }
-        public string TaskId { get; set; }
-        [ForeignKey("TaskId")]
-        public Assignment Task { get; set; }
+        public string AssignmentId { get; set; }
+        [ForeignKey("AssignmentId")]
+        public Assignment Assignment { get; set; }
         public string SprintId { get; set; }
         [ForeignKey("SprintId")]
         public Sprint Sprint { get; set; }

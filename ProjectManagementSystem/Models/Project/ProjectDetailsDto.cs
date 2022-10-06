@@ -1,11 +1,9 @@
-﻿using ProjectManagementSystem.Entities.Enum;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using ProjectManagementSystem.Entities.Enum;
 
-namespace ProjectManagementSystem.Entities
+namespace ProjectManagementSystem.Models.Project
 {
-    public class Project
+    public class ProjectDetailsDto
     {
         public string Id { get; set; }
         public string Name { get; set; }

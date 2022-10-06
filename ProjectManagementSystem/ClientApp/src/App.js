@@ -6,6 +6,7 @@ import "./App.css";
 import loading from "./assets/loading.gif";
 import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
+import UserTable from "./pages/Users/ListUser";
 
 axios.interceptors.request.use((config) => {
   return config;
@@ -37,14 +38,14 @@ const App = () => {
 
   return (
     <div>
-      {role === "ProjectOwner" ? (
+      {role === "ProductOwner" ? (
         <>
           <Navbar user={user} />
           <div className="body">
             <Sidebar user={user} />
-            <div>Hello Project Owner!</div>
             <Routes>
               <Route exact path="/" />
+              <Route path="/users" element={<UserTable />} />
             </Routes>
           </div>
         </>

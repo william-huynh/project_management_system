@@ -202,7 +202,7 @@ const Navbar = (props) => {
   return (
     <div
       className={
-        user.role[0] === "ProjectOwner"
+        user.role[0] === "ProductOwner"
           ? "navigation-bar red-nav"
           : user.role[0] === "ScrumMaster"
           ? "navigation-bar blue-nav"

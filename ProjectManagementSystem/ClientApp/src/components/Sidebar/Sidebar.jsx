@@ -8,7 +8,7 @@ const Sidebar = (props) => {
   return (
     <div
       className={
-        user.role[0] === "ProjectOwner"
+        user.role[0] === "ProductOwner"
           ? "sidebar red-sidebar"
           : user.role[0] === "ScrumMaster"
           ? "sidebar blue-sidebar"
@@ -17,7 +17,7 @@ const Sidebar = (props) => {
     >
       {/* <img src={logo} alt="NasTech logo" className="logo" /> */}
       <p>Project Management System</p>
-      {user.role[0] === "ProjectOwner" ? (
+      {user.role[0] === "ProductOwner" ? (
         <div className="navigation">
           <ul>
             <NavLink to="/">

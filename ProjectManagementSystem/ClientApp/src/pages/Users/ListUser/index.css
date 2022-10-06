@@ -1,0 +1,107 @@
+.user-table {
+  flex: 1;
+  padding-left: 4rem;
+}
+
+.header-user-list {
+  font-size: 16px;
+  font-weight: bold;
+  color: #cf2338;
+}
+
+.btn-filter {
+  display: inline-flex;
+  align-items: center;
+  width: 9rem;
+  justify-content: space-between;
+}
+
+.create-user-button {
+  border: none;
+  border-radius: 5px;
+  height: 34px;
+  background-color: #e9424d;
+  float: right;
+  margin-top: 0.5rem;
+  margin-left: 2rem;
+}
+
+.create-user-button:hover {
+  background-color: #cf2338;
+}
+
+.user-table .ant-table-wrapper {
+  margin-top: 1rem;
+}
+
+.search-box {
+  border: 0.5px solid black;
+  border-radius: 5px;
+  float: right;
+  margin-top: 0.5rem;
+  width: 200px;
+}
+
+.search-box input {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.search-box .ant-input-group-addon,
+.search-box > .ant-button {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.user-table
+  > .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child {
+  left: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.user-table
+  .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child
+  .ant-input-search-button:not(.ant-btn-primary) {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.update-button {
+  color: gray;
+  font-size: 20px;
+}
+
+.disable-button {
+  color: red;
+  font-size: 20px;
+}
+
+.user-button-group {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.user-edit-button {
+  color: orange;
+  cursor: pointer;
+}
+
+.user-delete-button {
+  color: red;
+  cursor: pointer;
+}
+
+.user-detail-button {
+  color: lime;
+  cursor: pointer;
+}

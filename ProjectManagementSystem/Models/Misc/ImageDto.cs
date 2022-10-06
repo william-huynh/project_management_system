@@ -1,6 +1,6 @@
-﻿namespace ProjectManagementSystem.Entities
+namespace ProjectManagementSystem.Models.Misc
 {
-    public class Image
+    public class ImageDto
     {
         public string Id { get; set; }
         public string ImageName { get; set; }

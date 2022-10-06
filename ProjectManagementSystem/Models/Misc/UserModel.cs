@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ProjectManagementSystem.Models
+namespace ProjectManagementSystem.Models.Misc
 {
     public class UserModel
     {
