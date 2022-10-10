@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ProjectManagementSystem.Data;
 using ProjectManagementSystem.Entities;
 using ProjectManagementSystem.Entities.Enum;
@@ -27,6 +30,54 @@ namespace ProjectManagementSystem.Service.Services
             _userManager = userManager;
         }
 
+        public async Task<UserDetailsDto> GetUserDetailsAsync(string userId)
+        {
+            // Get user 
+            var user = await _db.Users.Where(x => x.Id == userId && x.Disable == false)
+                .Select(x => new UserDetailsDto
+                {
+                    Id = x.Id,
+                    UserName = x.UserName,
+                    FullName = x.FirstName + " " + x.LastName,
+                    Gender = ((Gender)x.Gender).ToString(),
+                    DateOfBirth = x.DateOfBirth,
+                    Disabled = x.Disable,
+                    Role = _db.Roles.FirstOrDefault(r => r.Id == _db.UserRoles.FirstOrDefault(u => u.UserId == x.Id).RoleId).Name
+                }).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                throw new Exception($"Cannot find user with id: {userId}");
+            }
+
+            return user;
+        }
+
+        public async Task<UserUpdateDetail> GetUserUpdateDetailsAsync(string userId)
+        {
+            var user = await _db.Users.Where(x => x.Id == userId)
+                .Select(x => new UserUpdateDetail
+                {
+                    Id = x.Id,
+                    UserName = x.UserName,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Email = x.Email,
+                    Address = x.Address,
+                    PhoneNumber = x.PhoneNumber,
+                    Gender = ((Gender)x.Gender).ToString(),
+                    DateOfBirth = x.DateOfBirth,
+                    Role = _db.Roles.FirstOrDefault(r => r.Id == _db.UserRoles.FirstOrDefault(u => u.UserId == x.Id).RoleId).Name
+                }).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                throw new Exception($"Cannot find user with id: {userId}");
+            }
+
+            return user;
+        }
+
         public async Task<UsersListDto> GetUsersListAsync(int? page, int? pageSize, string keyword, string[] roles, string sortField, string sortOrder)
         {
             if (roles.Length == 0)
@@ -40,6 +91,7 @@ namespace ProjectManagementSystem.Service.Services
                 .Select(x => new UserDetailsDto
                 {
                     Id = x.Id,
+                    UserCode = x.UserCode,
                     UserName = x.UserName,
                     FullName = x.FirstName + " " + x.LastName,
                     Gender = ((Gender)x.Gender).ToString(),
@@ -49,6 +101,16 @@ namespace ProjectManagementSystem.Service.Services
                 });
             if (queryUsersDetailsDto != null)
             {
+                // SORT USER CODE
+                if (sortOrder == "descend" && sortField == "userCode")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderByDescending(x => x.UserCode);
+                }
+                else if (sortOrder == "ascend" && sortField == "userCode")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderBy(x => x.UserCode);
+                }
+
                 // SORT FULL NAME
                 if (sortOrder == "descend" && sortField == "fullName")
                 {
@@ -92,6 +154,8 @@ namespace ProjectManagementSystem.Service.Services
                     queryUsersDetailsDto = queryUsersDetailsDto.Where(
                         x => x.UserName.Contains(keyword) ||
                         x.UserName.Trim().ToLower().Contains(normalizeKeyword) ||
+                        x.UserCode.Contains(keyword) ||
+                        x.UserCode.Trim().ToLower().Contains(normalizeKeyword) ||
                         x.FullName.Trim().ToLower().Contains(normalizeKeyword) ||
                         x.FullName.Contains(keyword)
                         );
@@ -114,6 +178,101 @@ namespace ProjectManagementSystem.Service.Services
                 return usersDto;
             }
             return null;
+        }
+    
+        public async Task<User> CreateUserAsync(UserCreateDto model)
+        {
+            string userCode = GenerateUserCode();
+            string username = GenerateUserName(model.FirstName, model.LastName);
+            string password = GeneratePassword(username, model.DateOfBirth);
+
+            var user = new User
+            {
+                UserCode = userCode,
+                UserName = username,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                Address = model.Address,
+                PhoneNumber = model.PhoneNumber,
+                DateOfBirth = model.DateOfBirth,
+                Gender = model.Gender,
+            };
+            var created = await _userManager.CreateAsync(user, password);
+            await _userManager.AddToRoleAsync(user, model.Role);
+            return user;
+        }
+
+        public async Task<User> UpdateUserAsync(UserUpdateDto model)
+        {
+            var user = await _db.Users.FindAsync(model.Id);
+            if (user == null) throw new Exception($"Cannot find user with id: {model.Id}");
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Email = model.Email;
+            user.DateOfBirth = model.DateOfBirth;
+            user.Gender = model.Gender;
+            user.Address = model.Address;
+            user.PhoneNumber = model.PhoneNumber;
+            await _db.SaveChangesAsync();
+            return user;
+        }
+
+        public async Task<User> DisableUserAsync(string userId)
+        {
+            var user = await _db.Users.FindAsync(userId);
+            if (user == null)
+            {
+                throw new Exception($"Cannot find user with id: {userId}");
+            }
+            user.Disable = true;
+            _db.Users.Update(user);
+            await _db.SaveChangesAsync();
+            return user;
+        }
+
+        private string GenerateUserCode()
+        {
+            string staffPrefix = "UC";
+            var maxUserCode = _db.Users.OrderByDescending(a => a.UserCode).FirstOrDefault();
+            int number = maxUserCode != null ? Convert.ToInt32(maxUserCode.UserCode.Replace(staffPrefix, "")) + 1 : 1;
+            string newUserCode = staffPrefix + number.ToString("D4");
+            return newUserCode;
+        }
+
+        private string GenerateUserName(string firstName, string lastName)
+        {
+            StringBuilder username = new StringBuilder();
+            username.Append(firstName.Trim().ToLower());
+            List<string> words = lastName.Split(' ').ToList();
+
+            foreach (var word in words)
+            {
+                username.Append(Char.ToLower(word[0]));
+            };
+            var userCount = _db.Users.Where(s => s.UserName.Contains(username.ToString())).ToList().Count();
+            if (userCount > 0)
+            {
+                username.Append(userCount);
+            }
+            return username.ToString();
+        }
+        
+        private string GeneratePassword(string username, DateTime dob)
+        {
+            string modifiedUsername = string.Concat(username[0].ToString().ToUpper(), username.AsSpan(1));
+            StringBuilder password = new StringBuilder();
+            password.Append(modifiedUsername);
+            password.Append("@");
+            string day = dob.ToString("dd");
+            string month = dob.Month.ToString("D2");
+            string year = dob.ToString("yyyy");
+            password.Append(day);
+            password.Append(month);
+            password.Append(year);
+
+            return password.ToString();
         }
     }
 }

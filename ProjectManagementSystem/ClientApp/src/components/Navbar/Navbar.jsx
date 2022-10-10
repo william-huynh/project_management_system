@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-// import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import "./Navbar.css";
@@ -8,10 +8,11 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
 import { Password } from "primereact/password";
-import { confirmDialog } from "primereact/confirmdialog";
 
 const Navbar = (props) => {
   const user = props.user;
+  console.log(user);
+  const navigate = useNavigate();
   // const location = useLocation();
   const [displayChangePassword, setDisplayChangePassword] = useState(false);
   const [displayLogout, setDisplayLogout] = useState(false);
@@ -26,6 +27,9 @@ const Navbar = (props) => {
     {
       label: "Personal user",
       icon: "pi pi-user",
+      command: () => {
+        navigate(`profile/${user.id}`);
+      },
     },
     {
       label: "Change password",

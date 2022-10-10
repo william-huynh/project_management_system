@@ -7,6 +7,7 @@ namespace ProjectManagementSystem.Entities
     public class Sprint
     {
         public string Id { get; set; }
+        public string SprintCode { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime StartedDate { get; set; }

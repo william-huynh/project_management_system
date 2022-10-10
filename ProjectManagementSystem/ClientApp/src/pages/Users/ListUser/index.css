@@ -105,3 +105,43 @@
   color: lime;
   cursor: pointer;
 }
+
+.property {
+  width: 20%;
+  display: inline-block;
+  box-sizing: border-box;
+  text-align: right;
+}
+
+.value {
+  text-align: left;
+  padding-left: 10px;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.disable-confirm-button {
+  color: white;
+  border: none;
+  border-radius: 5px;
+  height: 34px;
+  background-color: #e9424d;
+}
+
+.disable-confirm-button:hover {
+  background-color: #cf2338;
+  color: white;
+}
+
+.disable-cancel-button {
+  color: white;
+  border: none;
+  border-radius: 5px;
+  height: 34px;
+  background-color: rgb(164, 164, 164);
+}
+
+.disable-cancel-button:hover {
+  background-color: gray;
+  color: white;
+}

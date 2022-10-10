@@ -2,15 +2,20 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 
-import "./App.css";
-import loading from "./assets/loading.gif";
 import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
+import CreateUser from "./pages/Users/CreateUser";
 import UserTable from "./pages/Users/ListUser";
+import UpdateUser from "./pages/Users/UpdateUser";
+import UpdateProfile from "./pages/Users/UpdateProfile";
+
+import loading from "./assets/loading.gif";
+import "./App.css";
 
 axios.interceptors.request.use((config) => {
   return config;
 });
+
 axios.interceptors.response.use(
   (response) => {
     return response;
@@ -46,6 +51,9 @@ const App = () => {
             <Routes>
               <Route exact path="/" />
               <Route path="/users" element={<UserTable />} />
+              <Route path="/users/add" element={<CreateUser />} />
+              <Route path="/users/update/:id" element={<UpdateUser />} />
+              <Route path="/profile/:id" element={<UpdateProfile />} />
             </Routes>
           </div>
         </>

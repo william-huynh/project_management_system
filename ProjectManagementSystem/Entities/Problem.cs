@@ -7,6 +7,7 @@ namespace ProjectManagementSystem.Entities
     public class Problem
     {
         public string Id { get; set; }
+        public string ProblemCode { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public Category Category { get; set; }

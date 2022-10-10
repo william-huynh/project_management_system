@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using ProjectManagementSystem.Data;
 using ProjectManagementSystem.Entities;
 using ProjectManagementSystem.Models.Misc;
+using ProjectManagementSystem.Models.User;
 using ProjectManagementSystem.Service.IServices;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,12 +56,104 @@ namespace ProjectManagementSystem.Controllers
 
         [HttpGet]
         [Route("getlist")]
-        // [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "ProductOwner")]
         public async Task<IActionResult> GetList(int? page, int? pageSize, string keyword, [FromQuery] string[] roles, string sortField, string sortOrder)
         {
            var users = await _userService.GetUsersListAsync(page, pageSize, keyword, roles, sortField, sortOrder);
            if (users == null) return BadRequest(users);
            return Ok(users);
+        }
+
+        [HttpGet]
+        [Route("detail/{userId}")]
+        //[Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> GetDetail(string userId)
+        {
+            var data = await _userService.GetUserDetailsAsync(userId);
+            if (data == null) return BadRequest(data);
+            return Ok(data);
+        }
+
+        [HttpGet]
+        [Route("update-detail/{userId}")]
+        //[Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> GetUpdateDetail(string userId)
+        {
+            var data = await _userService.GetUserUpdateDetailsAsync(userId);
+            if (data == null) return BadRequest(data);
+            return Ok(data);
+        }
+
+        [HttpGet]
+        [Route("profile/{userId}")]
+        //[Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> GetProfileDetail(string userId)
+        {
+            var data = await _userService.GetUserUpdateDetailsAsync(userId);
+            if (data == null) return BadRequest(data);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("create-user")]
+        //[Authorize(Roles = "ProductOwner")]
+        public async Task<ActionResult> CreateUser([FromBody] UserCreateDto user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userId = await _userService.CreateUserAsync(user);
+
+            return Ok(userId);
+        }
+
+        [HttpPut]
+        [Route("update/{userId}")]
+        // [Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> Update([FromBody] UserUpdateDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _userService.UpdateUserAsync(model);
+
+            if (result == null)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("profile/update/{userId}")]
+        // [Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UserUpdateDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _userService.UpdateUserAsync(model);
+
+            if (result == null)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("disable-user/{userId}")]
+        // [Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> Disable(string userId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _userService.DisableUserAsync(userId);
+            if (result == null)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
         private async Task<User> GetCurrentUserAsync() {

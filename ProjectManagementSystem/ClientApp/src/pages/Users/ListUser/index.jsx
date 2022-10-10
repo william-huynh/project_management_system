@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios";
+import userService from "../../../services/userService";
 import moment from "moment";
 
 import { FilterOutlined } from "@ant-design/icons";
 import { Table, Typography, Dropdown, Menu, Input, Button } from "antd";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
 import "antd/dist/antd.css";
 import "./index.css";
 
 const UserTable = () => {
   const { Search } = Input;
+  const navigate = useNavigate();
+  const [userDetail, setUserDetail] = useState();
+  const [userId, setUserId] = useState();
   const [userDetailDialog, setUserDetailDialog] = useState(false);
+  const [disableUserDialog, setDisableUserDialog] = useState();
   const [position, setPosition] = useState("center");
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
@@ -26,6 +32,34 @@ const UserTable = () => {
   //Dialog function map
   const dialogFuncMap = {
     userDetailDialog: setUserDetailDialog,
+    disableUserDialog: setDisableUserDialog,
+  };
+
+  // Disable user footer
+  const renderDisableUserFooter = (name) => {
+    return (
+      <div>
+        <Button
+          className="disable-confirm-button"
+          onClick={() =>
+            userService.disable(userId).then((response) => {
+              dialogOnHide("disableUserDialog");
+              fetchData({
+                pagination,
+              });
+            })
+          }
+        >
+          Yes
+        </Button>
+        <Button
+          onClick={() => dialogOnHide(name)}
+          className="disable-cancel-button"
+        >
+          No
+        </Button>
+      </div>
+    );
   };
 
   // Fetch data
@@ -74,26 +108,43 @@ const UserTable = () => {
     });
   };
 
-  // User detail dialog on click
-  const userDetailOnClick = (name, position) => {
+  const disableUserOnClick = (id) => {
+    setUserId(id);
+    dialogOnDisplay("disableUserDialog");
+  };
+
+  // User detail on click
+  const userDetailOnClick = (record) => {
+    setUserDetail(record);
+    dialogOnDisplay("userDetailDialog");
+  };
+
+  // Dialog on display
+  const dialogOnDisplay = (name, position) => {
     dialogFuncMap[`${name}`](true);
     if (position) {
       setPosition(position);
     }
   };
 
-  // User detail dialog on hide
-  const userDetailOnHide = (name) => {
+  // Dialog on hide
+  const dialogOnHide = (name) => {
     dialogFuncMap[`${name}`](false);
   };
 
   // Table columns
   const columns = [
     {
+      title: "User Code",
+      dataIndex: "userCode",
+      ellipsis: true,
+      defaultSortOrder: "ascend",
+      sorter: true,
+    },
+    {
       title: "Full Name",
       dataIndex: "fullName",
       ellipsis: true,
-      defaultSortOrder: "ascend",
       sorter: true,
     },
     {
@@ -122,24 +173,25 @@ const UserTable = () => {
       dataIndex: "id",
       key: "id",
       width: "15%",
-      render: (id) => (
+      render: (id, record) => (
         <div className="user-button-group">
           <i
             className="pi pi-pencil user-edit-button"
-            // onClick={() => {
-            //   navigate(`update/${id}`);
-            // }}
+            onClick={() => {
+              navigate(`update/${id}`);
+            }}
           ></i>
-          <i
-            className="pi pi-trash user-delete-button"
-            // onClick={(e) => {
-            //   e.stopPropagation();
-            //   showSubModal(id);
-            // }}
-          ></i>
+          {record.project === null ? (
+            <i
+              className="pi pi-trash user-delete-button"
+              onClick={() => disableUserOnClick(id)}
+            ></i>
+          ) : (
+            <i className="pi pi-trash user-delete-button"></i>
+          )}
           <i
             className="pi pi-exclamation-circle user-detail-button"
-            onClick={() => userDetailOnClick("userDetailDialog")}
+            onClick={() => userDetailOnClick(record)}
           ></i>
         </div>
       ),
@@ -203,7 +255,7 @@ const UserTable = () => {
       <Button
         className="create-user-button"
         type="primary"
-        // onClick={() => navigate("/users/add")}
+        onClick={() => navigate("/users/add")}
       >
         Create new user
       </Button>
@@ -215,11 +267,11 @@ const UserTable = () => {
         dataSource={data}
         rowKey={(record) => record.id}
         onRow={(record, rowIndex) => {
-          return {
-            onClick: () => {
-              //showModal(record);
-            },
-          };
+          //return {
+          //  onClick: () => {
+          //    //showModal(record);
+          //  },
+          //};
         }}
         pagination={pagination}
         loading={loading}
@@ -227,13 +279,92 @@ const UserTable = () => {
       />
 
       <Dialog
-        header="Header"
+        header="User detail"
         visible={userDetailDialog}
         style={{ width: "50vw" }}
-        onHide={() => userDetailOnHide("userDetailDialog")}
+        onHide={() => dialogOnHide("userDetailDialog")}
       >
-        <p>Hello there!</p>
-        <p>This is user detail</p>
+        {userDetail == null ? (
+          <p>It is null</p>
+        ) : (
+          <div>
+            <p>
+              <span className="property">User Code </span>{" "}
+              <span className="value">{userDetail.userCode}</span>
+            </p>
+            <p>
+              <span className="property">Full Name </span>{" "}
+              <span className="value">{userDetail.fullName}</span>
+            </p>
+            <p>
+              <span className="property">Username </span>{" "}
+              <span className="value">{userDetail.userName}</span>
+            </p>
+            <p>
+              <span className="property">Date Of Birth </span>{" "}
+              <span className="value">
+                {moment(userDetail.dateOfBirth).format("DD/MM/YYYY")}
+              </span>
+            </p>
+            <p>
+              <span className="property">Gender </span>{" "}
+              <span className="value">{userDetail.gender}</span>
+            </p>
+            <p>
+              <span className="property">Role </span>{" "}
+              <span className="value">{userDetail.role}</span>
+            </p>
+            <div className="row">
+              <span className="property col-2 p-0">History </span>
+              <div className="col-9">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Project Code</th>
+                      <th>Project Name</th>
+                      <th>Assigned Date</th>
+                      <th>Project Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* {history ? (
+                      history.map((item) => (
+                        <tr>
+                          <td>
+                            {moment(item.assignedDate).format("DD/MM/YYYY")}
+                          </td>
+                          <td>{item.assignedTo}</td>
+                          <td>{item.assignedBy}</td>
+                          {item.requestState == "Completed" ? (
+                            <td>
+                              {moment(item.returnedDate).format("DD/MM/YYYY")}
+                            </td>
+                          ) : (
+                            <td>Updating...</td>
+                          )}
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td>No history</td>
+                      </tr>
+                    )} */}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+      </Dialog>
+
+      <Dialog
+        header="Disable User"
+        visible={disableUserDialog}
+        style={{ width: "25vw" }}
+        footer={renderDisableUserFooter("disableUserDialog")}
+        onHide={() => dialogOnHide("disableUserDialog")}
+      >
+        <p>Are you sure you want to disable this user?</p>
       </Dialog>
 
       {/* <ModalExample

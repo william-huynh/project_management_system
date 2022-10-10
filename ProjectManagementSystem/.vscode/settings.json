@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["primereact"]
+  "cSpell.words": ["primereact"],
+  "cSpell.ignoreWords": ["formik", "inputtext"]
 }

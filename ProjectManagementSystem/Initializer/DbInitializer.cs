@@ -25,6 +25,7 @@ namespace ProjectManagementSystem.Initializer
             var productOwner = new User()
             {
                 UserName = "advisor",
+                UserCode = "UC0001",
                 NormalizedUserName = "advisor",
                 Email = "advisor@gmail.com",
                 NormalizedEmail = "advisor@gmail.com",
@@ -38,6 +39,7 @@ namespace ProjectManagementSystem.Initializer
             var scrumMaster = new User()
             {
                 UserName = "scrumMaster",
+                UserCode = "UC0002",
                 NormalizedUserName = "scrumMaster",
                 Email = "scrumMaster@gmail.com",
                 NormalizedEmail = "scrumMaster@gmail.com",
@@ -51,6 +53,7 @@ namespace ProjectManagementSystem.Initializer
             var developer = new User()
             {
                 UserName = "developer",
+                UserCode = "UC0003",
                 NormalizedUserName = "developer",
                 Email = "developer@gmail.com",
                 NormalizedEmail = "developer@gmail.com",
