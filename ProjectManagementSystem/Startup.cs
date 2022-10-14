@@ -66,6 +66,7 @@ namespace ProjectManagementSystem
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IProjectService, ProjectService>();
 
             services.AddScoped<IDbInitializer, DbInitializer>();
 

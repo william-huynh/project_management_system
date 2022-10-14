@@ -14,8 +14,15 @@
 .lower-form {
   border: 1px solid #ced4da;
   border-radius: 6px;
-  margin-top: 1rem;
   padding: 0 1rem 1rem 1rem;
+}
+
+.create-user .upper-form {
+  margin-top: 1.5rem;
+}
+
+.create-user .lower-form {
+  margin-top: 1rem;
 }
 
 .upper-form p,
@@ -29,16 +36,6 @@
   font-weight: bold;
   background-color: white;
   margin-top: -0.75rem;
-}
-
-.inline-input-group {
-  display: flex;
-  flex-direction: row;
-}
-
-.inline-input-group .input-group {
-  flex: 1;
-  margin-top: 2rem;
 }
 
 #gender-label {
@@ -60,34 +57,8 @@
   align-items: center;
 }
 
-.p-inputtext,
-.p-calendar,
-.p-dropdown {
-  width: 90%;
-}
-
-.project-info-title {
-  font-weight: bold;
-  padding-left: 0.8rem;
-  padding-right: 0.5rem;
-}
-
 .create-user-button-group {
   margin-top: 1rem;
   display: flex;
   justify-content: end;
-}
-
-.create-user-submit-button {
-  border-color: #e9424d;
-  text-align: right;
-  background-color: #e9424d;
-  margin-right: 1rem;
-}
-
-.create-user-button-group .create-user-submit-button:hover,
-.create-user-button-group .create-user-submit-button:active {
-  border-color: #cf2338;
-  background-color: #cf2338;
-  color: white;
 }

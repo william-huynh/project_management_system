@@ -15,6 +15,6 @@ namespace ProjectManagementSystem.Models.User
         public string Gender { get; set; }
         public ProjectDetailsDto Project { get; set; }
         public ImageDto Image { get; set; }
-        public bool Disabled { get; set; } = false;
+        public bool Disabled { get; set; }
     }
 }

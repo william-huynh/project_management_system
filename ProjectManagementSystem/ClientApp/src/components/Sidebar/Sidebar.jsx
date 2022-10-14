@@ -26,6 +26,9 @@ const Sidebar = (props) => {
             <NavLink to="/users">
               <li>Manage User</li>
             </NavLink>
+            <NavLink to="/projects">
+              <li>Manage Project</li>
+            </NavLink>
           </ul>
         </div>
       ) : user.role[0] === "ScrumMaster" ? (

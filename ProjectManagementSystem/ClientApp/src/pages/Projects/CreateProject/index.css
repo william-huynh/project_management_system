@@ -1,0 +1,47 @@
+.create-project {
+  flex: 1;
+  padding-left: 4rem;
+  color: #6c757d;
+}
+
+.header-project-list {
+  font-size: 16px;
+  font-weight: bold;
+  color: #cf2338;
+}
+
+.create-project .upper-form {
+  margin-top: 1.5rem;
+}
+
+.create-project .lower-form {
+  margin-top: 1rem;
+}
+
+.create-project .form-title {
+  color: #cf2338;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: white;
+  margin-top: -0.75rem;
+}
+
+.create-project-button-group {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: end;
+}
+
+.create-project .ant-input-search .ant-input-wrapper,
+.create-project .ant-input-search .ant-input,
+.create-project .ant-input-search .ant-input-search-button {
+  height: 100%;
+}
+
+.create-project
+  .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child
+  .ant-input-search-button {
+  border-radius: 0 5px 5px 0;
+}

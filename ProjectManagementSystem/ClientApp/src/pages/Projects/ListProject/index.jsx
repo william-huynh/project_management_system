@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios";
-import userService from "../../../services/userService";
+import projectService from "../../../services/projectService";
 import moment from "moment";
 
 import { FilterOutlined } from "@ant-design/icons";
@@ -9,18 +9,18 @@ import { Table, Dropdown, Menu, Input, Button } from "antd";
 import "antd/dist/antd.css";
 import "./index.css";
 
-const UserTable = () => {
+const ProjectTable = () => {
   const { Search } = Input;
   const navigate = useNavigate();
-  const [userDetail, setUserDetail] = useState();
-  const [userId, setUserId] = useState();
+  const [projectDetail, setProjectDetail] = useState();
+  const [projectId, setProjectId] = useState();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
-  const [menuType, setMenuType] = useState("Type");
+  const [menuType, setMenuType] = useState("Status");
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
-    type: "All",
+    status: "All",
     keyword: "",
   });
 
@@ -29,22 +29,16 @@ const UserTable = () => {
     setLoading(true);
     axiosInstance
       .get(
-        `users/getlist?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&roles=${params.pagination.type}&sortField=${params.sortField}&sortOrder=${params.sortOrder}`
+        `projects/getlist?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sortField=${params.sortField}&sortOrder=${params.sortOrder}`
       )
       .then((results) => {
-        results.data.users.forEach((element) => {
-          element.dateOfBirth = moment(element.dateOfBirth).format(
+        results.data.projects.forEach((element) => {
+          element.startedDate = moment(element.startedDate).format(
             "DD/MM/YYYY"
           );
-          element.role =
-            element.role === "ProductOwner"
-              ? "Product Owner"
-              : element.role === "ScrumMaster"
-              ? "Scrum Master"
-              : "Developers";
+          element.endedDate = moment(element.endedDate).format("DD/MM/YYYY");
         });
-        console.log(results);
-        setData(results.data.users);
+        setData(results.data.projects);
         setLoading(false);
         setPagination({
           ...params.pagination,
@@ -55,21 +49,7 @@ const UserTable = () => {
 
   // Menu on click
   const handleMenuClick = (e) => {
-    let filter = "";
-    switch (e.key) {
-      case "Product Owner":
-        filter = "ProductOwner";
-        break;
-      case "Scrum Master":
-        filter = "ScrumMaster";
-        break;
-      case "Developer":
-        filter = "Developer";
-        break;
-      default:
-        break;
-    }
-    setPagination((pagination.type = filter));
+    setPagination((pagination.status = e.key));
     setMenuType(e.key);
     fetchData({
       pagination,
@@ -87,38 +67,34 @@ const UserTable = () => {
   // Table columns
   const columns = [
     {
-      title: "User Code",
-      dataIndex: "userCode",
+      title: "Project Code",
+      dataIndex: "projectCode",
       ellipsis: true,
       defaultSortOrder: "ascend",
       sorter: true,
     },
     {
-      title: "Full Name",
-      dataIndex: "fullName",
+      title: "Name",
+      dataIndex: "name",
       ellipsis: true,
       sorter: true,
     },
     {
-      title: "UserName",
-      dataIndex: "userName",
-      ellipsis: true,
+      title: "Start Date",
+      width: "15%",
+      dataIndex: "startedDate",
       sorter: true,
     },
     {
-      title: "Date of Birth",
+      title: "End Date",
       width: "15%",
-      dataIndex: "dateOfBirth",
+      dataIndex: "endedDate",
       sorter: true,
     },
     {
-      title: "Role",
+      title: "Status",
       width: "15%",
-      dataIndex: "role",
-    },
-    {
-      title: "Project",
-      width: "15%",
+      dataIndex: "status",
     },
     {
       title: "Action",
@@ -126,28 +102,28 @@ const UserTable = () => {
       key: "id",
       width: "15%",
       render: (id, record) => (
-        <div className="user-button-group">
+        <div className="project-button-group">
           <i
-            className="fa-solid fa-pen-to-square fa-lg user-edit-button"
-            onClick={() => {
-              navigate(`update/${id}`);
-            }}
+            className="fa-solid fa-pen-to-square fa-lg project-edit-button"
+            // onClick={() => {
+            //   navigate(`update/${id}`);
+            // }}
           ></i>
-          {record.project === null ? (
+          {/* {record.project === null ? (
             <i
-              className="fa-solid fa-xmark fa-xl user-delete-button"
+              className="fa-solid fa-xmark fa-xl project-delete-button"
               data-toggle="modal"
               data-target="#disableModal"
               onClick={() => setUserId(id)}
             ></i>
-          ) : (
-            <i className="fa-solid fa-xmark fa-xl user-delete-button"></i>
-          )}
+          ) : ( */}
+          <i className="fa-solid fa-xmark fa-xl project-delete-button"></i>
+          {/* )} */}
           <i
-            className="fa-solid fa-circle-exclamation fa-lg user-detail-button"
-            data-toggle="modal"
-            data-target="#userDetailModal"
-            onClick={() => setUserDetail(record)}
+            className="fa-solid fa-circle-exclamation fa-lg project-detail-button"
+            // data-toggle="modal"
+            // data-target="#projectDetailModal"
+            // onClick={() => setUserDetail(record)}
           ></i>
         </div>
       ),
@@ -164,16 +140,16 @@ const UserTable = () => {
           key: "All",
         },
         {
-          label: "Product Owner",
-          key: "Product Owner",
+          label: "Inactive",
+          key: "Inactive",
         },
         {
-          label: "Scrum Master",
-          key: "Scrum Master",
+          label: "Active",
+          key: "Active",
         },
         {
-          label: "Developer",
-          key: "Developer",
+          label: "Complete",
+          key: "Complete",
         },
       ]}
     />
@@ -181,7 +157,6 @@ const UserTable = () => {
 
   // Table on change
   const onChange = (newPagination, filters, sorter, extra) => {
-    console.log(sorter);
     fetchData({
       sortField: sorter.field,
       sortOrder: sorter.order,
@@ -197,8 +172,8 @@ const UserTable = () => {
   }, []);
 
   return (
-    <div className="user-table">
-      <p className="header-user-list">User List</p>
+    <div className="project-table">
+      <p className="header-project-list">Project List</p>
 
       {/* Filter menu */}
       <Dropdown overlay={menu} placement="bottom">
@@ -211,11 +186,11 @@ const UserTable = () => {
 
       {/* Create new user button */}
       <Button
-        className="create-user-button"
+        className="create-project-button"
         type="primary"
-        onClick={() => navigate("/users/add")}
+        onClick={() => navigate("/projects/add")}
       >
-        Create new user
+        Add new project
       </Button>
 
       {/* Search bar */}
@@ -238,24 +213,24 @@ const UserTable = () => {
         onChange={onChange}
       />
 
-      {/* User detail modal */}
+      {/* Project detail modal */}
       <div
         className="modal fade"
-        id="userDetailModal"
+        id="projectDetailModal"
         tabIndex="-1"
         role="dialog"
-        aria-labelledby="userDetailModal"
+        aria-labelledby="projectDetailModal"
         aria-hidden="true"
       >
         <div
           className="modal-dialog modal-dialog-centered"
           role="document"
-          id="user-detail-modal"
+          id="project-detail-modal"
         >
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLongTitle">
-                User Detail
+                Project Detail
               </h5>
               <button
                 type="button"
@@ -267,7 +242,7 @@ const UserTable = () => {
               </button>
             </div>
             <div className="modal-body">
-              {userDetail == null ? (
+              {projectDetail == null ? (
                 <div className="loading">
                   <img src={loading} alt="Loading..." />
                 </div>
@@ -277,38 +252,46 @@ const UserTable = () => {
                     <img
                       src="https://leaveitwithme.com.au/wp-content/uploads/2013/11/dummy-image-square.jpg"
                       alt="dummy"
-                      className="user-detail-picture"
+                      className="project-detail-picture"
                     />
                   </div>
                   <div className="col-8">
                     <div>
                       <p>
-                        <span className="property">User Code </span>{" "}
-                        <span className="value">{userDetail.userCode}</span>
-                      </p>
-                      <p>
-                        <span className="property">Full Name </span>{" "}
-                        <span className="value">{userDetail.fullName}</span>
-                      </p>
-                      <p>
-                        <span className="property">Username </span>{" "}
-                        <span className="value">{userDetail.userName}</span>
-                      </p>
-                      <p>
-                        <span className="property">Date Of Birth </span>{" "}
+                        <span className="property">Project Code </span>{" "}
                         <span className="value">
-                          {moment(userDetail.dateOfBirth).format("DD/MM/YYYY")}
+                          {projectDetail.projectCode}
                         </span>
                       </p>
                       <p>
-                        <span className="property">Gender </span>{" "}
-                        <span className="value">{userDetail.gender}</span>
+                        <span className="property">Project Name </span>{" "}
+                        <span className="value">{projectDetail.name}</span>
                       </p>
                       <p>
-                        <span className="property">Role </span>{" "}
-                        <span className="value">{userDetail.role}</span>
+                        <span className="property">Project Description </span>{" "}
+                        <span className="value">
+                          {projectDetail.description}
+                        </span>
                       </p>
                       <p>
+                        <span className="property">Start Date </span>{" "}
+                        <span className="value">
+                          {moment(projectDetail.startedDate).format(
+                            "DD/MM/YYYY"
+                          )}
+                        </span>
+                      </p>
+                      <p>
+                        <span className="property">End Date </span>{" "}
+                        <span className="value">
+                          {moment(projectDetail.endedDate).format("DD/MM/YYYY")}
+                        </span>
+                      </p>
+                      <p>
+                        <span className="property">Status </span>{" "}
+                        <span className="value">{projectDetail.status}</span>
+                      </p>
+                      {/* <p>
                         <div className="row">
                           <div className="col-4 property">Current Project</div>
 
@@ -329,8 +312,8 @@ const UserTable = () => {
                                   <td>PC0001</td>
                                   <td>Project 01</td>
                                   <td>Active</td>
-                                </tr>
-                                {/* {history ? (
+                                </tr> */}
+                      {/* {history ? (
                                   history.map((item) => (
                                     <tr>
                                       <td>
@@ -352,11 +335,11 @@ const UserTable = () => {
                                     <td>No history</td>
                                   </tr>
                                 )} */}
-                              </tbody>
+                      {/* </tbody>
                             </table>
                           </div>
                         </div>
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                 </div>
@@ -403,7 +386,7 @@ const UserTable = () => {
                 className="btn btn-confirm-advisor"
                 data-dismiss="modal"
                 onClick={() => {
-                  userService.disable(userId).then(() => {
+                  projectService.disable(projectId).then(() => {
                     fetchData({
                       pagination,
                     });
@@ -423,15 +406,8 @@ const UserTable = () => {
           </div>
         </div>
       </div>
-
-      {/* <ModalExample
-        visible={isModalVisible}
-        handleCancel={handleCancel}
-        data={infor}
-      />
-      <DisableUser id={id} bool={bool} handleCancel={handleCancel} /> */}
     </div>
   );
 };
 
-export default UserTable;
+export default ProjectTable;

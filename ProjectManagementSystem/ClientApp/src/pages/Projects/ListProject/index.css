@@ -1,0 +1,81 @@
+.project-table {
+  flex: 1;
+  padding-left: 4rem;
+}
+
+.ant-table-wrapper td {
+  font-weight: normal;
+}
+
+.header-project-list {
+  font-size: 16px;
+  font-weight: bold;
+  color: #cf2338;
+  margin: 0;
+}
+
+.create-project-button {
+  border: none;
+  border-radius: 5px;
+  height: 34px;
+  background-color: #e9424d;
+  float: right;
+  margin-top: 0.5rem;
+  margin-left: 2rem;
+}
+
+.create-project-button:hover {
+  background-color: #cf2338;
+}
+
+.project-table .ant-table-wrapper {
+  margin-top: 1rem;
+}
+
+.project-table
+  > .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child {
+  left: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.project-table
+  .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child
+  .ant-input-search-button:not(.ant-btn-primary) {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.project-button-group {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.project-edit-button {
+  color: orange;
+  cursor: pointer;
+}
+
+.project-delete-button {
+  color: red;
+  cursor: pointer;
+}
+
+.project-detail-button {
+  color: limegreen;
+  cursor: pointer;
+}
+
+#projectDetailModal .modal-dialog {
+  max-width: 50vw;
+}
+
+.project-detail-picture {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}

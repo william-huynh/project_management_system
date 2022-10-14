@@ -10,10 +10,6 @@ const create = (data) => {
   return axios.post(API_URL + "/users/create-user", data);
 };
 
-const checkUsernameDuplication = (username) => {
-  return axios.get(API_URL + `/users/check-duplicate/${username}`);
-};
-
 const update = (id, data) => {
   return axios.put(API_URL + `/users/update/${id}`, data);
 };
@@ -37,7 +33,6 @@ const disable = (id) => {
 export default {
   detail,
   create,
-  checkUsernameDuplication,
   update,
   getUpdateDetail,
   updateProfile,

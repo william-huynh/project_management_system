@@ -2,10 +2,11 @@
 {
     public enum Status
     {
-        NotStart = 1,
-        InProgress = 2,
+        Inactive = 1,
+        Active = 2,
         Complete = 3,
-        WaitingForAcceptance = 4,
-        Accepted = 5,
+        InProgress = 4,
+        WaitingForAcceptance = 5,
+        Accepted = 6,
     }
 }
