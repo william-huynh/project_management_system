@@ -2,7 +2,7 @@
 
 namespace ProjectManagementSystem.Entities
 {
-    public class Rating
+    public class Record
     {
         public string Id { get; set; }
         public string RatingContent { get; set; }
@@ -16,5 +16,8 @@ namespace ProjectManagementSystem.Entities
         public string UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
+        public string ProjectId { get; set; }
+        [ForeignKey("ProjectId")]
+        public Project Project { get; set; }
     }
 }

@@ -13,9 +13,6 @@ namespace ProjectManagementSystem.Entities
         public DateTime DateOfBirth { get; set; }
         public Gender Gender { get; set; }
         public string Address { get; set; }
-        public string ProjectId { get; set; }
-        [ForeignKey("ProjectId")]
-        public Project Project { get; set; }
         public string ImageId { get; set; }
         [ForeignKey("ImageId")]
         public Image Image { get; set; }

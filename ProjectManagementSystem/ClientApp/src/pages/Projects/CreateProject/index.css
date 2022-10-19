@@ -32,16 +32,25 @@
   justify-content: end;
 }
 
-.create-project .ant-input-search .ant-input-wrapper,
-.create-project .ant-input-search .ant-input,
-.create-project .ant-input-search .ant-input-search-button {
+.btn-search-advisor {
+  margin: 0;
+  border: 1px solid #ced4da;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.btn-search-advisor:hover,
+.btn-search-advisor:active {
+  border: 1px solid #e9424d;
+  transition: 0.8s;
+}
+
+.update-project-assign-input {
   height: 100%;
 }
 
-.create-project
-  .ant-input-search
-  > .ant-input-group
-  > .ant-input-group-addon:last-child
-  .ant-input-search-button {
-  border-radius: 0 5px 5px 0;
+.update-project-remove-user {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
 }

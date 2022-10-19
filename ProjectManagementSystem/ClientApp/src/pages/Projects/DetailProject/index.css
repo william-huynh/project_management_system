@@ -1,0 +1,40 @@
+.detail-project-button {
+  height: 2.2rem;
+  width: 8rem;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  background-color: #e9424d;
+}
+
+.detail-project-button:hover,
+.detail-project-button:active {
+  border: none;
+  background-color: #cf2338;
+}
+
+.detail-project-input {
+  background-color: #fff !important;
+}
+
+.detail-project-status-active {
+  font-weight: bold;
+  color: limegreen;
+}
+
+.detail-project-status-complete {
+  font-weight: bold;
+  color: cyan;
+}
+
+.detail-project-table-heading {
+  background-color: #cf2338;
+}
+
+.create-project .table th {
+  font-weight: bold;
+}
+
+.create-project .table td {
+  font-weight: normal;
+}

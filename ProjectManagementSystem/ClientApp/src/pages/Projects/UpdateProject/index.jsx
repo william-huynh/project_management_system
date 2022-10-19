@@ -1,21 +1,19 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import projectService from "../../../services/projectService";
+import recordService from "../../../services/recordService";
 import * as yup from "yup";
 import moment from "moment";
 
-import ModalScrumMaster from "./ScrumMaster/ModalScrumMaster";
-import ModalDeveloper1 from "./Developer1/ModalDeveloper1";
-import ModalDeveloper2 from "./Developer2/ModalDeveloper2";
-import ModalDeveloper3 from "./Developer3/ModalDeveloper3";
-import ModalDeveloper4 from "./Developer4/ModalDeveloper4";
+import ModalScrumMaster from "../CreateProject/ScrumMaster/ModalScrumMaster";
+import ModalDeveloper1 from "../CreateProject/Developer1/ModalDeveloper1";
+import ModalDeveloper2 from "../CreateProject/Developer2/ModalDeveloper2";
+import ModalDeveloper3 from "../CreateProject/Developer3/ModalDeveloper3";
+import ModalDeveloper4 from "../CreateProject/Developer4/ModalDeveloper4";
 
-import { Input } from "antd";
-import "./index.css";
-
-const CreateProject = () => {
-  const { Search } = Input;
+const UpdateProject = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const startDate = useRef(null);
   const today = new Date();
@@ -41,6 +39,7 @@ const CreateProject = () => {
     useState(false);
   const [selectedDeveloper4, setSelectedDeveloper4] = useState("");
   const [developer4Id, setDeveloper4Id] = useState("");
+  const [removeUserId, setRemoveUserId] = useState("");
 
   // Get project duration months
   function getDuration(startDate, endDate) {
@@ -101,8 +100,47 @@ const CreateProject = () => {
     setIsModalDeveloper4Visible(false);
   };
 
+  // Get project detail
+  const getProject = (id) => {
+    projectService
+      .getUpdateDetail(id)
+      .then((response) => {
+        console.log(response);
+        formik.setFieldValue("name", response.data.name);
+        formik.setFieldValue("description", response.data.description);
+        formik.setFieldValue(
+          "startedDate",
+          moment(response.data.startedDate).format("YYYY-MM-DD")
+        );
+        formik.setFieldValue(
+          "endedDate",
+          moment(response.data.endedDate).format("YYYY-MM-DD")
+        );
+        setSelectedScrumMaster(response.data.scrumMasterName);
+        setScrumMasterId(response.data.scrumMasterId);
+        if (response.data.developers[0] != null) {
+          setSelectedDeveloper1(response.data.developers[0].fullName);
+          setDeveloper1Id(response.data.developers[0].id);
+        }
+        if (response.data.developers[1] != null) {
+          setSelectedDeveloper2(response.data.developers[1].fullName);
+          setDeveloper2Id(response.data.developers[1].id);
+        }
+        if (response.data.developers[2] != null) {
+          setSelectedDeveloper3(response.data.developers[2].fullName);
+          setDeveloper3Id(response.data.developers[2].id);
+        }
+        if (response.data.developers[3] != null) {
+          setSelectedDeveloper4(response.data.developers[3].fullName);
+          setDeveloper4Id(response.data.developers[3].id);
+        }
+      })
+      .catch((event) => console.log(event));
+  };
+
   const formik = useFormik({
     initialValues: {
+      id: id,
       name: "",
       description: "",
       startedDate: moment(today).format("YYYY-MM-DD"),
@@ -132,16 +170,12 @@ const CreateProject = () => {
         .max(500, "Project description should be less than 500 characters"),
 
       // Start date validation
-      startedDate: yup
-        .date()
-        .required("Start date is required")
-        .min(today, "Start date is only current or future date"),
+      startedDate: yup.date().required("Start date is required"),
 
       // End date validation
       endedDate: yup
         .date()
         .required("End date is required")
-        .min(today, "End date is only current or future date")
         .test(
           "endedDate",
           "Project duration should be more than 3 months",
@@ -164,15 +198,19 @@ const CreateProject = () => {
       data.developer3Id = developer3Id;
       data.developer4Id = developer4Id;
       projectService
-        .create(data)
+        .update(id, data)
         .then((response) => {
-          navigate("/projects");
+          window.location.reload();
         })
         .catch((e) => {
           console.log(e);
         });
     },
   });
+
+  useEffect(() => {
+    getProject(id);
+  }, [id]);
 
   return (
     <div className="create-project">
@@ -256,7 +294,7 @@ const CreateProject = () => {
                   onChange={formik.handleChange}
                   type="date"
                   ref={startDate}
-                  min={moment(today).format("YYYY-MM-DD")}
+                  min={moment(formik.values.startedDate).format("YYYY-MM-DD")}
                   className={`form-control ${
                     formik.errors.startedDate &&
                     formik.touched.startedDate === true
@@ -289,7 +327,7 @@ const CreateProject = () => {
                   value={formik.values.endedDate}
                   onChange={formik.handleChange}
                   type="date"
-                  min={moment(today).format("YYYY-MM-DD")}
+                  min={moment(formik.values.endedDate).format("YYYY-MM-DD")}
                   className={`form-control ${
                     formik.errors.endedDate && formik.touched.endedDate === true
                       ? "is-invalid"
@@ -314,155 +352,195 @@ const CreateProject = () => {
           <p className="form-title">Assign User</p>
 
           {/* Scrum master selection */}
-          <div className="input-group flex-nowrap mt-3">
-            <div className="input-group-prepend">
-              <span className="input-group-text" id="addon-wrapping">
-                Scrum Master
-              </span>
+          <div className="d-flex flex-row mt-3">
+            <div className="input-group flex-nowrap">
+              <div className="input-group-prepend">
+                <span className="input-group-text" id="addon-wrapping">
+                  Scrum Master
+                </span>
+              </div>
+              <input
+                type="text"
+                className="form-control update-project-assign-input"
+                style={{ borderRight: "none" }}
+                aria-label="Scrum Master select"
+                aria-describedby="scrumMasterSelect"
+                value={selectedScrumMaster}
+              />
+              <div className="input-group-append">
+                <button
+                  className="btn btn-md px-3 py-2 z-depth-0 btn-search-advisor"
+                  type="button"
+                  onClick={() => setIsModalScrumMasterVisible(true)}
+                >
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </div>
             </div>
-            <input
-              type="text"
-              className="form-control"
-              style={{ borderRight: "none" }}
-              aria-label="Scrum Master select"
-              aria-describedby="scrumMasterSelect"
-              value={selectedScrumMaster}
-            />
-            <div className="input-group-append">
-              <button
-                className="btn btn-md px-3 py-2 z-depth-0 btn-search-advisor"
-                type="button"
-                onClick={() => setIsModalScrumMasterVisible(true)}
-              >
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </button>
+            <div className="update-project-remove-user">
+              <i
+                className="fa-solid fa-xmark fa-xl project-delete-button"
+                onClick={() => {
+                  setScrumMasterId("");
+                  setSelectedScrumMaster("");
+                }}
+              ></i>
             </div>
-            {/* {formik.errors.assetId && formik.touched.assetId && (
-                <p className="text-danger mb-0">{formik.errors.assetId}</p>
-              )} */}
           </div>
 
           {/* Developer 1 selection */}
-          <div className="input-group flex-nowrap mt-3">
-            <div className="input-group-prepend">
-              <span
-                className="input-group-text"
-                id="addon-wrapping"
-                style={{ width: "7.6rem", justifyContent: "center" }}
-              >
-                Developers
-              </span>
+          <div className="d-flex flex-row mt-3">
+            <div className="input-group flex-nowrap">
+              <div className="input-group-prepend">
+                <span
+                  className="input-group-text"
+                  id="addon-wrapping"
+                  style={{ width: "7.6rem", justifyContent: "center" }}
+                >
+                  Developers
+                </span>
+              </div>
+              <input
+                type="text"
+                className="form-control update-project-assign-input"
+                style={{ borderRight: "none" }}
+                aria-label="Developer select"
+                aria-describedby="developerSelect"
+                value={selectedDeveloper1}
+              />
+              <div className="input-group-append">
+                <button
+                  className="btn btn-md px-3 py-2 z-depth-0 btn-search-advisor"
+                  type="button"
+                  onClick={() => setIsModalDeveloper1Visible(true)}
+                >
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </div>
             </div>
-            <input
-              type="text"
-              className="form-control"
-              style={{ borderRight: "none" }}
-              aria-label="Developer select"
-              aria-describedby="developerSelect"
-              value={selectedDeveloper1}
-            />
-            <div className="input-group-append">
-              <button
-                className="btn btn-md px-3 py-2 z-depth-0 btn-search-advisor"
-                type="button"
-                onClick={() => setIsModalDeveloper1Visible(true)}
-              >
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </button>
+            <div className="update-project-remove-user">
+              <i
+                className="fa-solid fa-xmark fa-xl project-delete-button"
+                onClick={() => {
+                  setDeveloper1Id("");
+                  setSelectedDeveloper1("");
+                }}
+              ></i>
             </div>
-            {/* {formik.errors.assetId && formik.touched.assetId && (
-                <p className="text-danger mb-0">{formik.errors.assetId}</p>
-              )} */}
           </div>
 
           {/* Developer 2 selection */}
-          <div className="input-group flex-nowrap mt-3">
-            <div className="input-group-prepend">
-              <span
-                id="addon-wrapping"
-                style={{ width: "7.6rem", height: "2.38rem" }}
-              ></span>
+          <div className="d-flex flex-row mt-3">
+            <div className="input-group flex-nowrap">
+              <div className="input-group-prepend">
+                <span
+                  id="addon-wrapping"
+                  style={{ width: "7.6rem", height: "2.38rem" }}
+                ></span>
+              </div>
+              <input
+                type="text"
+                className="form-control update-project-assign-input"
+                style={{ borderRight: "none" }}
+                aria-label="Developer select"
+                aria-describedby="developerSelect"
+                value={selectedDeveloper2}
+              />
+              <div className="input-group-append">
+                <button
+                  className="btn btn-md px-3 py-2 z-depth-0 btn-search-advisor"
+                  type="button"
+                  onClick={() => setIsModalDeveloper2Visible(true)}
+                >
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </div>
             </div>
-            <input
-              type="text"
-              className="form-control"
-              style={{ borderRight: "none" }}
-              aria-label="Developer select"
-              aria-describedby="developerSelect"
-              value={selectedDeveloper2}
-            />
-            <div className="input-group-append">
-              <button
-                className="btn btn-md px-3 py-2 z-depth-0 btn-search-advisor"
-                type="button"
-                onClick={() => setIsModalDeveloper2Visible(true)}
-              >
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </button>
+            <div className="update-project-remove-user">
+              <i
+                className="fa-solid fa-xmark fa-xl project-delete-button"
+                onClick={() => {
+                  setDeveloper2Id("");
+                  setSelectedDeveloper2("");
+                }}
+              ></i>
             </div>
-            {/* {formik.errors.assetId && formik.touched.assetId && (
-                <p className="text-danger mb-0">{formik.errors.assetId}</p>
-              )} */}
           </div>
 
           {/* Developer 3 selection */}
-          <div className="input-group flex-nowrap mt-3">
-            <div className="input-group-prepend">
-              <span
-                id="addon-wrapping"
-                style={{ width: "7.6rem", height: "2.38rem" }}
-              ></span>
+          <div className="d-flex flex-row mt-3">
+            <div className="input-group flex-nowrap">
+              <div className="input-group-prepend">
+                <span
+                  id="addon-wrapping"
+                  style={{ width: "7.6rem", height: "2.38rem" }}
+                ></span>
+              </div>
+              <input
+                type="text"
+                className="form-control update-project-assign-input"
+                style={{ borderRight: "none" }}
+                aria-label="Developer select"
+                aria-describedby="developerSelect"
+                value={selectedDeveloper3}
+              />
+              <div className="input-group-append">
+                <button
+                  className="btn btn-md px-3 py-2 z-depth-0 btn-search-advisor"
+                  type="button"
+                  onClick={() => setIsModalDeveloper3Visible(true)}
+                >
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </div>
             </div>
-            <input
-              type="text"
-              className="form-control"
-              style={{ borderRight: "none" }}
-              aria-label="Developer select"
-              aria-describedby="developerSelect"
-              value={selectedDeveloper3}
-            />
-            <div className="input-group-append">
-              <button
-                className="btn btn-md px-3 py-2 z-depth-0 btn-search-advisor"
-                type="button"
-                onClick={() => setIsModalDeveloper3Visible(true)}
-              >
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </button>
+            <div className="update-project-remove-user">
+              <i
+                className="fa-solid fa-xmark fa-xl project-delete-button"
+                onClick={() => {
+                  setDeveloper3Id("");
+                  setSelectedDeveloper3("");
+                }}
+              ></i>
             </div>
-            {/* {formik.errors.assetId && formik.touched.assetId && (
-                <p className="text-danger mb-0">{formik.errors.assetId}</p>
-              )} */}
           </div>
 
           {/* Developer 4 selection */}
-          <div className="input-group flex-nowrap mt-3">
-            <div className="input-group-prepend">
-              <span
-                id="addon-wrapping"
-                style={{ width: "7.6rem", height: "2.38rem" }}
-              ></span>
+          <div className="d-flex flex-row mt-3">
+            <div className="input-group flex-nowrap">
+              <div className="input-group-prepend">
+                <span
+                  id="addon-wrapping"
+                  style={{ width: "7.6rem", height: "2.38rem" }}
+                ></span>
+              </div>
+              <input
+                type="text"
+                className="form-control update-project-assign-input"
+                style={{ borderRight: "none" }}
+                aria-label="Developer select"
+                aria-describedby="developerSelect"
+                value={selectedDeveloper4}
+              />
+              <div className="input-group-append">
+                <button
+                  className="btn btn-md px-3 py-2 z-depth-0 btn-search-advisor"
+                  type="button"
+                  onClick={() => setIsModalDeveloper4Visible(true)}
+                >
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </div>
             </div>
-            <input
-              type="text"
-              className="form-control"
-              style={{ borderRight: "none" }}
-              aria-label="Developer select"
-              aria-describedby="developerSelect"
-              value={selectedDeveloper4}
-            />
-            <div className="input-group-append">
-              <button
-                className="btn btn-md px-3 py-2 z-depth-0 btn-search-advisor"
-                type="button"
-                onClick={() => setIsModalDeveloper4Visible(true)}
-              >
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </button>
+            <div className="update-project-remove-user">
+              <i
+                className="fa-solid fa-xmark fa-xl project-delete-button"
+                onClick={() => {
+                  setDeveloper4Id("");
+                  setSelectedDeveloper4("");
+                }}
+              ></i>
             </div>
-            {/* {formik.errors.assetId && formik.touched.assetId && (
-                <p className="text-danger mb-0">{formik.errors.assetId}</p>
-              )} */}
           </div>
         </div>
         <div className="create-project-button-group">
@@ -493,10 +571,10 @@ const CreateProject = () => {
         visible={isModalDeveloper1Visible}
         selectedDeveloper={handleSelectedDeveloper1}
         handleCancel={handleCancel}
-        developer1={developer1Id}
         developer2={developer2Id}
         developer3={developer3Id}
         developer4={developer4Id}
+        defaultDeveloper={developer1Id}
       />
 
       {/* Developer 2 selection modal */}
@@ -505,9 +583,9 @@ const CreateProject = () => {
         selectedDeveloper={handleSelectedDeveloper2}
         handleCancel={handleCancel}
         developer1={developer1Id}
-        developer2={developer2Id}
         developer3={developer3Id}
         developer4={developer4Id}
+        defaultDeveloper={developer2Id}
       />
 
       {/* Developer 3 selection modal */}
@@ -517,8 +595,8 @@ const CreateProject = () => {
         handleCancel={handleCancel}
         developer1={developer1Id}
         developer2={developer2Id}
-        developer3={developer3Id}
         developer4={developer4Id}
+        defaultDeveloper={developer3Id}
       />
 
       {/* Developer 4 selection modal */}
@@ -529,60 +607,10 @@ const CreateProject = () => {
         developer1={developer1Id}
         developer2={developer2Id}
         developer3={developer3Id}
-        developer4={developer4Id}
+        defaultDeveloper={developer4Id}
       />
-
-      {/* <div
-        className="modal fade"
-        id="selectScrumMasterModal"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="selectScrumMasterModal"
-        aria-hidden="true"
-      >
-        <div
-          className="modal-dialog modal-dialog-centered"
-          role="document"
-          id="disable-modal"
-        >
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Select Scrum Master</h5>
-            </div>
-            <div className="modal-body">
-              <ListScrumMaster
-                onSelectedScrumMaster={handleSelectedScrumMaster}
-                // DefaultUser={defaultUser}
-              />
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-confirm-advisor"
-                data-dismiss="modal"
-                onClick={() => {
-                  // userService.disable(userId).then(() => {
-                  //   fetchData({
-                  //     pagination,
-                  //   });
-                  // });
-                }}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="btn btn-cancel-advisor"
-                data-dismiss="modal"
-              >
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };
 
-export default CreateProject;
+export default UpdateProject;

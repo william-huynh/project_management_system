@@ -80,6 +80,12 @@ const ProjectTable = () => {
       sorter: true,
     },
     {
+      title: "Advisor",
+      dataIndex: "advisorName",
+      ellipsis: true,
+      sorter: true,
+    },
+    {
       title: "Start Date",
       width: "15%",
       dataIndex: "startedDate",
@@ -105,25 +111,23 @@ const ProjectTable = () => {
         <div className="project-button-group">
           <i
             className="fa-solid fa-pen-to-square fa-lg project-edit-button"
-            // onClick={() => {
-            //   navigate(`update/${id}`);
-            // }}
+            onClick={() => {
+              navigate(`update/${id}`);
+            }}
           ></i>
-          {/* {record.project === null ? (
+          {record.scrumMaster.Id === null ? (
             <i
               className="fa-solid fa-xmark fa-xl project-delete-button"
               data-toggle="modal"
-              data-target="#disableModal"
-              onClick={() => setUserId(id)}
+              data-target="#disableProjectModal"
+              onClick={() => setProjectId(id)}
             ></i>
-          ) : ( */}
-          <i className="fa-solid fa-xmark fa-xl project-delete-button"></i>
-          {/* )} */}
+          ) : (
+            <i className="fa-solid fa-xmark fa-xl project-delete-button disabled project-delete-button-disabled"></i>
+          )}
           <i
             className="fa-solid fa-circle-exclamation fa-lg project-detail-button"
-            // data-toggle="modal"
-            // data-target="#projectDetailModal"
-            // onClick={() => setUserDetail(record)}
+            onClick={() => navigate(`${id}`)}
           ></i>
         </div>
       ),
@@ -213,24 +217,24 @@ const ProjectTable = () => {
         onChange={onChange}
       />
 
-      {/* Project detail modal */}
+      {/* Disable project modal */}
       <div
         className="modal fade"
-        id="projectDetailModal"
+        id="disableProjectModal"
         tabIndex="-1"
         role="dialog"
-        aria-labelledby="projectDetailModal"
+        aria-labelledby="disableProjectModal"
         aria-hidden="true"
       >
         <div
           className="modal-dialog modal-dialog-centered"
           role="document"
-          id="project-detail-modal"
+          id="disable-project-modal"
         >
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLongTitle">
-                Project Detail
+                Disable Project
               </h5>
               <button
                 type="button"
@@ -242,143 +246,7 @@ const ProjectTable = () => {
               </button>
             </div>
             <div className="modal-body">
-              {projectDetail == null ? (
-                <div className="loading">
-                  <img src={loading} alt="Loading..." />
-                </div>
-              ) : (
-                <div className="row">
-                  <div className="col-4">
-                    <img
-                      src="https://leaveitwithme.com.au/wp-content/uploads/2013/11/dummy-image-square.jpg"
-                      alt="dummy"
-                      className="project-detail-picture"
-                    />
-                  </div>
-                  <div className="col-8">
-                    <div>
-                      <p>
-                        <span className="property">Project Code </span>{" "}
-                        <span className="value">
-                          {projectDetail.projectCode}
-                        </span>
-                      </p>
-                      <p>
-                        <span className="property">Project Name </span>{" "}
-                        <span className="value">{projectDetail.name}</span>
-                      </p>
-                      <p>
-                        <span className="property">Project Description </span>{" "}
-                        <span className="value">
-                          {projectDetail.description}
-                        </span>
-                      </p>
-                      <p>
-                        <span className="property">Start Date </span>{" "}
-                        <span className="value">
-                          {moment(projectDetail.startedDate).format(
-                            "DD/MM/YYYY"
-                          )}
-                        </span>
-                      </p>
-                      <p>
-                        <span className="property">End Date </span>{" "}
-                        <span className="value">
-                          {moment(projectDetail.endedDate).format("DD/MM/YYYY")}
-                        </span>
-                      </p>
-                      <p>
-                        <span className="property">Status </span>{" "}
-                        <span className="value">{projectDetail.status}</span>
-                      </p>
-                      {/* <p>
-                        <div className="row">
-                          <div className="col-4 property">Current Project</div>
-
-                          <div className="col-8 value">
-                            <table
-                              className="table"
-                              style={{ marginBottom: 0 }}
-                            >
-                              <thead>
-                                <tr>
-                                  <th>Project Code</th>
-                                  <th>Project Name</th>
-                                  <th>Project Status</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>PC0001</td>
-                                  <td>Project 01</td>
-                                  <td>Active</td>
-                                </tr> */}
-                      {/* {history ? (
-                                  history.map((item) => (
-                                    <tr>
-                                      <td>
-                                        {moment(item.assignedDate).format("DD/MM/YYYY")}
-                                      </td>
-                                      <td>{item.assignedTo}</td>
-                                      <td>{item.assignedBy}</td>
-                                      {item.requestState == "Completed" ? (
-                                        <td>
-                                          {moment(item.returnedDate).format("DD/MM/YYYY")}
-                                        </td>
-                                      ) : (
-                                        <td>Updating...</td>
-                                      )}
-                                    </tr>
-                                  ))
-                                ) : (
-                                  <tr>
-                                    <td>No history</td>
-                                  </tr>
-                                )} */}
-                      {/* </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </p> */}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Disable user modal */}
-      <div
-        className="modal fade"
-        id="disableModal"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="disableModal"
-        aria-hidden="true"
-      >
-        <div
-          className="modal-dialog modal-dialog-centered"
-          role="document"
-          id="disable-modal"
-        >
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLongTitle">
-                Disable User
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              Are you sure you want to disable this user?
+              Are you sure you want to disable this project?
             </div>
             <div className="modal-footer">
               <button

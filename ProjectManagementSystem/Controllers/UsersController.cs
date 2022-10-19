@@ -65,6 +65,26 @@ namespace ProjectManagementSystem.Controllers
         }
 
         [HttpGet]
+        [Route("scrum-master-list")]
+        // [Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> GetAvailableScrumMasterList(int? page, int? pageSize, string sortField, string sortOrder)
+        {
+           var users = await _userService.GetAvailableScrumMastersListAsync(page, pageSize, sortField, sortOrder);
+           if (users == null) return BadRequest(users);
+           return Ok(users);
+        }
+
+        [HttpGet]
+        [Route("developer-list")]
+        // [Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> GetAvailableDeveloperList(int? page, int? pageSize, string sortField, string sortOrder, string developer1Id, string developer2Id, string developer3Id, string developer4Id)
+        {
+           var users = await _userService.GetAvailableDevelopersListAsync(page, pageSize, sortField, sortOrder, developer1Id, developer2Id, developer3Id, developer4Id);
+           if (users == null) return BadRequest(users);
+           return Ok(users);
+        }
+
+        [HttpGet]
         [Route("detail/{userId}")]
         //[Authorize(Roles = "ProductOwner")]
         public async Task<IActionResult> GetDetail(string userId)

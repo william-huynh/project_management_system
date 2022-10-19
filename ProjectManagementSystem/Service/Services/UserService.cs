@@ -97,7 +97,9 @@ namespace ProjectManagementSystem.Service.Services
                     Gender = ((Gender)x.Gender).ToString(),
                     DateOfBirth = x.DateOfBirth,
                     Disabled = x.Disable,
-                    Role = _db.Roles.FirstOrDefault(r => r.Id == _db.UserRoles.FirstOrDefault(u => u.UserId == x.Id).RoleId).Name
+                    Role = _db.Roles.FirstOrDefault(r => r.Id == _db.UserRoles.FirstOrDefault(u => u.UserId == x.Id).RoleId).Name,
+                    ProjectId = _db.Records.FirstOrDefault(r => r.UserId == x.Id && r.Project.Status == Status.Active && r.Project.Disable == false).ProjectId,
+                    ProjectAdvisorId = _db.Projects.FirstOrDefault(p => p.AdvisorId == x.Id && p.Status == Status.Active && p.Disable == false).Id,
                 });
             if (queryUsersDetailsDto != null)
             {
@@ -159,6 +161,144 @@ namespace ProjectManagementSystem.Service.Services
                         x.FullName.Trim().ToLower().Contains(normalizeKeyword) ||
                         x.FullName.Contains(keyword)
                         );
+                }
+
+                var pageRecords = pageSize ?? 10;
+                var pageIndex = page ?? 1;
+                var totalPage = queryUsersDetailsDto.Count();
+                var numberPage = Math.Ceiling((float)totalPage / pageRecords);
+                var startPage = (pageIndex - 1) * pageRecords;
+                if (totalPage > pageRecords)
+                    queryUsersDetailsDto = queryUsersDetailsDto.Skip(startPage).Take(pageRecords);
+                if (pageIndex > numberPage) pageIndex = (int)numberPage;
+                var listUsersDetailsDto = queryUsersDetailsDto.ToList();
+                var usersDto = _mapper.Map<UsersListDto>(listUsersDetailsDto);
+                usersDto.TotalItem = totalPage;
+                usersDto.NumberPage = numberPage;
+                usersDto.CurrentPage = pageIndex;
+                usersDto.PageSize = pageRecords;
+                return usersDto;
+            }
+            return null;
+        }
+
+        public async Task<UsersListDto> GetAvailableScrumMastersListAsync(int? page, int? pageSize, string sortField, string sortOrder)
+        {
+            var queryUsersDetailsDto = _db.Users
+                .Where(
+                    x => x.Disable == false && _db.UserRoles.Where(u => u.RoleId == _db.Roles.FirstOrDefault(r => r.Name == "ScrumMaster").Id).Select(u => u.UserId).ToList().Contains(x.Id)
+                ).OrderBy(x => x.FirstName + " " + x.LastName)
+                .Select(x => new UserDetailsDto
+                {
+                    Id = x.Id,
+                    UserCode = x.UserCode,
+                    UserName = x.UserName,
+                    FullName = x.FirstName + " " + x.LastName,
+                    Gender = ((Gender)x.Gender).ToString(),
+                    DateOfBirth = x.DateOfBirth,
+                    Disabled = x.Disable,
+                    Role = _db.Roles.FirstOrDefault(r => r.Id == _db.UserRoles.FirstOrDefault(u => u.UserId == x.Id).RoleId).Name
+                });
+            if (queryUsersDetailsDto != null)
+            {
+                // SORT USER CODE
+                if (sortOrder == "descend" && sortField == "userCode")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderByDescending(x => x.UserCode);
+                }
+                else if (sortOrder == "ascend" && sortField == "userCode")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderBy(x => x.UserCode);
+                }
+
+                // SORT FULL NAME
+                if (sortOrder == "descend" && sortField == "fullName")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderByDescending(x => x.FullName);
+                }
+                else if (sortOrder == "ascend" && sortField == "fullName")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderBy(x => x.FullName);
+                }
+
+                // SORT USER NAME
+                if (sortOrder == "descend" && sortField == "userName")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderByDescending(x => x.UserName);
+                }
+                else if (sortOrder == "ascend" && sortField == "userName")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderBy(x => x.UserName);
+                }
+
+                var pageRecords = pageSize ?? 10;
+                var pageIndex = page ?? 1;
+                var totalPage = queryUsersDetailsDto.Count();
+                var numberPage = Math.Ceiling((float)totalPage / pageRecords);
+                var startPage = (pageIndex - 1) * pageRecords;
+                if (totalPage > pageRecords)
+                    queryUsersDetailsDto = queryUsersDetailsDto.Skip(startPage).Take(pageRecords);
+                if (pageIndex > numberPage) pageIndex = (int)numberPage;
+                var listUsersDetailsDto = queryUsersDetailsDto.ToList();
+                var usersDto = _mapper.Map<UsersListDto>(listUsersDetailsDto);
+                usersDto.TotalItem = totalPage;
+                usersDto.NumberPage = numberPage;
+                usersDto.CurrentPage = pageIndex;
+                usersDto.PageSize = pageRecords;
+                return usersDto;
+            }
+            return null;
+        }
+
+        public async Task<UsersListDto> GetAvailableDevelopersListAsync(int? page, int? pageSize, string sortField, string sortOrder, string developer1Id, string developer2Id, string developer3Id, string developer4Id)
+        {
+            var queryUsersDetailsDto = _db.Users
+                .Where(
+                    x => x.Disable == false && 
+                        _db.UserRoles.Where(u => u.RoleId == _db.Roles.FirstOrDefault(r => r.Name == "Developer").Id).Select(u => u.UserId).ToList().Contains(x.Id) &&
+                        x.Id != developer1Id && x.Id != developer2Id && x.Id != developer3Id && x.Id != developer4Id
+                ).OrderBy(x => x.FirstName + " " + x.LastName)
+                .Select(x => new UserDetailsDto
+                {
+                    Id = x.Id,
+                    UserCode = x.UserCode,
+                    UserName = x.UserName,
+                    FullName = x.FirstName + " " + x.LastName,
+                    Gender = ((Gender)x.Gender).ToString(),
+                    DateOfBirth = x.DateOfBirth,
+                    Disabled = x.Disable,
+                    Role = _db.Roles.FirstOrDefault(r => r.Id == _db.UserRoles.FirstOrDefault(u => u.UserId == x.Id).RoleId).Name
+                });
+            if (queryUsersDetailsDto != null)
+            {
+                // SORT USER CODE
+                if (sortOrder == "descend" && sortField == "userCode")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderByDescending(x => x.UserCode);
+                }
+                else if (sortOrder == "ascend" && sortField == "userCode")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderBy(x => x.UserCode);
+                }
+
+                // SORT FULL NAME
+                if (sortOrder == "descend" && sortField == "fullName")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderByDescending(x => x.FullName);
+                }
+                else if (sortOrder == "ascend" && sortField == "fullName")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderBy(x => x.FullName);
+                }
+
+                // SORT USER NAME
+                if (sortOrder == "descend" && sortField == "userName")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderByDescending(x => x.UserName);
+                }
+                else if (sortOrder == "ascend" && sortField == "userName")
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.OrderBy(x => x.UserName);
                 }
 
                 var pageRecords = pageSize ?? 10;

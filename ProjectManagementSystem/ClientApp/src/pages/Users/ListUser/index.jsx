@@ -100,7 +100,7 @@ const UserTable = () => {
       sorter: true,
     },
     {
-      title: "UserName",
+      title: "Username",
       dataIndex: "userName",
       ellipsis: true,
       sorter: true,
@@ -117,10 +117,6 @@ const UserTable = () => {
       dataIndex: "role",
     },
     {
-      title: "Project",
-      width: "15%",
-    },
-    {
       title: "Action",
       dataIndex: "id",
       key: "id",
@@ -133,7 +129,7 @@ const UserTable = () => {
               navigate(`update/${id}`);
             }}
           ></i>
-          {record.project === null ? (
+          {record.projectAdvisorId === null && record.projectId === null ? (
             <i
               className="fa-solid fa-xmark fa-xl user-delete-button"
               data-toggle="modal"
@@ -141,7 +137,7 @@ const UserTable = () => {
               onClick={() => setUserId(id)}
             ></i>
           ) : (
-            <i className="fa-solid fa-xmark fa-xl user-delete-button"></i>
+            <i className="fa-solid fa-xmark fa-xl user-delete-button disabled user-delete-button-disabled"></i>
           )}
           <i
             className="fa-solid fa-circle-exclamation fa-lg user-detail-button"

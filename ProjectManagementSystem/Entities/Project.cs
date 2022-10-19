@@ -16,6 +16,8 @@ namespace ProjectManagementSystem.Entities
         public Status Status { get; set; }
         public int Iterations { get; set; }
         public string AdvisorId { get; set; }
+        [ForeignKey("AdvisorId")]
+        public User Advisor { get; set; }
         public bool Disable { get; set; } = false;
     }
 }

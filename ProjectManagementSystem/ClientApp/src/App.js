@@ -10,6 +10,8 @@ import UpdateUser from "./pages/Users/UpdateUser";
 import UpdateProfile from "./pages/Users/UpdateProfile";
 import ProjectTable from "./pages/Projects/ListProject";
 import CreateProject from "./pages/Projects/CreateProject";
+import UpdateProject from "./pages/Projects/UpdateProject";
+import DetailProject from "./pages/Projects/DetailProject";
 
 import loading from "./assets/loading.gif";
 import "./App.css";
@@ -58,6 +60,8 @@ const App = () => {
               <Route path="/profile/:id" element={<UpdateProfile />} />
               <Route path="/projects" element={<ProjectTable />} />
               <Route path="/projects/add" element={<CreateProject />} />
+              <Route path="/projects/update/:id" element={<UpdateProject />} />
+              <Route path="/projects/:id" element={<DetailProject />} />
             </Routes>
           </div>
         </>

@@ -13,7 +13,7 @@ namespace ProjectManagementSystem.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Rating> Ratings { get; set; }
+        public DbSet<Record> Records { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

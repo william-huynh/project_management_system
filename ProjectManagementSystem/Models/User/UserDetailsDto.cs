@@ -13,8 +13,9 @@ namespace ProjectManagementSystem.Models.User
         public string Role { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; }
-        public ProjectDetailsDto Project { get; set; }
         public ImageDto Image { get; set; }
         public bool Disabled { get; set; }
+        public string ProjectId { get; set; }
+        public string ProjectAdvisorId { get; set; }
     }
 }
