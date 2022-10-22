@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios";
-import projectService from "../../../services/projectService";
+import sprintService from "../../../services/sprintService";
 import moment from "moment";
 
 import { FilterOutlined } from "@ant-design/icons";
@@ -9,11 +9,12 @@ import { Table, Dropdown, Menu, Input, Button } from "antd";
 import "antd/dist/antd.css";
 import "./index.css";
 
-const ProjectTable = (props) => {
+const SprintTable = (props) => {
+  const role = props.user.role[0];
   const { Search } = Input;
   const navigate = useNavigate();
-  const [projectDetail, setProjectDetail] = useState();
-  const [projectId, setProjectId] = useState();
+  const [sprintDetail, setSprintDetail] = useState();
+  const [sprintId, setSprintId] = useState();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [menuType, setMenuType] = useState("Status");
@@ -29,16 +30,16 @@ const ProjectTable = (props) => {
     setLoading(true);
     axiosInstance
       .get(
-        `projects/getlist?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sortField=${params.sortField}&sortOrder=${params.sortOrder}`
+        `sprints/getlist?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sortField=${params.sortField}&sortOrder=${params.sortOrder}&userId=${props.user.id}`
       )
       .then((results) => {
-        results.data.projects.forEach((element) => {
+        results.data.sprints.forEach((element) => {
           element.startedDate = moment(element.startedDate).format(
             "DD/MM/YYYY"
           );
           element.endedDate = moment(element.endedDate).format("DD/MM/YYYY");
         });
-        setData(results.data.projects);
+        setData(results.data.sprints);
         setLoading(false);
         setPagination({
           ...params.pagination,
@@ -67,8 +68,8 @@ const ProjectTable = (props) => {
   // Table columns
   const columns = [
     {
-      title: "Project Code",
-      dataIndex: "projectCode",
+      title: "Sprint Code",
+      dataIndex: "sprintCode",
       ellipsis: true,
       defaultSortOrder: "ascend",
       sorter: true,
@@ -76,12 +77,6 @@ const ProjectTable = (props) => {
     {
       title: "Name",
       dataIndex: "name",
-      ellipsis: true,
-      sorter: true,
-    },
-    {
-      title: "Advisor",
-      dataIndex: "advisorName",
       ellipsis: true,
       sorter: true,
     },
@@ -109,30 +104,26 @@ const ProjectTable = (props) => {
       width: "15%",
       render: (id, record) => (
         <div className="table-button-group">
-          {record.advisor.id === props.user.id ? (
-            <i
-              className="fa-solid fa-pen-to-square fa-lg edit-button"
-              onClick={() => {
-                navigate(`update/${id}`);
-              }}
-            ></i>
-          ) : (
-            <i className="fa-solid fa-pen-to-square fa-lg edit-button disabled edit-button-disabled"></i>
-          )}
-          {record.scrumMaster.id === null ? (
-            <i
-              className="fa-solid fa-xmark fa-xl delete-button"
-              data-toggle="modal"
-              data-target="#disableProjectModal"
-              onClick={() => setProjectId(id)}
-            ></i>
-          ) : (
-            <i className="fa-solid fa-xmark fa-xl delete-button disabled delete-button-disabled"></i>
-          )}
+          {/* {record.advisor.id === props.user.id ? ( */}
           <i
-            className="fa-solid fa-circle-exclamation fa-lg detail-button"
-            onClick={() => navigate(`${id}`)}
+            className="fa-solid fa-pen-to-square fa-lg edit-button"
+            onClick={() => {
+              navigate(`update/${id}`);
+            }}
           ></i>
+          {/* ) : (
+            <i className="fa-solid fa-pen-to-square fa-lg edit-button disabled edit-button-disabled"></i>
+          )} */}
+          {/* {record.scrumMaster.id === null ? ( */}
+          <i
+            className="fa-solid fa-xmark fa-xl delete-button"
+            data-toggle="modal"
+            data-target="#disableSprintModal"
+            onClick={() => setSprintId(id)}
+          ></i>
+          {/* ) : (
+            <i className="fa-solid fa-xmark fa-xl delete-button disabled delete-button-disabled"></i>
+          )} */}
         </div>
       ),
     },
@@ -176,8 +167,8 @@ const ProjectTable = (props) => {
   }, []);
 
   return (
-    <div className="project-table">
-      <p className="header-project-list">Project List</p>
+    <div className="sprint-table">
+      <p className="header-sprint-list">Sprint List</p>
 
       {/* Filter menu */}
       <Dropdown overlay={menu} placement="bottom">
@@ -188,54 +179,45 @@ const ProjectTable = (props) => {
         </Button>
       </Dropdown>
 
-      {/* Create new user button */}
+      {/* Create new sprint button */}
       <Button
-        className="create-project-button"
+        className="create-sprint-button"
         type="primary"
-        onClick={() => navigate("/projects/add")}
+        onClick={() => navigate("/sprints/add")}
       >
-        Add new project
+        Add new sprint
       </Button>
 
       {/* Search bar */}
       <Search onSearch={onSearch} className="search-box" />
 
-      {/* User table */}
+      {/* Sprint table */}
       <Table
         columns={columns}
         dataSource={data}
         rowKey={(record) => record.id}
-        // onRow={(record, rowIndex) => {
-        //   return {
-        //    onClick: () => {
-        //      //showModal(record);
-        //    },
-        //   };
-        // }}
         pagination={pagination}
         loading={loading}
         onChange={onChange}
       />
 
-      {/* Disable project modal */}
+      {/* Disable sprint modal */}
       <div
         className="modal fade"
-        id="disableProjectModal"
+        id="disableSprintModal"
         tabIndex="-1"
         role="dialog"
-        aria-labelledby="disableProjectModal"
+        aria-labelledby="disableSprintModal"
         aria-hidden="true"
       >
         <div
           className="modal-dialog modal-dialog-centered"
           role="document"
-          id="disable-project-modal"
+          id="disable-sprint-modal"
         >
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLongTitle">
-                Disable Project
-              </h5>
+              <h5 className="modal-title">Disable Sprint</h5>
               <button
                 type="button"
                 className="close"
@@ -246,15 +228,15 @@ const ProjectTable = (props) => {
               </button>
             </div>
             <div className="modal-body">
-              Are you sure you want to disable this project?
+              Are you sure you want to disable this sprint?
             </div>
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-confirm-advisor"
+                className="btn btn-confirm-scrum-master"
                 data-dismiss="modal"
                 onClick={() => {
-                  projectService.disable(projectId).then(() => {
+                  sprintService.disable(sprintId).then(() => {
                     fetchData({
                       pagination,
                     });
@@ -278,4 +260,4 @@ const ProjectTable = (props) => {
   );
 };
 
-export default ProjectTable;
+export default SprintTable;

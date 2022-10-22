@@ -2,6 +2,7 @@
 using ProjectManagementSystem.Entities;
 using ProjectManagementSystem.Entities.Enum;
 using ProjectManagementSystem.Models.Project;
+using ProjectManagementSystem.Models.Sprint;
 using ProjectManagementSystem.Models.User;
 using System.Collections.Generic;
 
@@ -23,6 +24,12 @@ namespace ProjectManagementSystem
             // Project mapping profile
             CreateMap<List<ProjectDetailsDto>, ProjectsListDto>()
                 .ForMember(dest => dest.Projects, act => act.MapFrom(src => src));
+
+            // Sprint mapping profile
+            CreateMap<List<SprintDetailsDto>, SprintsListDto>()
+                .ForMember(dest => dest.Sprints, act => act.MapFrom(src => src));
+
+            CreateMap<SprintCreateDto, Sprint>();
         }
     }
 }

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -12,6 +12,11 @@ import ProjectTable from "./pages/Projects/ListProject";
 import CreateProject from "./pages/Projects/CreateProject";
 import UpdateProject from "./pages/Projects/UpdateProject";
 import DetailProject from "./pages/Projects/DetailProject";
+import HomeProject from "./pages/Home/HomeProject";
+import DetailUser from "./pages/Users/DetailUser";
+import SprintTable from "./pages/Sprints/ListSprint";
+import CreateSprint from "./pages/Sprints/CreateSprint";
+import UpdateSprint from "./pages/Sprints/UpdateSprint";
 
 import loading from "./assets/loading.gif";
 import "./App.css";
@@ -47,51 +52,86 @@ const App = () => {
 
   return (
     <div>
-      {role === "ProductOwner" ? (
-        <>
-          <Navbar user={user} />
-          <div className="body">
-            <Sidebar user={user} />
-            <Routes>
-              <Route exact path="/" />
-              <Route path="/users" element={<UserTable />} />
-              <Route path="/users/add" element={<CreateUser />} />
-              <Route path="/users/update/:id" element={<UpdateUser />} />
-              <Route path="/profile/:id" element={<UpdateProfile />} />
-              <Route path="/projects" element={<ProjectTable />} />
-              <Route path="/projects/add" element={<CreateProject />} />
-              <Route path="/projects/update/:id" element={<UpdateProject />} />
-              <Route path="/projects/:id" element={<DetailProject />} />
-            </Routes>
-          </div>
-        </>
-      ) : role === "ScrumMaster" ? (
-        <>
-          <Navbar user={user} />
-          <div className="body">
-            <Sidebar user={user} />
-            <div>Hello Scrum Master!</div>
-            <Routes>
-              <Route exact path="/" />
-            </Routes>
-          </div>
-        </>
-      ) : role === "Developer" ? (
-        <>
-          <Navbar user={user} />
-          <div className="body">
-            <Sidebar user={user} />
-            <div>Hello Developer!</div>
-            <Routes>
-              <Route exact path="/" />
-            </Routes>
-          </div>
-        </>
-      ) : (
+      {user === null ? (
         <>
           <div className="loading">
             <img src={loading} alt="Loading..." />
           </div>
+        </>
+      ) : (
+        <>
+          {role === "ProductOwner" ? (
+            <>
+              <Navbar user={user} />
+              <div className="body">
+                <Sidebar user={user} />
+                <Routes>
+                  <Route exact path="/" element={<HomeProject user={user} />} />
+                  <Route
+                    path="/profile/:id"
+                    element={<UpdateProfile user={user} />}
+                  />
+                  <Route path="/users" element={<UserTable />} />
+                  <Route path="/users/add" element={<CreateUser />} />
+                  <Route path="/users/update/:id" element={<UpdateUser />} />
+                  <Route
+                    path="/projects"
+                    element={<ProjectTable user={user} />}
+                  />
+                  <Route path="/users/:id" element={<DetailUser />} />
+                  <Route path="/projects/add" element={<CreateProject />} />
+                  <Route
+                    path="/projects/update/:id"
+                    element={<UpdateProject />}
+                  />
+                  <Route path="/projects/:id" element={<DetailProject />} />
+                </Routes>
+              </div>
+            </>
+          ) : role === "ScrumMaster" ? (
+            <>
+              <Navbar user={user} />
+              <div className="body">
+                <Sidebar user={user} />
+                <Routes>
+                  <Route exact path="/" />
+                  <Route
+                    path="/profile/:id"
+                    element={<UpdateProfile user={user} />}
+                  />
+                  <Route
+                    path="/sprints"
+                    element={<SprintTable user={user} />}
+                  />
+                  <Route
+                    path="/sprints/add"
+                    element={<CreateSprint user={user} />}
+                  />
+                  <Route
+                    path="/sprints/update/:id"
+                    element={<UpdateSprint user={user} />}
+                  />
+                </Routes>
+              </div>
+            </>
+          ) : role === "Developer" ? (
+            <>
+              <Navbar user={user} />
+              <div className="body">
+                <Sidebar user={user} />
+                <div>Hello Developer!</div>
+                <Routes>
+                  <Route exact path="/" />
+                </Routes>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="loading">
+                <img src={loading} alt="Loading..." />
+              </div>
+            </>
+          )}
         </>
       )}
     </div>

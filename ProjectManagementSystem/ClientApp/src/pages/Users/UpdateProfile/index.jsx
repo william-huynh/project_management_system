@@ -6,8 +6,9 @@ import * as yup from "yup";
 
 import "./index.css";
 
-const UpdateProfile = () => {
+const UpdateProfile = (props) => {
   let { id } = useParams();
+  const role = props.user.role[0];
   const navigate = useNavigate();
   const [userDetail, setUserDetail] = useState(null);
 
@@ -163,39 +164,33 @@ const UpdateProfile = () => {
 
   return (
     <div className="update-profile">
-      <p className="header-user-list">Edit personal profile</p>
+      <p
+        className={`header-profile
+          ${
+            role === "ProductOwner"
+              ? "text-product-owner"
+              : role === "ScrumMaster"
+              ? "text-scrum-master"
+              : "text-developer"
+          }
+        `}
+      >
+        Edit personal profile
+      </p>
       <form onSubmit={formik.handleSubmit} className="update-profile-form">
-        <div className="lower-form">
-          <p className="form-title">Project information</p>
-          <div className="row mt-3">
-            <div className="col-6">
-              <div className="input-group">
-                <div style={{ display: "flex" }}>
-                  <p className="project-info-title">Username:</p>
-                  {userDetail !== null ? (
-                    <p className="project-info-value">{userDetail.userName}</p>
-                  ) : (
-                    <p></p>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="col-6">
-              <div className="input-group">
-                <div style={{ display: "flex" }}>
-                  <p className="project-info-title">Role:</p>
-                  {userDetail !== null ? (
-                    <p className="project-info-value">{userDetail.role}</p>
-                  ) : (
-                    <p></p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         <div className="upper-form">
-          <p className="form-title">User information</p>
+          <p
+            className={`form-title
+          ${
+            role === "ProductOwner"
+              ? "text-product-owner"
+              : role === "ScrumMaster"
+              ? "text-scrum-master"
+              : "text-developer"
+          }`}
+          >
+            User information
+          </p>
           <div className="row mt-3">
             <div className="col-6">
               <div className="input-group flex-nowrap">
@@ -452,13 +447,61 @@ const UpdateProfile = () => {
             </div>
           </div>
         </div>
+        <div className="lower-form">
+          <p
+            className={`form-title ${
+              role === "ProductOwner"
+                ? "text-product-owner"
+                : role === "ScrumMaster"
+                ? "text-scrum-master"
+                : "text-developer"
+            }`}
+          >
+            Project information
+          </p>
+          <div className="row mt-3">
+            <div className="col-6">
+              <div className="input-group">
+                <div style={{ display: "flex" }}>
+                  <p className="project-info-title">Username:</p>
+                  {userDetail !== null ? (
+                    <p className="project-info-value">{userDetail.userName}</p>
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="col-6">
+              <div className="input-group">
+                <div style={{ display: "flex" }}>
+                  <p className="project-info-title">Role:</p>
+                  {userDetail !== null ? (
+                    <p className="project-info-value">{userDetail.role}</p>
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="create-user-button-group">
-          <button type="submit" className="btn btn-confirm-advisor">
+          <button
+            type="submit"
+            className={`btn ${
+              role === "ProductOwner"
+                ? "btn-confirm-advisor"
+                : role === "ScrumMaster"
+                ? "btn-confirm-scrum-master"
+                : "btn-confirm-developer"
+            }`}
+          >
             Submit
           </button>
           <button
             type="submit"
-            className="btn btn-cancel-advisor"
+            className="btn btn-cancel"
             onClick={() => {
               navigate("/");
             }}

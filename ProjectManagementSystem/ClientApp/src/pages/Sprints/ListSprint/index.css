@@ -1,38 +1,34 @@
-.project-table {
+.sprint-table {
   flex: 1;
   padding-left: 4rem;
 }
 
-.ant-table-wrapper td {
-  font-weight: normal;
-}
-
-.header-project-list {
+.header-sprint-list {
   font-size: 16px;
   font-weight: bold;
-  color: #cf2338;
+  color: #4d42e9;
   margin: 0;
 }
 
-.create-project-button {
+.create-sprint-button {
   border: none;
   border-radius: 5px;
   height: 34px;
-  background-color: #e9424d;
+  background-color: #4d42e9;
   float: right;
   margin-top: 0.5rem;
   margin-left: 2rem;
 }
 
-.create-project-button:hover {
-  background-color: #cf2338;
+.create-sprint-button:hover {
+  background-color: #4d42e9;
 }
 
-.project-table .ant-table-wrapper {
+.sprint-table .ant-table-wrapper {
   margin-top: 1rem;
 }
 
-.project-table
+.sprint-table
   > .ant-input-search
   > .ant-input-group
   > .ant-input-group-addon:last-child {
@@ -41,21 +37,11 @@
   border-bottom-right-radius: 5px;
 }
 
-.project-table
+.sprint-table
   .ant-input-search
   > .ant-input-group
   > .ant-input-group-addon:last-child
   .ant-input-search-button:not(.ant-btn-primary) {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-}
-
-#projectDetailModal .modal-dialog {
-  max-width: 50vw;
-}
-
-.project-detail-picture {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
 }

@@ -471,7 +471,7 @@ const CreateProject = () => {
           </button>
           <button
             type="submit"
-            className="btn btn-cancel-advisor"
+            className="btn btn-cancel"
             onClick={() => {
               navigate("/projects");
             }}

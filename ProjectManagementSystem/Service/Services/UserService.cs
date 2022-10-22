@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using ProjectManagementSystem.Data;
 using ProjectManagementSystem.Entities;
 using ProjectManagementSystem.Entities.Enum;
+using ProjectManagementSystem.Models.Project;
 using ProjectManagementSystem.Models.User;
 using ProjectManagementSystem.Service.IServices;
 
@@ -38,17 +39,51 @@ namespace ProjectManagementSystem.Service.Services
                 {
                     Id = x.Id,
                     UserName = x.UserName,
-                    FullName = x.FirstName + " " + x.LastName,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Email = x.Email,
+                    PhoneNumber = x.PhoneNumber,
+                    Address = x.Address,
                     Gender = ((Gender)x.Gender).ToString(),
                     DateOfBirth = x.DateOfBirth,
                     Disabled = x.Disable,
                     Role = _db.Roles.FirstOrDefault(r => r.Id == _db.UserRoles.FirstOrDefault(u => u.UserId == x.Id).RoleId).Name
                 }).FirstOrDefaultAsync();
 
-            if (user == null)
-            {
-                throw new Exception($"Cannot find user with id: {userId}");
-            }
+            // Get participated projects
+            var projects = await _db.Records
+                .Where(x => x.UserId == userId)
+                .Select(x => new ProjectDetailsDto
+                {
+                    Id = x.Project.Id,
+                    ProjectCode = x.Project.ProjectCode,
+                    Name = x.Project.Name,
+                    StartedDate = x.Project.StartedDate,
+                    EndedDate = x.Project.EndedDate,
+                    AdvisorName = x.Project.Advisor.FirstName + " " + x.Project.Advisor.LastName,
+                    Status = ((Status)x.Project.Status).ToString(),
+                })
+                .ToListAsync();
+
+            // Get advised projects
+            var advisorProjects = await _db.Projects
+                .Where(x => x.AdvisorId == user.Id && x.Disable == false)
+                .Select(x => new ProjectDetailsDto
+                {
+                    Id = x.Id,
+                    ProjectCode = x.ProjectCode,
+                    Name = x.Name,
+                    StartedDate = x.StartedDate,
+                    EndedDate = x.EndedDate,
+                    AdvisorName = x.Advisor.FirstName + " " + x.Advisor.LastName,
+                    Status = ((Status)x.Status).ToString(),
+                })
+                .ToListAsync();
+
+            if (projects.Any()) user.ParticipatedProjects = projects;
+            else user.ParticipatedProjects = new List<ProjectDetailsDto>();
+            if (advisorProjects.Any()) user.AdvisedProjects = advisorProjects;
+            else user.AdvisedProjects = new List<ProjectDetailsDto>();
 
             return user;
         }

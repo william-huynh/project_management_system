@@ -4,8 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import userService from "../../../services/userService";
 import * as yup from "yup";
 
-import "./index.css";
-
 const UpdateUser = () => {
   let { id } = useParams();
   const navigate = useNavigate();
@@ -165,35 +163,6 @@ const UpdateUser = () => {
     <div className="update-profile">
       <p className="header-user-list">Update user</p>
       <form onSubmit={formik.handleSubmit} className="update-profile-form">
-        <div className="lower-form">
-          <p className="form-title">Project information</p>
-          <div className="row mt-3">
-            <div className="col-6">
-              <div className="input-group">
-                <div style={{ display: "flex" }}>
-                  <p className="project-info-title">Username:</p>
-                  {userDetail !== null ? (
-                    <p className="project-info-value">{userDetail.userName}</p>
-                  ) : (
-                    <p></p>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="col-6">
-              <div className="input-group">
-                <div style={{ display: "flex" }}>
-                  <p className="project-info-title">Role:</p>
-                  {userDetail !== null ? (
-                    <p className="project-info-value">{userDetail.role}</p>
-                  ) : (
-                    <p></p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         <div className="upper-form">
           <p className="form-title">User information</p>
           <div className="row mt-3">
@@ -452,13 +421,42 @@ const UpdateUser = () => {
             </div>
           </div>
         </div>
+        <div className="lower-form">
+          <p className="form-title">Project information</p>
+          <div className="row mt-3">
+            <div className="col-6">
+              <div className="input-group">
+                <div style={{ display: "flex" }}>
+                  <p className="project-info-title">Username:</p>
+                  {userDetail !== null ? (
+                    <p className="project-info-value">{userDetail.userName}</p>
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="col-6">
+              <div className="input-group">
+                <div style={{ display: "flex" }}>
+                  <p className="project-info-title">Role:</p>
+                  {userDetail !== null ? (
+                    <p className="project-info-value">{userDetail.role}</p>
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="create-user-button-group">
           <button type="submit" className="btn btn-confirm-advisor">
             Submit
           </button>
           <button
             type="submit"
-            className="btn btn-cancel-advisor"
+            className="btn btn-cancel"
             onClick={() => {
               navigate("/users");
             }}

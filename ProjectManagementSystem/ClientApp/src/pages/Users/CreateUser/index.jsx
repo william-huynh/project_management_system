@@ -417,7 +417,7 @@ const CreateUser = () => {
           </button>
           <button
             type="submit"
-            className="btn btn-cancel-advisor"
+            className="btn btn-cancel"
             onClick={() => {
               navigate("/users");
             }}

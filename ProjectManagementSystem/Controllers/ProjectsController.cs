@@ -30,6 +30,16 @@ namespace ProjectManagementSystem.Controllers
         }
 
         [HttpGet]
+        [Route("get-manage-list")]
+        // [Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> GetManageList(int? page, int? pageSize, string keyword, [FromQuery] string[] status, string sortField, string sortOrder, string advisorId)
+        {
+           var projects = await _projectService.GetManageProjectsListAsync(page, pageSize, keyword, status, sortField, sortOrder, advisorId);
+           if (projects == null) return BadRequest(projects);
+           return Ok(projects);
+        }
+
+        [HttpGet]
         [Route("detail/{projectId}")]
         // [Authorize(Roles = "ProductOwner")]
         public async Task<IActionResult> GetDetail(string projectId)

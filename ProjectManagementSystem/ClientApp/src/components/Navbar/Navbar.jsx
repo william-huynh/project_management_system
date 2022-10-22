@@ -6,6 +6,7 @@ import "./Navbar.css";
 
 const Navbar = (props) => {
   const user = props.user;
+  const role = props.user.role[0];
   const navigate = useNavigate();
   // const location = useLocation();
 
@@ -189,14 +190,20 @@ const Navbar = (props) => {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-confirm-advisor"
+                className={`btn ${
+                  role === "ProductOwner"
+                    ? "btn-confirm-advisor"
+                    : role === "ScrumMaster"
+                    ? "btn-confirm-scrum-master"
+                    : "btn-confirm-developer"
+                }`}
                 onClick={logout}
               >
                 Yes
               </button>
               <button
                 type="button"
-                className="btn btn-cancel-advisor"
+                className="btn btn-cancel"
                 data-dismiss="modal"
               >
                 No

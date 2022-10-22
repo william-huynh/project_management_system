@@ -50,8 +50,27 @@ const DetailProject = () => {
 
   return (
     <div className="create-project">
-      <p className="header-project-list">Project detail</p>
-      <div className="row" style={{ marginTop: "0.5rem" }}>
+      <div className="row">
+        <div className="col-6">
+          <p className="header-project-list">Project detail</p>
+        </div>
+        <div className="col-6 text-right">
+          <button
+            className="detail-project-button mr-3"
+            onClick={() => navigate(`/projects/update/${id}`)}
+          >
+            Edit project
+          </button>
+          <button
+            className="detail-project-button"
+            onClick={() => navigate("/projects")}
+          >
+            Return to index
+          </button>
+        </div>
+      </div>
+
+      {/* <div className="row" style={{ marginTop: "0.5rem" }}>
         <div className="col-6">
           <button
             className="detail-project-button"
@@ -68,8 +87,8 @@ const DetailProject = () => {
             Return to index
           </button>
         </div>
-      </div>
-      <div className="upper-form">
+      </div> */}
+      <div className="upper-form" style={{ marginTop: "1rem" }}>
         <p className="form-title">Project information</p>
         <div className="row mt-3">
           <div className="col-6">

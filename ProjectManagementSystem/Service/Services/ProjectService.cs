@@ -53,6 +53,119 @@ namespace ProjectManagementSystem.Service.Services
                     Iterations = x.Iterations,
                     AdvisorName = x.Advisor.FirstName + " " + x.Advisor.LastName,
                     Disable = x.Disable,
+                    Advisor = _db.Users
+                        .Where(u => u.Id == x.AdvisorId)
+                        .Select(u => new UserDetailsDto
+                        {
+                            Id = u.Id,
+                        }).FirstOrDefault(),
+                    ScrumMaster = _db.Records
+                        .Where(r => r.ProjectId == x.Id && scrumMasterList.Contains(r.UserId))
+                        .Select(r => new UserDetailsDto
+                        {
+                            Id = r.UserId,
+                        }).FirstOrDefault(),
+                });
+
+            if (queryProjectsDetailsDto != null)
+            {
+                // SORT PROJECT CODE
+                if (sortOrder == "descend" && sortField == "projectCode")
+                {
+                    queryProjectsDetailsDto = queryProjectsDetailsDto.OrderByDescending(x => x.ProjectCode);
+                }
+                else if (sortOrder == "ascend" && sortField == "projectCode")
+                {
+                    queryProjectsDetailsDto = queryProjectsDetailsDto.OrderBy(x => x.ProjectCode);
+                }
+
+                // SORT NAME
+                if (sortOrder == "descend" && sortField == "name")
+                {
+                    queryProjectsDetailsDto = queryProjectsDetailsDto.OrderByDescending(x => x.Name);
+                }
+                else if (sortOrder == "ascend" && sortField == "name")
+                {
+                    queryProjectsDetailsDto = queryProjectsDetailsDto.OrderBy(x => x.Name);
+                }
+
+                // SORT STATUS
+                if (sortOrder == "descend" && sortField == "status")
+                {
+                    queryProjectsDetailsDto = queryProjectsDetailsDto.OrderByDescending(x => x.Status);
+                }
+                else if (sortOrder == "ascend" && sortField == "status")
+                {
+                    queryProjectsDetailsDto = queryProjectsDetailsDto.OrderBy(x => x.Status);
+                }
+
+                // FILTERS
+                if ((status.Length > 0 && !status.Contains("All")))
+                {
+                    queryProjectsDetailsDto = queryProjectsDetailsDto.Where(x => status.Contains(x.Status));
+                }
+
+                // SEARCH
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    var normalizeKeyword = keyword.Trim().ToLower();
+                    queryProjectsDetailsDto = queryProjectsDetailsDto.Where(
+                        x => x.ProjectCode.Contains(keyword) ||
+                        x.ProjectCode.Trim().ToLower().Contains(normalizeKeyword) ||
+                        x.Name.Contains(keyword) ||
+                        x.Name.Trim().ToLower().Contains(normalizeKeyword)
+                        );
+                }
+
+                var pageRecords = pageSize ?? 10;
+                var pageIndex = page ?? 1;
+                var totalPage = queryProjectsDetailsDto.Count();
+                var numberPage = Math.Ceiling((float)totalPage / pageRecords);
+                var startPage = (pageIndex - 1) * pageRecords;
+                if (totalPage > pageRecords)
+                    queryProjectsDetailsDto = queryProjectsDetailsDto.Skip(startPage).Take(pageRecords);
+                if (pageIndex > numberPage) pageIndex = (int)numberPage;
+                var listProjectsDetailsDto = queryProjectsDetailsDto.ToList();
+                var projectsDto = _mapper.Map<ProjectsListDto>(listProjectsDetailsDto);
+                projectsDto.TotalItem = totalPage;
+                projectsDto.NumberPage = numberPage;
+                projectsDto.CurrentPage = pageIndex;
+                projectsDto.PageSize = pageRecords;
+                return projectsDto;
+            }
+            return null;
+        }
+
+        public async Task<ProjectsListDto> GetManageProjectsListAsync(int? page, int? pageSize, string keyword, string[] status, string sortField, string sortOrder, string advisorId)
+        {
+            if (status.Length == 0)
+            {
+                status = new string[] { "All" };
+            }
+
+            var scrumMasterList = await _db.UserRoles.Where(u => u.RoleId == _db.Roles.FirstOrDefault(r => r.Name == "ScrumMaster").Id).Select(u => u.UserId).ToListAsync();
+
+            var queryProjectsDetailsDto = _db.Projects
+                .Where(
+                    x => x.Disable == false && x.AdvisorId == advisorId
+                ).OrderBy(x => x.Name)
+                .Select(x => new ProjectDetailsDto
+                {
+                    Id = x.Id,
+                    ProjectCode = x.ProjectCode,
+                    Name = x.Name,
+                    StartedDate = x.StartedDate,
+                    EndedDate = x.EndedDate,
+                    Status = ((Status)x.Status).ToString(),
+                    Iterations = x.Iterations,
+                    AdvisorName = x.Advisor.FirstName + " " + x.Advisor.LastName,
+                    Disable = x.Disable,
+                    Advisor = _db.Users
+                        .Where(u => u.Id == x.AdvisorId)
+                        .Select(u => new UserDetailsDto
+                        {
+                            Id = u.Id,
+                        }).FirstOrDefault(),
                     ScrumMaster = _db.Records
                         .Where(r => r.ProjectId == x.Id && scrumMasterList.Contains(r.UserId))
                         .Select(r => new UserDetailsDto
@@ -413,5 +526,5 @@ namespace ProjectManagementSystem.Service.Services
             string newProjectCode = staffPrefix + number.ToString("D4");
             return newProjectCode;
         }
-        }
+    }
 }

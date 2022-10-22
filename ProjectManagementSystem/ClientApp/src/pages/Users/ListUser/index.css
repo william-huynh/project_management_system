@@ -76,27 +76,31 @@
   border-bottom-right-radius: 5px;
 }
 
-.user-button-group {
+.table-button-group {
   display: flex;
   justify-content: space-evenly;
 }
 
-.user-edit-button {
+.edit-button {
   color: orange;
   cursor: pointer;
 }
 
-.user-delete-button {
+.delete-button {
   color: red;
   cursor: pointer;
 }
 
-.user-detail-button {
+.detail-button {
   color: limegreen;
   cursor: pointer;
 }
 
-.user-delete-button-disabled {
+.edit-button-disabled {
+  color: rgba(255, 165, 0, 0.2);
+}
+
+.delete-button-disabled {
   color: rgba(255, 0, 0, 0.2);
 }
 

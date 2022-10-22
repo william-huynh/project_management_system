@@ -37,8 +37,8 @@ const Sidebar = (props) => {
             <NavLink to="/">
               <li>Home</li>
             </NavLink>
-            <NavLink to="/users">
-              <li>Manage User</li>
+            <NavLink to="/sprints">
+              <li>Manage Sprints</li>
             </NavLink>
           </ul>
         </div>

@@ -1,0 +1,58 @@
+.detail-user {
+  flex: 1;
+  padding-left: 4rem;
+  color: #6c757d;
+}
+
+.detail-user-header-button {
+  height: 2rem;
+  width: 8rem;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  background-color: #e9424d;
+}
+
+.detail-user-header-button:hover,
+.detail-user-header-button:active {
+  border: none;
+  background-color: #cf2338;
+}
+
+.detail-user .upper-form {
+  margin-top: 1rem;
+}
+
+.detail-user .lower-form {
+  margin-top: 1.5rem;
+}
+
+.detail-user .form-title {
+  color: #cf2338;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: white;
+  margin-top: -0.75rem;
+}
+
+.detail-user-input {
+  background-color: #fff !important;
+}
+
+.detail-user .table .detail-user-table-status-active {
+  font-weight: bold;
+  color: limegreen;
+}
+
+.detail-user .table .detail-user-table-status-complete {
+  font-weight: bold;
+  color: cyan;
+}
+
+.detail-user .table th {
+  font-weight: bold;
+}
+
+.detail-user .table td {
+  font-weight: normal;
+}

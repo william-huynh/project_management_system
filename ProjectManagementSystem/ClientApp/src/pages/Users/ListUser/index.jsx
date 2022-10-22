@@ -122,28 +122,26 @@ const UserTable = () => {
       key: "id",
       width: "15%",
       render: (id, record) => (
-        <div className="user-button-group">
+        <div className="table-button-group">
           <i
-            className="fa-solid fa-pen-to-square fa-lg user-edit-button"
+            className="fa-solid fa-pen-to-square fa-lg edit-button"
             onClick={() => {
               navigate(`update/${id}`);
             }}
           ></i>
           {record.projectAdvisorId === null && record.projectId === null ? (
             <i
-              className="fa-solid fa-xmark fa-xl user-delete-button"
+              className="fa-solid fa-xmark fa-xl delete-button"
               data-toggle="modal"
               data-target="#disableModal"
               onClick={() => setUserId(id)}
             ></i>
           ) : (
-            <i className="fa-solid fa-xmark fa-xl user-delete-button disabled user-delete-button-disabled"></i>
+            <i className="fa-solid fa-xmark fa-xl delete-button disabled delete-button-disabled"></i>
           )}
           <i
-            className="fa-solid fa-circle-exclamation fa-lg user-detail-button"
-            data-toggle="modal"
-            data-target="#userDetailModal"
-            onClick={() => setUserDetail(record)}
+            className="fa-solid fa-circle-exclamation fa-lg detail-button"
+            onClick={() => navigate(`${id}`)}
           ></i>
         </div>
       ),
@@ -410,7 +408,7 @@ const UserTable = () => {
               </button>
               <button
                 type="button"
-                className="btn btn-cancel-advisor"
+                className="btn btn-cancel"
                 data-dismiss="modal"
               >
                 No

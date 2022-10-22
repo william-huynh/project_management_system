@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../../axios";
-import projectService from "../../../services/projectService";
+import axiosInstance from "../../axios";
+import projectService from "../../services/projectService";
 import moment from "moment";
 
 import { FilterOutlined } from "@ant-design/icons";
 import { Table, Dropdown, Menu, Input, Button } from "antd";
 import "antd/dist/antd.css";
-import "./index.css";
 
-const ProjectTable = (props) => {
+const HomeProject = (props) => {
   const { Search } = Input;
   const navigate = useNavigate();
-  const [projectDetail, setProjectDetail] = useState();
   const [projectId, setProjectId] = useState();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
@@ -29,7 +27,7 @@ const ProjectTable = (props) => {
     setLoading(true);
     axiosInstance
       .get(
-        `projects/getlist?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sortField=${params.sortField}&sortOrder=${params.sortOrder}`
+        `projects/get-manage-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sortField=${params.sortField}&sortOrder=${params.sortOrder}&advisorId=${props.user.id}`
       )
       .then((results) => {
         results.data.projects.forEach((element) => {
@@ -108,29 +106,25 @@ const ProjectTable = (props) => {
       key: "id",
       width: "15%",
       render: (id, record) => (
-        <div className="table-button-group">
-          {record.advisor.id === props.user.id ? (
-            <i
-              className="fa-solid fa-pen-to-square fa-lg edit-button"
-              onClick={() => {
-                navigate(`update/${id}`);
-              }}
-            ></i>
-          ) : (
-            <i className="fa-solid fa-pen-to-square fa-lg edit-button disabled edit-button-disabled"></i>
-          )}
+        <div className="project-button-group">
+          <i
+            className="fa-solid fa-pen-to-square fa-lg project-edit-button"
+            onClick={() => {
+              navigate(`update/${id}`);
+            }}
+          ></i>
           {record.scrumMaster.id === null ? (
             <i
-              className="fa-solid fa-xmark fa-xl delete-button"
+              className="fa-solid fa-xmark fa-xl project-delete-button"
               data-toggle="modal"
               data-target="#disableProjectModal"
               onClick={() => setProjectId(id)}
             ></i>
           ) : (
-            <i className="fa-solid fa-xmark fa-xl delete-button disabled delete-button-disabled"></i>
+            <i className="fa-solid fa-xmark fa-xl project-delete-button disabled project-delete-button-disabled"></i>
           )}
           <i
-            className="fa-solid fa-circle-exclamation fa-lg detail-button"
+            className="fa-solid fa-circle-exclamation fa-lg project-detail-button"
             onClick={() => navigate(`${id}`)}
           ></i>
         </div>
@@ -146,6 +140,10 @@ const ProjectTable = (props) => {
         {
           label: "All",
           key: "All",
+        },
+        {
+          label: "Inactive",
+          key: "Inactive",
         },
         {
           label: "Active",
@@ -177,7 +175,7 @@ const ProjectTable = (props) => {
 
   return (
     <div className="project-table">
-      <p className="header-project-list">Project List</p>
+      <p className="header-project-list">Manage project list</p>
 
       {/* Filter menu */}
       <Dropdown overlay={menu} placement="bottom">
@@ -188,15 +186,6 @@ const ProjectTable = (props) => {
         </Button>
       </Dropdown>
 
-      {/* Create new user button */}
-      <Button
-        className="create-project-button"
-        type="primary"
-        onClick={() => navigate("/projects/add")}
-      >
-        Add new project
-      </Button>
-
       {/* Search bar */}
       <Search onSearch={onSearch} className="search-box" />
 
@@ -205,13 +194,6 @@ const ProjectTable = (props) => {
         columns={columns}
         dataSource={data}
         rowKey={(record) => record.id}
-        // onRow={(record, rowIndex) => {
-        //   return {
-        //    onClick: () => {
-        //      //showModal(record);
-        //    },
-        //   };
-        // }}
         pagination={pagination}
         loading={loading}
         onChange={onChange}
@@ -265,7 +247,7 @@ const ProjectTable = (props) => {
               </button>
               <button
                 type="button"
-                className="btn btn-cancel"
+                className="btn btn-cancel-advisor"
                 data-dismiss="modal"
               >
                 No
@@ -278,4 +260,4 @@ const ProjectTable = (props) => {
   );
 };
 
-export default ProjectTable;
+export default HomeProject;

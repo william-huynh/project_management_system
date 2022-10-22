@@ -3,11 +3,11 @@
 }
 
 .blue-nav {
-  background-color: #2346cf;
+  background-color: #4d42e9;
 }
 
 .green-nav {
-  background-color: #67cf23;
+  background-color: #4de942;
 }
 
 .navbar-brand {
@@ -44,7 +44,23 @@
   box-shadow: none !important;
 }
 
-.btn-cancel-advisor {
+.btn-confirm-scrum-master {
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  background-color: #4d42e9;
+  box-shadow: none !important;
+}
+
+.btn-confirm-developer {
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  background-color: #4de942;
+  box-shadow: none !important;
+}
+
+.btn-cancel {
   color: white;
   font-weight: bold;
   border-radius: 5px;
@@ -58,8 +74,20 @@
   background-color: #cf2338;
 }
 
-.btn-cancel-advisor:hover,
-.btn-cancel-advisor:active {
+.btn-confirm-scrum-master:hover,
+.btn-confirm-scrum-master:active {
+  color: white;
+  background-color: #2338cf;
+}
+
+.btn-confirm-developer:hover,
+.btn-confirm-developer:active {
+  color: white;
+  background-color: #38cf23;
+}
+
+.btn-cancel:hover,
+.btn-cancel:active {
   color: white;
   background-color: #666666;
 }
