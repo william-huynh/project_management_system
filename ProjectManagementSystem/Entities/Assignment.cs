@@ -15,6 +15,9 @@ namespace ProjectManagementSystem.Entities
         public DateTime EndedDate { get; set; }
         public int Point { get; set; }
         public Status Status { get; set; }
+        public string ProjectId { get; set; }
+        [ForeignKey("ProjectId")]
+        public Project Project { get; set; }
         public string SprintId { get; set; }
         [ForeignKey("SprintId")]
         public Sprint Sprint { get; set; }

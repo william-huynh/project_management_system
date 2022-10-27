@@ -1,0 +1,121 @@
+.create-assignment {
+  flex: 1;
+  padding-left: 4rem;
+  color: #6c757d;
+}
+
+.header-assignment-list {
+  font-size: 16px;
+  font-weight: bold;
+  color: #4d42e9;
+}
+
+.create-assignment .upper-form {
+  margin-top: 1.5rem;
+}
+
+.create-assignment .lower-form {
+  margin-top: 1rem;
+}
+
+.create-assignment .form-title {
+  color: #4d42e9;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: white;
+  margin-top: -0.75rem;
+}
+
+.create-assignment-button-group {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: end;
+}
+
+.create-category-dropdown {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  padding: 6px 12px;
+  border-radius: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.create-category-dropdown p {
+  margin: 0;
+}
+
+.dropdown-menu {
+  width: 80%;
+  padding: 0;
+}
+
+.dropdown-menu li {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.dropdown-menu li div:active {
+  background-color: #4d42e9;
+}
+
+.dropdown-menu .dropdown-item-bottom {
+  border-top: 0.5px solid;
+  cursor: default;
+}
+
+.dropdown-menu .add-new-category {
+  text-decoration: underline;
+  color: #4d42e9;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.add-new-category-form {
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+.add-new-category-form .name {
+  width: 100%;
+  margin-right: 1rem;
+  border-radius: 5px;
+  padding-left: 0.5rem;
+}
+
+.add-new-category-form .submit-button {
+  font-size: 20px;
+  color: #2338cf;
+  cursor: pointer;
+}
+
+.add-new-category-form .cancel-button,
+.add-new-category-form .cancel-button:hover {
+  font-size: 20px;
+  color: black;
+  border: none;
+  background-color: transparent;
+  margin-left: 1rem;
+  cursor: pointer;
+}
+
+.dropdown-menu .add-new-category:hover {
+  text-decoration: underline;
+  color: #4d42e9;
+  font-style: italic;
+}
+
+.add-new-category-error {
+  color: red;
+  font-style: italic;
+  margin-bottom: 0;
+  padding-left: 0.5rem;
+}
+
+.assignment-mock-up-picture {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}

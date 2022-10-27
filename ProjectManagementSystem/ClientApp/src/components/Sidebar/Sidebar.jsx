@@ -40,6 +40,9 @@ const Sidebar = (props) => {
             <NavLink to="/sprints">
               <li>Manage Sprints</li>
             </NavLink>
+            <NavLink to="/assignments">
+              <li>Manage Assignments</li>
+            </NavLink>
           </ul>
         </div>
       ) : (

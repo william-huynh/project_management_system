@@ -18,12 +18,16 @@ const disable = (id) => {
   return axios.put(API_URL + `/sprints/disable/${id}`);
 };
 
-const sprintDetail = (id) => {
-  return axios.get(API_URL + `/sprints/sprint-detail/${id}`);
+const projectDetail = (id) => {
+  return axios.get(API_URL + `/sprints/project-detail/${id}`);
 };
 
-const getUpdateDetail = (id) => {
-  return axios.get(API_URL + `/sprints/update-detail/${id}`);
+const createDetail = (id) => {
+  return axios.get(API_URL + `/sprints/create-detail/${id}`);
+};
+
+const updateDetail = (projectId, sprintId) => {
+  return axios.get(API_URL + `/sprints/update-detail/${projectId}/${sprintId}`);
 };
 
 export default {
@@ -31,6 +35,7 @@ export default {
   create,
   update,
   disable,
-  sprintDetail,
-  getUpdateDetail,
+  projectDetail,
+  createDetail,
+  updateDetail,
 };

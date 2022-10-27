@@ -17,6 +17,8 @@ import DetailUser from "./pages/Users/DetailUser";
 import SprintTable from "./pages/Sprints/ListSprint";
 import CreateSprint from "./pages/Sprints/CreateSprint";
 import UpdateSprint from "./pages/Sprints/UpdateSprint";
+import AssignmentTable from "./pages/Assignments/ListAssignments";
+import CreateAssignment from "./pages/Assignments/CreateAssignment";
 
 import loading from "./assets/loading.gif";
 import "./App.css";
@@ -103,13 +105,21 @@ const App = () => {
                     path="/sprints"
                     element={<SprintTable user={user} />}
                   />
-                  <Route
+                  {/* <Route
                     path="/sprints/add"
                     element={<CreateSprint user={user} />}
                   />
                   <Route
                     path="/sprints/update/:id"
                     element={<UpdateSprint user={user} />}
+                  /> */}
+                  <Route
+                    path="/assignments"
+                    element={<AssignmentTable user={user} />}
+                  />
+                  <Route
+                    path="/assignments/add"
+                    element={<CreateAssignment user={user} />}
                   />
                 </Routes>
               </div>

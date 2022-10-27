@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using ProjectManagementSystem.Entities;
 using ProjectManagementSystem.Entities.Enum;
+using ProjectManagementSystem.Models.Assignment;
+using ProjectManagementSystem.Models.Category;
 using ProjectManagementSystem.Models.Project;
 using ProjectManagementSystem.Models.Sprint;
 using ProjectManagementSystem.Models.User;
@@ -30,6 +32,17 @@ namespace ProjectManagementSystem
                 .ForMember(dest => dest.Sprints, act => act.MapFrom(src => src));
 
             CreateMap<SprintCreateDto, Sprint>();
+
+            CreateMap<Sprint, SprintDetailsDto>()
+                .ReverseMap();
+
+            // Assignment mapping profile
+            CreateMap<List<AssignmentDetailsDto>, AssignmentsListDto>()
+                .ForMember(dest => dest.Assignments, act => act.MapFrom(src => src));
+
+            // Category mapping profile
+            CreateMap<Category, CategoryDetailsDto>()
+                .ReverseMap();
         }
     }
 }

@@ -142,20 +142,24 @@ const CreateProject = () => {
         .date()
         .required("End date is required")
         .min(today, "End date is only current or future date")
-        .test(
-          "endedDate",
-          "Project duration should be more than 3 months",
-          (value) => {
+        .test({
+          name: "projectSmaller",
+          exclusive: false,
+          params: {},
+          message: "Project duration should be more than 3 months",
+          test: function (value) {
             return getDuration(startDate.current.value, value) >= 3;
-          }
-        )
-        .test(
-          "endedDate",
-          "Project duration should be less than 6 months",
-          (value) => {
+          },
+        })
+        .test({
+          name: "projectLarger",
+          exclusive: false,
+          params: {},
+          message: "Project duration should be less than 6 months",
+          test: function (value) {
             return getDuration(startDate.current.value, value) <= 6;
-          }
-        ),
+          },
+        }),
     }),
     onSubmit: (data) => {
       data.scrumMasterId = scrumMasterId;
@@ -531,56 +535,6 @@ const CreateProject = () => {
         developer3={developer3Id}
         developer4={developer4Id}
       />
-
-      {/* <div
-        className="modal fade"
-        id="selectScrumMasterModal"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="selectScrumMasterModal"
-        aria-hidden="true"
-      >
-        <div
-          className="modal-dialog modal-dialog-centered"
-          role="document"
-          id="disable-modal"
-        >
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Select Scrum Master</h5>
-            </div>
-            <div className="modal-body">
-              <ListScrumMaster
-                onSelectedScrumMaster={handleSelectedScrumMaster}
-                // DefaultUser={defaultUser}
-              />
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-confirm-advisor"
-                data-dismiss="modal"
-                onClick={() => {
-                  // userService.disable(userId).then(() => {
-                  //   fetchData({
-                  //     pagination,
-                  //   });
-                  // });
-                }}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="btn btn-cancel-advisor"
-                data-dismiss="modal"
-              >
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };

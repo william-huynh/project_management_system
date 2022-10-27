@@ -20,7 +20,7 @@ namespace ProjectManagementSystem.Controllers
         }
 
         [HttpGet]
-        [Route("getlist")]
+        [Route("get-list")]
         // [Authorize(Roles = "ScrumMaster")]
         public async Task<IActionResult> GetSprintsList(int? page, int? pageSize, string keyword, [FromQuery] string[] status, string sortField, string sortOrder, string userId)
         {
@@ -30,21 +30,31 @@ namespace ProjectManagementSystem.Controllers
         }
 
         [HttpGet]
-        [Route("update-detail/{sprintId}")]
+        [Route("update-detail/{projectId}/{sprintId}")]
         // [Authorize(Roles = "ScrumMaster")]
-        public async Task<IActionResult> GetUpdateDetail(string sprintId)
+        public async Task<IActionResult> GetUpdateDetail(string projectId, string sprintId)
         {
-            var sprint = await _sprintService.GetUpdateSprintDetailsAsync(sprintId);
+            var sprint = await _sprintService.GetUpdateSprintDetailsAsync(projectId, sprintId);
             if (sprint == null) return BadRequest(sprint);
             return Ok(sprint);
         }
 
         [HttpGet]
-        [Route("sprint-detail/{userId}")]
+        [Route("create-detail/{projectId}")]
         // [Authorize(Roles = "ScrumMaster")]
-        public async Task<IActionResult> GetDetailByUserId(string userId)
+        public async Task<IActionResult> GetCreateSprintDetail(string projectId)
         {
-            var project = await _sprintService.GetProjectSprintDetail(userId);
+            var project = await _sprintService.GetCreateSprintDetailsAsync(projectId);
+            if (project == null) return BadRequest(project);
+            return Ok(project);
+        }
+
+        [HttpGet]
+        [Route("project-detail/{userId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> GetProjectDetailByUserId(string userId)
+        {
+            var project = await _sprintService.GetProjectDetailsAsync(userId);
             if (project == null) return BadRequest(project);
             return Ok(project);
         }

@@ -176,20 +176,24 @@ const UpdateProject = () => {
       endedDate: yup
         .date()
         .required("End date is required")
-        .test(
-          "endedDate",
-          "Project duration should be more than 3 months",
-          (value) => {
+        .test({
+          name: "projectSmaller",
+          exclusive: false,
+          params: {},
+          message: "Project duration should be more than 3 months",
+          test: function (value) {
             return getDuration(startDate.current.value, value) >= 3;
-          }
-        )
-        .test(
-          "endedDate",
-          "Project duration should be less than 6 months",
-          (value) => {
+          },
+        })
+        .test({
+          name: "projectLarger",
+          exclusive: false,
+          params: {},
+          message: "Project duration should be less than 6 months",
+          test: function (value) {
             return getDuration(startDate.current.value, value) <= 6;
-          }
-        ),
+          },
+        }),
     }),
     onSubmit: (data) => {
       data.scrumMasterId = scrumMasterId;

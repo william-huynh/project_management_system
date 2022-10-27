@@ -22,15 +22,15 @@ const CreateSprint = (props) => {
     sprintService.sprintDetail(id).then((response) => {
       console.log(response.data);
       setProjectId(response.data.id);
-      let startDate = new Date(response.data.endedDate);
       if (
         getDuration(
           response.data.project.startedDate,
           response.data.endedDate
         ) >= 0
-      )
+      ) {
+        let startDate = new Date(response.data.endedDate);
         setSprintStartedDate(startDate.setDate(startDate.getDate() + 1));
-      else setSprintStartedDate(response.data.project.startedDate);
+      } else setSprintStartedDate(response.data.project.startedDate);
       setSprintEndedDate(response.data.project.endedDate);
     });
   };

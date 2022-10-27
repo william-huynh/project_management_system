@@ -2,12 +2,13 @@
 
 namespace ProjectManagementSystem.Models.Sprint
 {
-    public class SprintCreateDto
+    public class SprintUpdateDetail
     {
         public string Name { get; set; }
+        public string MaxPoint { get; set; }
         public DateTime StartedDate { get; set; }
         public DateTime EndedDate { get; set; }
-        public string MaxPoint { get; set; }
-        public string ProjectId { get; set; }
+        public SprintDetailsDto OlderSprint { get; set; }
+        public SprintDetailsDto NewerSprint { get; set; }
     }
 }

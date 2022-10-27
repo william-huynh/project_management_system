@@ -37,9 +37,8 @@ namespace ProjectManagementSystem.Service.Services
                 .Select(x => new SprintDetailsDto
                 {
                     Id = x.Id,
-                    SprintCode = x.SprintCode,
+                    MaxPoint = x.MaxPoint.ToString(),
                     Name = x.Name,
-                    Description = x.Description,
                     StartedDate = x.StartedDate,
                     EndedDate = x.EndedDate,
                     Status = ((Status)x.Status).ToString(),
@@ -47,16 +46,6 @@ namespace ProjectManagementSystem.Service.Services
 
             if (querySprintsDetailsDto != null)
             {
-                // SORT SPRINT CODE
-                if (sortOrder == "descend" && sortField == "sprintCode")
-                {
-                    querySprintsDetailsDto = querySprintsDetailsDto.OrderByDescending(x => x.SprintCode);
-                }
-                else if (sortOrder == "ascend" && sortField == "sprintCode")
-                {
-                    querySprintsDetailsDto = querySprintsDetailsDto.OrderBy(x => x.SprintCode);
-                }
-
                 // SORT NAME
                 if (sortOrder == "descend" && sortField == "name")
                 {
@@ -88,9 +77,7 @@ namespace ProjectManagementSystem.Service.Services
                 {
                     var normalizeKeyword = keyword.Trim().ToLower();
                     querySprintsDetailsDto = querySprintsDetailsDto.Where(
-                        x => x.SprintCode.Contains(keyword) ||
-                        x.SprintCode.Trim().ToLower().Contains(normalizeKeyword) ||
-                        x.Name.Contains(keyword) ||
+                        x => x.Name.Contains(keyword) ||
                         x.Name.Trim().ToLower().Contains(normalizeKeyword)
                         );
                 }
@@ -114,24 +101,7 @@ namespace ProjectManagementSystem.Service.Services
             return null;
         }
 
-        public async Task<SprintDetailsDto> GetUpdateSprintDetailsAsync(string sprintId)
-        {
-            var sprint = await _db.Sprints
-                .Where(x => x.Id == sprintId)
-                .Select(x => new SprintDetailsDto
-                {
-                    SprintCode = x.SprintCode,
-                    Name = x.Name,
-                    Description = x.Description,
-                    StartedDate = x.StartedDate,
-                    EndedDate = x.EndedDate,
-                    Status = ((Status)x.Status).ToString(),
-                }).FirstOrDefaultAsync();
-
-            return sprint;
-        }
-
-        public async Task<SprintCreateDetail> GetProjectSprintDetail(string userId)
+        public async Task<ProjectDetailsDto> GetProjectDetailsAsync(string userId)
         {
             var project = await _db.Records
                 .Where(x => x.UserId == userId && x.Project.Status == Status.Active)
@@ -143,33 +113,71 @@ namespace ProjectManagementSystem.Service.Services
                 })
                 .FirstOrDefaultAsync();
 
+            return project;
+        }
+
+        public async Task<SprintCreateDetail> GetCreateSprintDetailsAsync(string projectId)
+        {
             var olderSprint = await _db.Sprints
-                .Where(x => x.ProjectId == project.Id && x.Disable == false)
-                .OrderByDescending(x => x.SprintCode)
+                .Where(x => x.ProjectId == projectId && x.Disable == false)
+                .OrderByDescending(x => x.Name)
                 .FirstOrDefaultAsync();
 
+            string sprintNamePrefix = "Sprint ";
+            var maxSprintName = await _db.Sprints.Where(a => a.Disable == false).OrderByDescending(a => a.Name).FirstOrDefaultAsync();
+            int number = maxSprintName != null ? Convert.ToInt32(maxSprintName.Name.Replace(sprintNamePrefix, "")) + 1 : 1;
+            string newSprintName = sprintNamePrefix + number.ToString("D2");
+
             var sprint = new SprintCreateDetail();
-            sprint.Project = project;
+            sprint.Name = newSprintName;
             if (olderSprint != null)
             {
-                sprint.Name = olderSprint.Name;
-                sprint.Description = olderSprint.Description;
                 sprint.StartedDate = olderSprint.StartedDate;
                 sprint.EndedDate = olderSprint.EndedDate;
             }    
 
-            sprint.Project = project;
+            return sprint;
+        }
+
+        public async Task<SprintUpdateDetail> GetUpdateSprintDetailsAsync(string projectId, string sprintId)
+        {
+            var sprint = await _db.Sprints
+                .Where(x => x.Id == sprintId)
+                .Select(x => new SprintUpdateDetail
+                {
+                    Name = x.Name,
+                    MaxPoint = x.MaxPoint.ToString(),
+                    StartedDate = x.StartedDate,
+                    EndedDate = x.EndedDate,
+                }).FirstOrDefaultAsync();
+
+            var project = await _db.Sprints
+                .Where(x => x.Disable == false && x.ProjectId == projectId)
+                .OrderBy(x => x.Name)
+                .Select(x => new SprintDetailsDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    StartedDate = x.StartedDate,
+                    EndedDate = x.EndedDate,
+                })
+                .ToListAsync();
+
+            var index = project.FindIndex(x => x.Id == sprintId);
+            if (index - 1 >= 0) sprint.OlderSprint = project[index - 1];
+            else sprint.OlderSprint = new SprintDetailsDto();
+            if ((index + 1) + 1 <= project.Count()) sprint.NewerSprint = project[index + 1];
+            else sprint.NewerSprint = new SprintDetailsDto();
+
             return sprint;
         }
 
         public async Task<Sprint> CreateSprintAsync(SprintCreateDto model)
         {
-            var sprintCode = GenerateSprintCode();
-
             var sprint = _mapper.Map<Sprint>(model);
             sprint.Id = Guid.NewGuid().ToString();
+            sprint.MaxPoint = Convert.ToInt32(model.MaxPoint);
             sprint.Status = Status.Active;
-            sprint.SprintCode = sprintCode;
 
             await _db.AddAsync(sprint);
             await _db.SaveChangesAsync();
@@ -180,10 +188,9 @@ namespace ProjectManagementSystem.Service.Services
         {
             var sprint = await _db.Sprints.FindAsync(model.Id);
 
-            sprint.Name = model.Name;
-            sprint.Description = model.Description;
             sprint.StartedDate = model.StartedDate;
             sprint.EndedDate = model.EndedDate;
+            sprint.MaxPoint = model.MaxPoint;
 
             await _db.SaveChangesAsync();
             return sprint;
@@ -197,15 +204,6 @@ namespace ProjectManagementSystem.Service.Services
 
             await _db.SaveChangesAsync();
             return sprint;
-        }
-
-        private string GenerateSprintCode()
-        {
-            string sprintPrefix = "SC";
-            var maxSprintCode = _db.Sprints.OrderByDescending(a => a.SprintCode).FirstOrDefault();
-            int number = maxSprintCode != null ? Convert.ToInt32(maxSprintCode.SprintCode.Replace(sprintPrefix, "")) + 1 : 1;
-            string newSprintCode = sprintPrefix + number.ToString("D4");
-            return newSprintCode;
         }
     }
 }

@@ -1,16 +1,16 @@
-.sprint-table {
+.assignment-table {
   flex: 1;
   padding-left: 4rem;
 }
 
-.header-sprint-list {
+.header-assignment-list {
   font-size: 16px;
   font-weight: bold;
   color: #4d42e9;
   margin: 0;
 }
 
-.create-sprint-button {
+.create-assignment-button {
   border: none;
   border-radius: 5px;
   height: 34px;
@@ -20,15 +20,15 @@
   margin-left: 2rem;
 }
 
-.create-sprint-button:hover {
+.create-assignment-button:hover {
   background-color: #2338cf;
 }
 
-.sprint-table .ant-table-wrapper {
+.assignment-table .ant-table-wrapper {
   margin-top: 1rem;
 }
 
-.sprint-table
+.assignment-table
   > .ant-input-search
   > .ant-input-group
   > .ant-input-group-addon:last-child {
@@ -37,19 +37,11 @@
   border-bottom-right-radius: 5px;
 }
 
-.sprint-table
+.assignment-table
   .ant-input-search
   > .ant-input-group
   > .ant-input-group-addon:last-child
   .ant-input-search-button:not(.ant-btn-primary) {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-}
-
-#create-sprint-modal {
-  max-width: 700px;
-}
-
-#create-sprint-modal #name {
-  background-color: #fff !important;
 }
