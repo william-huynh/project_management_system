@@ -70,6 +70,7 @@ namespace ProjectManagementSystem
             services.AddTransient<IRecordService, RecordService>();
             services.AddTransient<ISprintService, SprintService>();
             services.AddTransient<IAssignmentService, AssignmentService>();
+            services.AddTransient<IProblemService, ProblemService>();
 
             services.AddScoped<IDbInitializer, DbInitializer>();
 

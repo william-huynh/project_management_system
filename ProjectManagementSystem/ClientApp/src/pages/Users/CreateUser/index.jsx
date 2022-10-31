@@ -110,6 +110,7 @@ const CreateUser = () => {
         .create(data)
         .then((response) => {
           navigate("/users");
+          alert("User created successfully!");
         })
         .catch((e) => {
           console.log(e);

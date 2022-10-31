@@ -14,18 +14,23 @@ const update = (id, data) => {
   return axios.put(API_URL + `/projects/update/${id}`, data);
 };
 
+const disable = (id) => {
+  return axios.put(API_URL + `/projects/disable-project/${id}`);
+};
+
 const getUpdateDetail = (id) => {
   return axios.get(API_URL + `/projects/update-detail/${id}`);
 };
 
-const disable = (id) => {
-  return axios.put(API_URL + `/projects/disable-project/${id}`);
+const canDisable = (id) => {
+  return axios.get(API_URL + `/projects/project-disable-check/${id}`);
 };
 
 export default {
   detail,
   create,
   update,
-  getUpdateDetail,
   disable,
+  getUpdateDetail,
+  canDisable,
 };

@@ -85,6 +85,33 @@ namespace ProjectManagementSystem.Controllers
         }
 
         [HttpGet]
+        [Route("check-developer-assign-project/{userId}")]
+        //[Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> CheckDeveloperAssignProject(string userId)
+        {
+            var developer = await _userService.CheckDeveloperAssignedAsync(userId);
+            return Ok(developer);
+        }
+
+        [HttpGet]
+        [Route("check-advisor/{userId}")]
+        //[Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> CanAdvisorDisable(string userId)
+        {
+            var advisor = await _userService.CanAdvisorDisableAsync(userId);
+            return Ok(advisor);
+        }
+
+        [HttpGet]
+        [Route("check-developer/{userId}")]
+        //[Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> CanDeveloperDisable(string userId)
+        {
+            var developer = await _userService.CanDeveloperDisableAsync(userId);
+            return Ok(developer);
+        }
+
+        [HttpGet]
         [Route("detail/{userId}")]
         //[Authorize(Roles = "ProductOwner")]
         public async Task<IActionResult> GetDetail(string userId)

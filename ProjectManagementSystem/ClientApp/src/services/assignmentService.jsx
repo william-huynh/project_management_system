@@ -14,6 +14,10 @@ const update = (id, data) => {
   return axios.put(API_URL + `/assignments/update/${id}`, data);
 };
 
+const accept = (id) => {
+  return axios.put(API_URL + `/assignments/accept-assignment/${id}`);
+};
+
 const disable = (id) => {
   return axios.put(API_URL + `/assignments/disable/${id}`);
 };
@@ -38,6 +42,7 @@ export default {
   detail,
   create,
   update,
+  accept,
   disable,
   updateDetail,
   getCategories,

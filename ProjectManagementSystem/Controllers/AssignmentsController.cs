@@ -67,12 +67,62 @@ namespace ProjectManagementSystem.Controllers
             return Ok(assignments);
         }
 
+        [HttpGet]
+        [Route("get-assigned-list")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> GetAssignedAssignmentsList(int? page, int? pageSize, string keyword, [FromQuery] string[] status, [FromQuery] string[] sprint, [FromQuery] string[] category, string sortField, string sortOrder, string userId)
+        {
+            var assignments = await _assignmentService.GetAssignedAssignmentsListAsync(page, pageSize, keyword, status, sprint, category, sortField, sortOrder, userId);
+            if (assignments == null) return BadRequest(assignments);
+            return Ok(assignments);
+        }
+
+        [HttpGet]
+        [Route("update-detail/{assignmentId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> GetAssignmentsUpdateDetail(string assignmentId)
+        {
+            var assignments = await _assignmentService.GetAssignmentUpdateDetailAsync(assignmentId);
+            if (assignments == null) return BadRequest(assignments);
+            return Ok(assignments);
+        }
+
         [HttpPost]
         [Route("create")]
         // [Authorize(Roles = "ScrumMaster")]
         public async Task<IActionResult> CreateAssignment([FromBody] AssignmentCreateDto model)
         {
             var assignment = await _assignmentService.CreateAssignmentAsync(model);
+            if (assignment == null) return BadRequest(assignment);
+            return Ok(assignment);
+        }
+
+        [HttpPut]
+        [Route("update/{assignmentId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> UpdateAssignment([FromBody] AssignmentUpdateDto model)
+        {
+            var assignment = await _assignmentService.UpdateAssignmentAsync(model);
+            if (assignment == null) return BadRequest(assignment);
+            return Ok(assignment);
+        }
+
+        [HttpPut]
+        [Route("accept-assignment/{assignmentId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> AcceptAssignment(string assignmentId)
+        {
+            var assignment = await _assignmentService.AcceptAssignmentAsync(assignmentId);
+            if (assignment == null) return BadRequest(assignment);
+            return Ok(assignment);
+        }
+
+        [HttpPut]
+        [Route("disable/{assignmentId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> DisableAssignment(string assignmentId)
+        {
+            var assignment = await _assignmentService.DisableAssignmentAsync(assignmentId);
             if (assignment == null) return BadRequest(assignment);
             return Ok(assignment);
         }

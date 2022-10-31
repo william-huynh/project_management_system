@@ -11,6 +11,7 @@ import "antd/dist/antd.css";
 const HomeProject = (props) => {
   const { Search } = Input;
   const navigate = useNavigate();
+  const [projectCanDisable, setProjectCanDisable] = useState(false);
   const [projectId, setProjectId] = useState();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
@@ -62,6 +63,14 @@ const HomeProject = (props) => {
     });
   };
 
+  // Can project disable
+  const projectDisable = (id) => {
+    projectService.canDisable(id).then((response) => {
+      setProjectCanDisable(response.data);
+      setProjectId(id);
+    });
+  };
+
   // Table columns
   const columns = [
     {
@@ -99,6 +108,12 @@ const HomeProject = (props) => {
       title: "Status",
       width: "15%",
       dataIndex: "status",
+      render: (id, record) =>
+        record.status === "Active" ? (
+          <div className="status-active">Active</div>
+        ) : (
+          <div className="status-complete">Complete</div>
+        ),
     },
     {
       title: "Action",
@@ -106,25 +121,21 @@ const HomeProject = (props) => {
       key: "id",
       width: "15%",
       render: (id, record) => (
-        <div className="project-button-group">
+        <div className="table-button-group">
           <i
-            className="fa-solid fa-pen-to-square fa-lg project-edit-button"
+            className="fa-solid fa-pen-to-square fa-lg edit-button"
             onClick={() => {
               navigate(`update/${id}`);
             }}
           ></i>
-          {record.scrumMaster.id === null ? (
-            <i
-              className="fa-solid fa-xmark fa-xl project-delete-button"
-              data-toggle="modal"
-              data-target="#disableProjectModal"
-              onClick={() => setProjectId(id)}
-            ></i>
-          ) : (
-            <i className="fa-solid fa-xmark fa-xl project-delete-button disabled project-delete-button-disabled"></i>
-          )}
           <i
-            className="fa-solid fa-circle-exclamation fa-lg project-detail-button"
+            className="fa-solid fa-xmark fa-xl delete-button"
+            data-toggle="modal"
+            data-target="#disableProjectModal"
+            onClick={() => projectDisable(id)}
+          ></i>
+          <i
+            className="fa-solid fa-circle-exclamation fa-lg detail-button"
             onClick={() => navigate(`${id}`)}
           ></i>
         </div>
@@ -140,10 +151,6 @@ const HomeProject = (props) => {
         {
           label: "All",
           key: "All",
-        },
-        {
-          label: "Inactive",
-          key: "Inactive",
         },
         {
           label: "Active",
@@ -228,31 +235,37 @@ const HomeProject = (props) => {
               </button>
             </div>
             <div className="modal-body">
-              Are you sure you want to disable this project?
+              {projectCanDisable === true
+                ? "Are you sure you want to disable this project?"
+                : "This project is currently assigned to students"}
             </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-confirm-advisor"
-                data-dismiss="modal"
-                onClick={() => {
-                  projectService.disable(projectId).then(() => {
-                    fetchData({
-                      pagination,
+            {projectCanDisable === true ? (
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-confirm-advisor"
+                  data-dismiss="modal"
+                  onClick={() => {
+                    projectService.disable(projectId).then(() => {
+                      fetchData({
+                        pagination,
+                      });
                     });
-                  });
-                }}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="btn btn-cancel-advisor"
-                data-dismiss="modal"
-              >
-                No
-              </button>
-            </div>
+                  }}
+                >
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-cancel"
+                  data-dismiss="modal"
+                >
+                  No
+                </button>
+              </div>
+            ) : (
+              <div className="modal-footer"></div>
+            )}
           </div>
         </div>
       </div>

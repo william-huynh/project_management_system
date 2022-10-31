@@ -1,0 +1,24 @@
+.selectAssignmentModal .ant-table tr {
+  cursor: pointer;
+}
+
+.selectAssignmentModal .ant-btn-primary {
+  width: 6rem;
+  height: 3rem;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  background-color: #4d42e9;
+  box-shadow: none !important;
+}
+
+.selectAssignmentModal .ant-btn-default {
+  display: none;
+}
+
+.selectAssignmentModal .ant-btn-primary:hover,
+.selectAssignmentModal .ant-btn-primary:active {
+  color: white;
+  background-color: #2338cf;
+}

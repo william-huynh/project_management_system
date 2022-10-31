@@ -5,7 +5,7 @@ import userService from "../../../services/userService";
 import * as yup from "yup";
 
 const UpdateUser = () => {
-  let { id } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [userDetail, setUserDetail] = useState(null);
 
@@ -151,7 +151,8 @@ const UpdateUser = () => {
       userService
         .updateProfile(id, data)
         .then((response) => {
-          window.location.reload();
+          getUserDetail(id);
+          alert("User updated successfully!");
         })
         .catch((e) => {
           console.log(e);

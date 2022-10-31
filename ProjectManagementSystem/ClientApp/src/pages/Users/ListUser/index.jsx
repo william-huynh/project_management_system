@@ -12,7 +12,7 @@ import "./index.css";
 const UserTable = () => {
   const { Search } = Input;
   const navigate = useNavigate();
-  const [userDetail, setUserDetail] = useState();
+  const [userDisable, setUserDisable] = useState(false);
   const [userId, setUserId] = useState();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
@@ -84,6 +84,19 @@ const UserTable = () => {
     });
   };
 
+  // Check can user disable
+  const canDisable = (record) => {
+    setUserId(record.id);
+    if (record.role === "Product Owner")
+      userService.checkAdvisorDisable(record.id).then((response) => {
+        setUserDisable(response.data);
+      });
+    else
+      userService.checkDeveloperDisable(record.id).then((response) => {
+        setUserDisable(response.data);
+      });
+  };
+
   // Table columns
   const columns = [
     {
@@ -115,6 +128,14 @@ const UserTable = () => {
       title: "Role",
       width: "15%",
       dataIndex: "role",
+      render: (id, record) =>
+        record.role === "Product Owner" ? (
+          <div className="role-product-owner">Product Owner</div>
+        ) : record.role === "Scrum Master" ? (
+          <div className="role-scrum-master">Scrum Master</div>
+        ) : (
+          <div className="role-developer">Developer</div>
+        ),
     },
     {
       title: "Action",
@@ -129,16 +150,12 @@ const UserTable = () => {
               navigate(`update/${id}`);
             }}
           ></i>
-          {record.projectAdvisorId === null && record.projectId === null ? (
-            <i
-              className="fa-solid fa-xmark fa-xl delete-button"
-              data-toggle="modal"
-              data-target="#disableModal"
-              onClick={() => setUserId(id)}
-            ></i>
-          ) : (
-            <i className="fa-solid fa-xmark fa-xl delete-button disabled delete-button-disabled"></i>
-          )}
+          <i
+            className="fa-solid fa-trash fa-lg delete-button"
+            data-toggle="modal"
+            data-target="#disableModal"
+            onClick={() => canDisable(record)}
+          ></i>
           <i
             className="fa-solid fa-circle-exclamation fa-lg detail-button"
             onClick={() => navigate(`${id}`)}
@@ -220,145 +237,10 @@ const UserTable = () => {
         columns={columns}
         dataSource={data}
         rowKey={(record) => record.id}
-        // onRow={(record, rowIndex) => {
-        //   return {
-        //    onClick: () => {
-        //      //showModal(record);
-        //    },
-        //   };
-        // }}
         pagination={pagination}
         loading={loading}
         onChange={onChange}
       />
-
-      {/* User detail modal */}
-      <div
-        className="modal fade"
-        id="userDetailModal"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="userDetailModal"
-        aria-hidden="true"
-      >
-        <div
-          className="modal-dialog modal-dialog-centered"
-          role="document"
-          id="user-detail-modal"
-        >
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLongTitle">
-                User Detail
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              {userDetail == null ? (
-                <div className="loading">
-                  <img src={loading} alt="Loading..." />
-                </div>
-              ) : (
-                <div className="row">
-                  <div className="col-4">
-                    <img
-                      src="https://leaveitwithme.com.au/wp-content/uploads/2013/11/dummy-image-square.jpg"
-                      alt="dummy"
-                      className="user-detail-picture"
-                    />
-                  </div>
-                  <div className="col-8">
-                    <div>
-                      <p>
-                        <span className="property">User Code </span>{" "}
-                        <span className="value">{userDetail.userCode}</span>
-                      </p>
-                      <p>
-                        <span className="property">Full Name </span>{" "}
-                        <span className="value">{userDetail.fullName}</span>
-                      </p>
-                      <p>
-                        <span className="property">Username </span>{" "}
-                        <span className="value">{userDetail.userName}</span>
-                      </p>
-                      <p>
-                        <span className="property">Date Of Birth </span>{" "}
-                        <span className="value">
-                          {moment(userDetail.dateOfBirth).format("DD/MM/YYYY")}
-                        </span>
-                      </p>
-                      <p>
-                        <span className="property">Gender </span>{" "}
-                        <span className="value">{userDetail.gender}</span>
-                      </p>
-                      <p>
-                        <span className="property">Role </span>{" "}
-                        <span className="value">{userDetail.role}</span>
-                      </p>
-                      <p>
-                        <div className="row">
-                          <div className="col-4 property">Current Project</div>
-
-                          <div className="col-8 value">
-                            <table
-                              className="table"
-                              style={{ marginBottom: 0 }}
-                            >
-                              <thead>
-                                <tr>
-                                  <th>Project Code</th>
-                                  <th>Project Name</th>
-                                  <th>Project Status</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>PC0001</td>
-                                  <td>Project 01</td>
-                                  <td>Active</td>
-                                </tr>
-                                {/* {history ? (
-                                  history.map((item) => (
-                                    <tr>
-                                      <td>
-                                        {moment(item.assignedDate).format("DD/MM/YYYY")}
-                                      </td>
-                                      <td>{item.assignedTo}</td>
-                                      <td>{item.assignedBy}</td>
-                                      {item.requestState == "Completed" ? (
-                                        <td>
-                                          {moment(item.returnedDate).format("DD/MM/YYYY")}
-                                        </td>
-                                      ) : (
-                                        <td>Updating...</td>
-                                      )}
-                                    </tr>
-                                  ))
-                                ) : (
-                                  <tr>
-                                    <td>No history</td>
-                                  </tr>
-                                )} */}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Disable user modal */}
       <div
@@ -389,41 +271,40 @@ const UserTable = () => {
               </button>
             </div>
             <div className="modal-body">
-              Are you sure you want to disable this user?
+              {userDisable === true
+                ? "Are you sure you want to disable this user?"
+                : "This user is currently managing or assigned to a project"}
             </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-confirm-advisor"
-                data-dismiss="modal"
-                onClick={() => {
-                  userService.disable(userId).then(() => {
-                    fetchData({
-                      pagination,
+            {userDisable === true ? (
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-confirm-advisor"
+                  data-dismiss="modal"
+                  onClick={() => {
+                    userService.disable(userId).then(() => {
+                      fetchData({
+                        pagination,
+                      });
                     });
-                  });
-                }}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="btn btn-cancel"
-                data-dismiss="modal"
-              >
-                No
-              </button>
-            </div>
+                  }}
+                >
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-cancel"
+                  data-dismiss="modal"
+                >
+                  No
+                </button>
+              </div>
+            ) : (
+              <div className="modal-footer"></div>
+            )}
           </div>
         </div>
       </div>
-
-      {/* <ModalExample
-        visible={isModalVisible}
-        handleCancel={handleCancel}
-        data={infor}
-      />
-      <DisableUser id={id} bool={bool} handleCancel={handleCancel} /> */}
     </div>
   );
 };

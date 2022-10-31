@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios";
 import sprintService from "../../../services/sprintService";
+import userService from "../../../services/userService";
 import * as yup from "yup";
 import moment from "moment";
 
@@ -14,9 +14,8 @@ import "./index.css";
 const SprintTable = (props) => {
   const userId = props.user.id;
   const { Search } = Input;
-  const navigate = useNavigate();
+  const [isUserAssign, setIsUserAssign] = useState(false);
   const [projectDetail, setProjectDetail] = useState(null);
-  const [sprintDetail, setSprintDetail] = useState(null);
   const [sprintId, setSprintId] = useState();
   const [sprintStartedDate, setSprintStartedDate] = useState(new Date());
   const [sprintEndedDate, setSprintEndedDate] = useState(new Date());
@@ -50,27 +49,33 @@ const SprintTable = (props) => {
   // Fetch table data
   const fetchData = (params = {}) => {
     setLoading(true);
-    axiosInstance
-      .get(
-        `sprints/get-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sortField=${params.sortField}&sortOrder=${params.sortOrder}&userId=${props.user.id}`
-      )
-      .then((results) => {
-        results.data.sprints.forEach((element) => {
-          element.startedDate = moment(element.startedDate).format(
-            "DD/MM/YYYY"
-          );
-          element.endedDate = moment(element.endedDate).format("DD/MM/YYYY");
+    userService.checkUserAssigned(userId).then((response) => {
+      setIsUserAssign(response.data);
+      if (response.data === true) {
+        axiosInstance
+          .get(
+            `sprints/get-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sortField=${params.sortField}&sortOrder=${params.sortOrder}&userId=${props.user.id}`
+          )
+          .then((results) => {
+            results.data.sprints.forEach((element) => {
+              element.startedDate = moment(element.startedDate).format(
+                "DD/MM/YYYY"
+              );
+              element.endedDate = moment(element.endedDate).format(
+                "DD/MM/YYYY"
+              );
+            });
+            setData(results.data.sprints);
+            setLoading(false);
+            setPagination({
+              ...params.pagination,
+              total: results.data.totalItem,
+            });
+          });
+        sprintService.projectDetail(userId).then((response) => {
+          setProjectDetail(response.data);
         });
-        setData(results.data.sprints);
-        setLoading(false);
-        setPagination({
-          ...params.pagination,
-          total: results.data.totalItem,
-        });
-      });
-    sprintService.projectDetail(userId).then((response) => {
-      console.log(response.data);
-      setProjectDetail(response.data);
+      }
     });
   };
 
@@ -264,11 +269,6 @@ const SprintTable = (props) => {
       sorter: true,
     },
     {
-      title: "Status",
-      width: "15%",
-      dataIndex: "status",
-    },
-    {
       title: "User point limit per sprint",
       dataIndex: "maxPoint",
     },
@@ -279,26 +279,18 @@ const SprintTable = (props) => {
       width: "15%",
       render: (id, record) => (
         <div className="table-button-group">
-          {/* {record.advisor.id === props.user.id ? ( */}
           <i
             className="fa-solid fa-pen-to-square fa-lg edit-button"
             data-toggle="modal"
             data-target="#updateSprintModal"
             onClick={() => updateSprintClick(id)}
           ></i>
-          {/* ) : (
-            <i className="fa-solid fa-pen-to-square fa-lg edit-button disabled edit-button-disabled"></i>
-          )} */}
-          {/* {record.scrumMaster.id === null ? ( */}
           <i
-            className="fa-solid fa-xmark fa-xl delete-button"
+            className="fa-solid fa-trash fa-lg delete-button"
             data-toggle="modal"
             data-target="#disableSprintModal"
             onClick={() => setSprintId(id)}
           ></i>
-          {/* ) : (
-            <i className="fa-solid fa-xmark fa-xl delete-button disabled delete-button-disabled"></i>
-          )} */}
         </div>
       ),
     },
@@ -341,7 +333,7 @@ const SprintTable = (props) => {
     });
   }, []);
 
-  return (
+  return isUserAssign === true ? (
     <div className="sprint-table">
       <p className="header-sprint-list">Sprint List</p>
 
@@ -791,6 +783,13 @@ const SprintTable = (props) => {
           </div>
         </div>
       </div>
+    </div>
+  ) : (
+    <div className="no-assign-error">
+      <div>
+        <i class="fa-solid fa-users-slash fa-xl"></i>
+      </div>
+      <p>User is not assigned to a project!</p>
     </div>
   );
 };

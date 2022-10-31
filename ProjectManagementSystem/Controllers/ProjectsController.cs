@@ -49,6 +49,15 @@ namespace ProjectManagementSystem.Controllers
             return Ok(project);
         }
 
+        [HttpGet]
+        [Route("project-disable-check/{projectId}")]
+        // [Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> GetCanProjectDisable(string projectId)
+        {
+            var project = await _projectService.GetProjectCanDisableAsync(projectId);
+            return Ok(project);
+        }
+
         [HttpPost]
         [Route("create-project")]
         // [Authorize(Roles = "ProductOwner")]

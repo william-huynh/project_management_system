@@ -47,7 +47,7 @@
 }
 
 .dropdown-menu {
-  width: 80%;
+  width: 75%;
   padding: 0;
 }
 
@@ -118,4 +118,17 @@
   width: 100%;
   height: auto;
   object-fit: cover;
+}
+
+.btn-search-scrum-master {
+  margin: 0;
+  border: 1px solid #ced4da;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.btn-search-scrum-master:hover,
+.btn-search-scrum-master:active {
+  border: 1px solid #4d42e9;
+  transition: 0.8s;
 }

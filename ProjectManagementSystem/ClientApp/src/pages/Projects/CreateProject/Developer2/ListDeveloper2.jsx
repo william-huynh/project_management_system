@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../../../axios";
-import { Table, Typography, Input, Divider } from "antd";
+import { Table, Divider } from "antd";
 
 import "antd/dist/antd.css";
 
@@ -73,20 +73,12 @@ const ListDeveloper2 = (props) => {
     },
   ];
 
-  const { Search } = Input;
-
   useEffect(() => {
     fetchData({
       pagination,
     });
   }, []);
 
-  const onSearch = (value) => {
-    setPagination((pagination.keyword = value));
-    fetchData({
-      pagination,
-    });
-  };
   const onChange = (newPagination, filters, sorter, extra) => {
     fetchData({
       sortField: sorter.field,

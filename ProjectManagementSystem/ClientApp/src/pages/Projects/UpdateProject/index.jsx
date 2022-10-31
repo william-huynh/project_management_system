@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import projectService from "../../../services/projectService";
-import recordService from "../../../services/recordService";
 import * as yup from "yup";
 import moment from "moment";
 
@@ -39,7 +38,6 @@ const UpdateProject = () => {
     useState(false);
   const [selectedDeveloper4, setSelectedDeveloper4] = useState("");
   const [developer4Id, setDeveloper4Id] = useState("");
-  const [removeUserId, setRemoveUserId] = useState("");
 
   // Get project duration months
   function getDuration(startDate, endDate) {
@@ -204,7 +202,8 @@ const UpdateProject = () => {
       projectService
         .update(id, data)
         .then((response) => {
-          window.location.reload();
+          getProject(id);
+          alert("Project updated successfully!");
         })
         .catch((e) => {
           console.log(e);
@@ -383,7 +382,7 @@ const UpdateProject = () => {
             </div>
             <div className="update-project-remove-user">
               <i
-                className="fa-solid fa-xmark fa-xl project-delete-button"
+                className="fa-solid fa-xmark fa-xl delete-button"
                 onClick={() => {
                   setScrumMasterId("");
                   setSelectedScrumMaster("");
@@ -424,7 +423,7 @@ const UpdateProject = () => {
             </div>
             <div className="update-project-remove-user">
               <i
-                className="fa-solid fa-xmark fa-xl project-delete-button"
+                className="fa-solid fa-xmark fa-xl delete-button"
                 onClick={() => {
                   setDeveloper1Id("");
                   setSelectedDeveloper1("");
@@ -462,7 +461,7 @@ const UpdateProject = () => {
             </div>
             <div className="update-project-remove-user">
               <i
-                className="fa-solid fa-xmark fa-xl project-delete-button"
+                className="fa-solid fa-xmark fa-xl delete-button"
                 onClick={() => {
                   setDeveloper2Id("");
                   setSelectedDeveloper2("");
@@ -500,7 +499,7 @@ const UpdateProject = () => {
             </div>
             <div className="update-project-remove-user">
               <i
-                className="fa-solid fa-xmark fa-xl project-delete-button"
+                className="fa-solid fa-xmark fa-xl delete-button"
                 onClick={() => {
                   setDeveloper3Id("");
                   setSelectedDeveloper3("");
@@ -538,7 +537,7 @@ const UpdateProject = () => {
             </div>
             <div className="update-project-remove-user">
               <i
-                className="fa-solid fa-xmark fa-xl project-delete-button"
+                className="fa-solid fa-xmark fa-xl delete-button"
                 onClick={() => {
                   setDeveloper4Id("");
                   setSelectedDeveloper4("");
@@ -552,7 +551,6 @@ const UpdateProject = () => {
             Submit
           </button>
           <button
-            type="submit"
             className="btn btn-cancel"
             onClick={() => {
               navigate("/projects");

@@ -1,8 +1,8 @@
-.selectDeveloperModal .ant-table tr {
+.selectDeveloperModalProject .ant-table tr {
   cursor: pointer;
 }
 
-.selectDeveloperModal .ant-btn-primary {
+.selectDeveloperModalProject .ant-btn-primary {
   width: 6rem;
   height: 3rem;
   color: white;
@@ -13,12 +13,12 @@
   box-shadow: none !important;
 }
 
-.selectDeveloperModal .ant-btn-default {
+.selectDeveloperModalProject .ant-btn-default {
   display: none;
 }
 
-.selectDeveloperModal .ant-btn-primary:hover,
-.selectDeveloperModal .ant-btn-primary:active {
+.selectDeveloperModalProject .ant-btn-primary:hover,
+.selectDeveloperModalProject .ant-btn-primary:active {
   color: white;
   background-color: #cf2338;
 }

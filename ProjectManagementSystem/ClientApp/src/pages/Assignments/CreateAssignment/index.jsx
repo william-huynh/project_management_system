@@ -7,7 +7,6 @@ import moment from "moment";
 
 import ModalDeveloper from "./Developer/ModalDeveloper";
 
-import { Input } from "antd";
 import "./index.css";
 
 const CreateAssignment = () => {
@@ -113,6 +112,7 @@ const CreateAssignment = () => {
           .create(data)
           .then((response) => {
             navigate("/assignments");
+            alert("Assignment created successfully!");
           })
           .catch((e) => {
             console.log(e);
@@ -328,7 +328,7 @@ const CreateAssignment = () => {
                               name="new-category-name"
                               className="name"
                               type="text"
-                              placeholder="Enter new category name"
+                              placeholder="New category name"
                               ref={newCategoryNameRef}
                             />
                             <div
@@ -523,7 +523,7 @@ const CreateAssignment = () => {
               />
               <div className="input-group-append">
                 <button
-                  className="btn btn-md px-3 py-2 z-depth-0 btn-search-advisor"
+                  className="btn btn-md px-3 py-2 z-depth-0 btn-search-scrum-master"
                   type="button"
                   onClick={() => setIsModalDeveloperVisible(true)}
                 >

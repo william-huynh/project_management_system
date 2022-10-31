@@ -20,14 +20,12 @@ namespace ProjectManagementSystem.Service.Services
     {
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mapper;
-        //private readonly IHttpContextAccessor _httpContext;
         private readonly UserManager<User> _userManager;
 
         public UserService (ApplicationDbContext db, IMapper mapper, UserManager<User> userManager)
         {
             _db = db;
             _mapper = mapper;
-            //httpContext = _httpContext;
             _userManager = userManager;
         }
 
@@ -219,9 +217,14 @@ namespace ProjectManagementSystem.Service.Services
 
         public async Task<UsersListDto> GetAvailableScrumMastersListAsync(int? page, int? pageSize, string sortField, string sortOrder)
         {
+            var scrumMasterList = await _db.UserRoles.Where(u => u.RoleId == _db.Roles.FirstOrDefault(r => r.Name == "ScrumMaster").Id).Select(u => u.UserId).ToListAsync();
+            var assignedScrumMaster = await _db.Records.Where(x => scrumMasterList.Contains(x.UserId)).Select(x => x.UserId).ToListAsync();
+
             var queryUsersDetailsDto = _db.Users
                 .Where(
-                    x => x.Disable == false && _db.UserRoles.Where(u => u.RoleId == _db.Roles.FirstOrDefault(r => r.Name == "ScrumMaster").Id).Select(u => u.UserId).ToList().Contains(x.Id)
+                    x => x.Disable == false &&
+                    scrumMasterList.Contains(x.Id) &&
+                    !assignedScrumMaster.Contains(x.Id)
                 ).OrderBy(x => x.FirstName + " " + x.LastName)
                 .Select(x => new UserDetailsDto
                 {
@@ -287,11 +290,18 @@ namespace ProjectManagementSystem.Service.Services
 
         public async Task<UsersListDto> GetAvailableDevelopersListAsync(int? page, int? pageSize, string sortField, string sortOrder, string developer1Id, string developer2Id, string developer3Id, string developer4Id)
         {
+            var developerList = await _db.UserRoles.Where(u => u.RoleId == _db.Roles.FirstOrDefault(r => r.Name == "Developer").Id).Select(u => u.UserId).ToListAsync();
+            var assignedDeveloper = await _db.Records.Where(x => developerList.Contains(x.UserId)).Select(x => x.UserId).ToListAsync();
+
             var queryUsersDetailsDto = _db.Users
                 .Where(
                     x => x.Disable == false && 
-                        _db.UserRoles.Where(u => u.RoleId == _db.Roles.FirstOrDefault(r => r.Name == "Developer").Id).Select(u => u.UserId).ToList().Contains(x.Id) &&
-                        x.Id != developer1Id && x.Id != developer2Id && x.Id != developer3Id && x.Id != developer4Id
+                        developerList.Contains(x.Id) &&
+                        !assignedDeveloper.Contains(x.Id) &&
+                        x.Id != developer1Id && 
+                        x.Id != developer2Id && 
+                        x.Id != developer3Id && 
+                        x.Id != developer4Id
                 ).OrderBy(x => x.FirstName + " " + x.LastName)
                 .Select(x => new UserDetailsDto
                 {
@@ -354,7 +364,31 @@ namespace ProjectManagementSystem.Service.Services
             }
             return null;
         }
-    
+
+        public async Task<bool> CheckDeveloperAssignedAsync(string userId)
+        {
+            var user = await _db.Records.Where(
+                x => x.UserId == userId && 
+                x.Project.Status == Status.Active)
+                .FirstOrDefaultAsync();
+            if (user == null) return false;
+            return true;
+        }
+        
+        public async Task<bool> CanAdvisorDisableAsync(string userId)
+        {
+            var advisor = await _db.Projects.Where(x => x.AdvisorId == userId && x.Disable == false).FirstOrDefaultAsync();
+            if (advisor == null) return true;
+            return false;
+        }
+
+        public async Task<bool> CanDeveloperDisableAsync(string userId)
+        {
+            var developer = await _db.Records.Where(x => x.UserId == userId).FirstOrDefaultAsync();
+            if (developer == null) return true;
+            return false;
+        }
+
         public async Task<User> CreateUserAsync(UserCreateDto model)
         {
             string userCode = GenerateUserCode();

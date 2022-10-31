@@ -14,6 +14,10 @@ const update = (id, data) => {
   return axios.put(API_URL + `/users/update/${id}`, data);
 };
 
+const disable = (id) => {
+  return axios.put(API_URL + `/users/disable-user/${id}`);
+};
+
 const getUpdateDetail = (id) => {
   return axios.get(API_URL + `/users/update-detail/${id}`);
 };
@@ -26,16 +30,27 @@ const getProfileDetail = (id) => {
   return axios.get(API_URL + `/users/profile/${id}`);
 };
 
-const disable = (id) => {
-  return axios.put(API_URL + `/users/disable-user/${id}`);
+const checkUserAssigned = (id) => {
+  return axios.get(API_URL + `/users/check-developer-assign-project/${id}`);
+};
+
+const checkAdvisorDisable = (id) => {
+  return axios.get(API_URL + `/users/check-advisor/${id}`);
+};
+
+const checkDeveloperDisable = (id) => {
+  return axios.get(API_URL + `/users/check-developer/${id}`);
 };
 
 export default {
   detail,
   create,
   update,
+  disable,
   getUpdateDetail,
   updateProfile,
   getProfileDetail,
-  disable,
+  checkUserAssigned,
+  checkAdvisorDisable,
+  checkDeveloperDisable,
 };

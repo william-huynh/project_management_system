@@ -12,7 +12,7 @@ const ModalDeveloper4 = (props) => {
         onOk={props.handleCancel}
         closable={false}
         width={800}
-        className="selectDeveloperModal"
+        className="selectDeveloperModalProject"
       >
         <ListDeveloper
           onSelectedDeveloper={props.selectedDeveloper}

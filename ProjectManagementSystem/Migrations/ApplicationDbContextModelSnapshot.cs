@@ -184,9 +184,6 @@ namespace ProjectManagementSystem.Migrations
                     b.Property<int>("Point")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProjectId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("SprintId")
                         .HasColumnType("nvarchar(450)");
 
@@ -201,8 +198,6 @@ namespace ProjectManagementSystem.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("DeveloperId");
-
-                    b.HasIndex("ProjectId");
 
                     b.HasIndex("SprintId");
 
@@ -596,10 +591,6 @@ namespace ProjectManagementSystem.Migrations
                         .WithMany()
                         .HasForeignKey("DeveloperId");
 
-                    b.HasOne("ProjectManagementSystem.Entities.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId");
-
                     b.HasOne("ProjectManagementSystem.Entities.Sprint", "Sprint")
                         .WithMany()
                         .HasForeignKey("SprintId");
@@ -607,8 +598,6 @@ namespace ProjectManagementSystem.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Developer");
-
-                    b.Navigation("Project");
 
                     b.Navigation("Sprint");
                 });

@@ -10,6 +10,8 @@ namespace ProjectManagementSystem.Entities
         public string ProblemCode { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
         public Category Category { get; set; }
         public DateTime StartedDate { get; set; }
         public DateTime EndedDate { get; set; }

@@ -15,6 +15,11 @@ namespace ProjectManagementSystem.Service.IServices
         Task<List<SprintDetailsDto>> GetSprintsListAsync();
         Task<UsersListDto> GetAvailableDeveloperListAsync(int? page, int? pageSize, string sortField, string sortOrder);
         Task<AssignmentsListDto> GetAssignmentsListAsync(int? page, int? pageSize, string keyword, string[] status, string[] sprint, string[] category, string sortField, string sortOrder, string userId);
+        Task<AssignmentsListDto> GetAssignedAssignmentsListAsync(int? page, int? pageSize, string keyword, string[] status, string[] sprint, string[] category, string sortField, string sortOrder, string userId);
+        Task<AssignmentUpdateDetail> GetAssignmentUpdateDetailAsync(string assignmentId);
+        Task<Assignment> UpdateAssignmentAsync(AssignmentUpdateDto model);
+        Task<Assignment> AcceptAssignmentAsync(string assignmentId);
         Task<Assignment> CreateAssignmentAsync(AssignmentCreateDto model);
+        Task<Assignment> DisableAssignmentAsync(string assignmentId);
     }
 }

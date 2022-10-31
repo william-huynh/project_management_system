@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -15,10 +15,13 @@ import DetailProject from "./pages/Projects/DetailProject";
 import HomeProject from "./pages/Home/HomeProject";
 import DetailUser from "./pages/Users/DetailUser";
 import SprintTable from "./pages/Sprints/ListSprint";
-import CreateSprint from "./pages/Sprints/CreateSprint";
-import UpdateSprint from "./pages/Sprints/UpdateSprint";
 import AssignmentTable from "./pages/Assignments/ListAssignments";
 import CreateAssignment from "./pages/Assignments/CreateAssignment";
+import UpdateAssignment from "./pages/Assignments/UpdateAssignment";
+import ProblemTable from "./pages/Problems/ListProblems";
+import CreateProblem from "./pages/Problems/CreateProblem";
+import UpdateProblem from "./pages/Problems/UpdateProblem";
+import HomeAssignment from "./pages/Home/HomeAssignment";
 
 import loading from "./assets/loading.gif";
 import "./App.css";
@@ -87,6 +90,7 @@ const App = () => {
                     element={<UpdateProject />}
                   />
                   <Route path="/projects/:id" element={<DetailProject />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </div>
             </>
@@ -96,7 +100,11 @@ const App = () => {
               <div className="body">
                 <Sidebar user={user} />
                 <Routes>
-                  <Route exact path="/" />
+                  <Route
+                    exact
+                    path="/"
+                    element={<HomeAssignment user={user} />}
+                  />
                   <Route
                     path="/profile/:id"
                     element={<UpdateProfile user={user} />}
@@ -105,14 +113,6 @@ const App = () => {
                     path="/sprints"
                     element={<SprintTable user={user} />}
                   />
-                  {/* <Route
-                    path="/sprints/add"
-                    element={<CreateSprint user={user} />}
-                  />
-                  <Route
-                    path="/sprints/update/:id"
-                    element={<UpdateSprint user={user} />}
-                  /> */}
                   <Route
                     path="/assignments"
                     element={<AssignmentTable user={user} />}
@@ -121,6 +121,23 @@ const App = () => {
                     path="/assignments/add"
                     element={<CreateAssignment user={user} />}
                   />
+                  <Route
+                    path="/assignments/update/:id"
+                    element={<UpdateAssignment user={user} />}
+                  />
+                  <Route
+                    path="/problems"
+                    element={<ProblemTable user={user} />}
+                  />
+                  <Route
+                    path="/problems/add"
+                    element={<CreateProblem user={user} />}
+                  />
+                  <Route
+                    path="/problems/update/:id"
+                    element={<UpdateProblem user={user} />}
+                  />
+                  <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </div>
             </>
@@ -129,9 +146,17 @@ const App = () => {
               <Navbar user={user} />
               <div className="body">
                 <Sidebar user={user} />
-                <div>Hello Developer!</div>
                 <Routes>
-                  <Route exact path="/" />
+                  <Route
+                    exact
+                    path="/"
+                    element={<HomeAssignment user={user} />}
+                  />
+                  <Route
+                    path="/profile/:id"
+                    element={<UpdateProfile user={user} />}
+                  />
+                  <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </div>
             </>

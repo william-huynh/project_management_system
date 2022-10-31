@@ -1,0 +1,62 @@
+.problem-table {
+  flex: 1;
+  padding-left: 4rem;
+}
+
+.header-problem-list {
+  font-size: 16px;
+  font-weight: bold;
+  color: #4d42e9;
+  margin: 0;
+}
+
+.create-problem-button {
+  border: none;
+  border-radius: 5px;
+  height: 34px;
+  background-color: #4d42e9;
+  float: right;
+  margin-top: 0.5rem;
+  margin-left: 2rem;
+}
+
+.create-problem-button:hover {
+  background-color: #2338cf;
+}
+
+.problem-table .ant-table-wrapper {
+  margin-top: 1rem;
+}
+
+.problem-table
+  > .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child {
+  left: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.problem-table
+  .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child
+  .ant-input-search-button:not(.ant-btn-primary) {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.status-waiting {
+  font-weight: bold;
+  color: orange;
+}
+
+.status-active {
+  font-weight: bold;
+  color: limegreen;
+}
+
+.status-complete {
+  font-weight: bold;
+  color: blue;
+}

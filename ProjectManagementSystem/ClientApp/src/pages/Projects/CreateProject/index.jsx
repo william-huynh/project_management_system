@@ -171,6 +171,7 @@ const CreateProject = () => {
         .create(data)
         .then((response) => {
           navigate("/projects");
+          alert("Assignment created successfully!");
         })
         .catch((e) => {
           console.log(e);

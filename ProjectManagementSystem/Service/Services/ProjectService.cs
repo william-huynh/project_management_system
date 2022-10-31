@@ -36,36 +36,10 @@ namespace ProjectManagementSystem.Service.Services
                 status = new string[] { "All" };
             }
 
-            var scrumMasterList = await _db.UserRoles.Where(u => u.RoleId == _db.Roles.FirstOrDefault(r => r.Name == "ScrumMaster").Id).Select(u => u.UserId).ToListAsync();
-
-            var queryProjectsDetailsDto = _db.Projects
-                .Where(
-                    x => x.Disable == false
-                ).OrderBy(x => x.Name)
-                .Select(x => new ProjectDetailsDto
-                {
-                    Id = x.Id,
-                    ProjectCode = x.ProjectCode,
-                    Name = x.Name,
-                    StartedDate = x.StartedDate,
-                    EndedDate = x.EndedDate,
-                    Status = ((Status)x.Status).ToString(),
-                    Iterations = x.Iterations,
-                    AdvisorName = x.Advisor.FirstName + " " + x.Advisor.LastName,
-                    Disable = x.Disable,
-                    Advisor = _db.Users
-                        .Where(u => u.Id == x.AdvisorId)
-                        .Select(u => new UserDetailsDto
-                        {
-                            Id = u.Id,
-                        }).FirstOrDefault(),
-                    ScrumMaster = _db.Records
-                        .Where(r => r.ProjectId == x.Id && scrumMasterList.Contains(r.UserId))
-                        .Select(r => new UserDetailsDto
-                        {
-                            Id = r.UserId,
-                        }).FirstOrDefault(),
-                });
+            IQueryable<Project> queryProjectsDetailsDto = _db.Projects
+                .Where(x => x.Disable == false)
+                .Include(x => x.Advisor)
+                .OrderBy(x => x.Name);
 
             if (queryProjectsDetailsDto != null)
             {
@@ -102,7 +76,11 @@ namespace ProjectManagementSystem.Service.Services
                 // FILTERS
                 if ((status.Length > 0 && !status.Contains("All")))
                 {
-                    queryProjectsDetailsDto = queryProjectsDetailsDto.Where(x => status.Contains(x.Status));
+                    foreach(var state in status)
+                    {
+                        Status projectState;
+                        queryProjectsDetailsDto = queryProjectsDetailsDto.Where(x => Enum.TryParse(state, out projectState) && projectState == x.Status);
+                    }
                 }
 
                 // SEARCH
@@ -124,9 +102,10 @@ namespace ProjectManagementSystem.Service.Services
                 var startPage = (pageIndex - 1) * pageRecords;
                 if (totalPage > pageRecords)
                     queryProjectsDetailsDto = queryProjectsDetailsDto.Skip(startPage).Take(pageRecords);
+                var project = _mapper.Map<List<ProjectDetailsDto>>(queryProjectsDetailsDto);
                 if (pageIndex > numberPage) pageIndex = (int)numberPage;
                 var listProjectsDetailsDto = queryProjectsDetailsDto.ToList();
-                var projectsDto = _mapper.Map<ProjectsListDto>(listProjectsDetailsDto);
+                var projectsDto = _mapper.Map<ProjectsListDto>(project);
                 projectsDto.TotalItem = totalPage;
                 projectsDto.NumberPage = numberPage;
                 projectsDto.CurrentPage = pageIndex;
@@ -143,36 +122,10 @@ namespace ProjectManagementSystem.Service.Services
                 status = new string[] { "All" };
             }
 
-            var scrumMasterList = await _db.UserRoles.Where(u => u.RoleId == _db.Roles.FirstOrDefault(r => r.Name == "ScrumMaster").Id).Select(u => u.UserId).ToListAsync();
-
-            var queryProjectsDetailsDto = _db.Projects
-                .Where(
-                    x => x.Disable == false && x.AdvisorId == advisorId
-                ).OrderBy(x => x.Name)
-                .Select(x => new ProjectDetailsDto
-                {
-                    Id = x.Id,
-                    ProjectCode = x.ProjectCode,
-                    Name = x.Name,
-                    StartedDate = x.StartedDate,
-                    EndedDate = x.EndedDate,
-                    Status = ((Status)x.Status).ToString(),
-                    Iterations = x.Iterations,
-                    AdvisorName = x.Advisor.FirstName + " " + x.Advisor.LastName,
-                    Disable = x.Disable,
-                    Advisor = _db.Users
-                        .Where(u => u.Id == x.AdvisorId)
-                        .Select(u => new UserDetailsDto
-                        {
-                            Id = u.Id,
-                        }).FirstOrDefault(),
-                    ScrumMaster = _db.Records
-                        .Where(r => r.ProjectId == x.Id && scrumMasterList.Contains(r.UserId))
-                        .Select(r => new UserDetailsDto
-                        {
-                            Id = r.UserId,
-                        }).FirstOrDefault(),
-                });
+            IQueryable<Project> queryProjectsDetailsDto = _db.Projects
+                .Where(x => x.Disable == false && x.AdvisorId == advisorId)
+                .Include(x => x.Advisor)
+                .OrderBy(x => x.Name);
 
             if (queryProjectsDetailsDto != null)
             {
@@ -209,7 +162,11 @@ namespace ProjectManagementSystem.Service.Services
                 // FILTERS
                 if ((status.Length > 0 && !status.Contains("All")))
                 {
-                    queryProjectsDetailsDto = queryProjectsDetailsDto.Where(x => status.Contains(x.Status));
+                    foreach (var state in status)
+                    {
+                        Status projectState;
+                        queryProjectsDetailsDto = queryProjectsDetailsDto.Where(x => Enum.TryParse(state, out projectState) && projectState == x.Status);
+                    }
                 }
 
                 // SEARCH
@@ -231,9 +188,10 @@ namespace ProjectManagementSystem.Service.Services
                 var startPage = (pageIndex - 1) * pageRecords;
                 if (totalPage > pageRecords)
                     queryProjectsDetailsDto = queryProjectsDetailsDto.Skip(startPage).Take(pageRecords);
+                var project = _mapper.Map<List<ProjectDetailsDto>>(queryProjectsDetailsDto);
                 if (pageIndex > numberPage) pageIndex = (int)numberPage;
                 var listProjectsDetailsDto = queryProjectsDetailsDto.ToList();
-                var projectsDto = _mapper.Map<ProjectsListDto>(listProjectsDetailsDto);
+                var projectsDto = _mapper.Map<ProjectsListDto>(project);
                 projectsDto.TotalItem = totalPage;
                 projectsDto.NumberPage = numberPage;
                 projectsDto.CurrentPage = pageIndex;
@@ -295,6 +253,15 @@ namespace ProjectManagementSystem.Service.Services
 
             projectDetailDto.Developers = queryDeveloperDetailDto;
             return projectDetailDto;
+        }
+
+        public async Task<bool> GetProjectCanDisableAsync(string projectId)
+        {
+            var project = await _db.Records
+                .Where(x => x.ProjectId == projectId)
+                .FirstOrDefaultAsync();
+            if (project == null) return true;
+            return false;
         }
 
         public async Task<Project> CreateProjectAsync(ProjectCreateDto model)
@@ -376,18 +343,20 @@ namespace ProjectManagementSystem.Service.Services
                     projectDetail.ScrumMasterId = "";
                     projectDetail.ScrumMasterName = "";
                     projectDetail.Developers = new List<ProjectUpdateUsers>();
-                }
-                if (scrumMaster == null)
+                } else
                 {
-                    projectDetail.ScrumMasterId = "";
-                    projectDetail.ScrumMasterName = "";
-                    projectDetail.Developers = developers;
-                }
-                if (developers.Count == 0)
-                {
-                    projectDetail.ScrumMasterId = scrumMaster.Id;
-                    projectDetail.ScrumMasterName = scrumMaster.FullName;
-                    projectDetail.Developers = new List<ProjectUpdateUsers>();
+                    if (scrumMaster == null)
+                    {
+                        projectDetail.ScrumMasterId = "";
+                        projectDetail.ScrumMasterName = "";
+                        projectDetail.Developers = developers;
+                    }
+                    if (developers.Count == 0)
+                    {
+                        projectDetail.ScrumMasterId = scrumMaster.Id;
+                        projectDetail.ScrumMasterName = scrumMaster.FullName;
+                        projectDetail.Developers = new List<ProjectUpdateUsers>();
+                    }
                 }
             } else
             {
@@ -443,19 +412,19 @@ namespace ProjectManagementSystem.Service.Services
                 if (model.Developer1Id != "" || model.Developer2Id != "" || model.Developer3Id != "" || model.Developer4Id != "")
                 {
                     // Add new developers
-                    if (!developers.Contains(model.Developer1Id))
+                    if (model.Developer1Id != "" && !developers.Contains(model.Developer1Id))
                     {
                         await _recordService.CreateRecordAsync(model.Developer1Id, model.Id);
                     }
-                    if (!developers.Contains(model.Developer2Id))
+                    if (model.Developer2Id != "" && !developers.Contains(model.Developer2Id))
                     {
                         await _recordService.CreateRecordAsync(model.Developer2Id, model.Id);
                     }
-                    if (!developers.Contains(model.Developer3Id))
+                    if (model.Developer3Id != "" && !developers.Contains(model.Developer3Id))
                     {
                         await _recordService.CreateRecordAsync(model.Developer3Id, model.Id);
                     }
-                    if (!developers.Contains(model.Developer4Id))
+                    if (model.Developer4Id != "" && !developers.Contains(model.Developer4Id))
                     {
                         await _recordService.CreateRecordAsync(model.Developer4Id, model.Id);
                     }

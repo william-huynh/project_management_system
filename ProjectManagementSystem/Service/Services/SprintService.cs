@@ -7,6 +7,7 @@ using ProjectManagementSystem.Models.Project;
 using ProjectManagementSystem.Models.Sprint;
 using ProjectManagementSystem.Service.IServices;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,19 +31,14 @@ namespace ProjectManagementSystem.Service.Services
                 status = new string[] { "All" };
             }
 
-            var querySprintsDetailsDto = _db.Sprints
+            IQueryable<Sprint> querySprintsDetailsDto = _db.Sprints
                 .Where(
-                    x => x.Disable == false && x.ProjectId == _db.Records.Where(r => r.UserId == userId && r.Project.Status == Status.Active).FirstOrDefault().ProjectId
-                ).OrderBy(x => x.Name)
-                .Select(x => new SprintDetailsDto
-                {
-                    Id = x.Id,
-                    MaxPoint = x.MaxPoint.ToString(),
-                    Name = x.Name,
-                    StartedDate = x.StartedDate,
-                    EndedDate = x.EndedDate,
-                    Status = ((Status)x.Status).ToString(),
-                });
+                    x => x.Disable == false && 
+                    x.ProjectId == _db.Records.Where(
+                            r => r.UserId == userId && 
+                            r.Project.Status == Status.Active
+                        ).FirstOrDefault().ProjectId
+                ).OrderBy(x => x.Name);
 
             if (querySprintsDetailsDto != null)
             {
@@ -69,7 +65,11 @@ namespace ProjectManagementSystem.Service.Services
                 // FILTERS
                 if ((status.Length > 0 && !status.Contains("All")))
                 {
-                    querySprintsDetailsDto = querySprintsDetailsDto.Where(x => status.Contains(x.Status));
+                    foreach (var state in status)
+                    {
+                        Status sprintState;
+                        querySprintsDetailsDto = querySprintsDetailsDto.Where(x => Enum.TryParse(state, out sprintState) && sprintState == x.Status);
+                    }
                 }
 
                 // SEARCH
@@ -89,9 +89,10 @@ namespace ProjectManagementSystem.Service.Services
                 var startPage = (pageIndex - 1) * pageRecords;
                 if (totalPage > pageRecords)
                     querySprintsDetailsDto = querySprintsDetailsDto.Skip(startPage).Take(pageRecords);
+                var sprint = _mapper.Map<List<SprintDetailsDto>>(querySprintsDetailsDto);
                 if (pageIndex > numberPage) pageIndex = (int)numberPage;
                 var listProjectsDetailsDto = querySprintsDetailsDto.ToList();
-                var projectsDto = _mapper.Map<SprintsListDto>(listProjectsDetailsDto);
+                var projectsDto = _mapper.Map<SprintsListDto>(sprint);
                 projectsDto.TotalItem = totalPage;
                 projectsDto.NumberPage = numberPage;
                 projectsDto.CurrentPage = pageIndex;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios";
 import assignmentService from "../../../services/assignmentService";
+import userService from "../../../services/userService";
 import moment from "moment";
 
 import { FilterOutlined } from "@ant-design/icons";
@@ -10,9 +11,12 @@ import "antd/dist/antd.css";
 import "./index.css";
 
 const AssignmentTable = (props) => {
+  const userId = props.user.id;
   const { Search } = Input;
   const navigate = useNavigate();
+  const [isUserAssign, setIsUserAssign] = useState(false);
   const [assignmentId, setAssignmentId] = useState();
+  const [assignmentCanDisable, setAssignmentCanDisable] = useState(false);
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [statusMenuType, setStatusMenuType] = useState("Status");
@@ -30,24 +34,31 @@ const AssignmentTable = (props) => {
   // Fetch data
   const fetchData = (params = {}) => {
     setLoading(true);
-    axiosInstance
-      .get(
-        `assignments/get-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sprint=${params.pagination.sprint}&sortField=${params.sortField}&sortOrder=${params.sortOrder}&userId=${props.user.id}`
-      )
-      .then((results) => {
-        results.data.assignments.forEach((element) => {
-          element.startedDate = moment(element.startedDate).format(
-            "DD/MM/YYYY"
-          );
-          element.endedDate = moment(element.endedDate).format("DD/MM/YYYY");
-        });
-        setData(results.data.assignments);
-        setLoading(false);
-        setPagination({
-          ...params.pagination,
-          total: results.data.totalItem,
-        });
-      });
+    userService.checkUserAssigned(userId).then((response) => {
+      setIsUserAssign(response.data);
+      if (response.data == true) {
+        axiosInstance
+          .get(
+            `assignments/get-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sprint=${params.pagination.sprint}&category=${params.pagination.category}&sortField=${params.sortField}&sortOrder=${params.sortOrder}&userId=${props.user.id}`
+          )
+          .then((results) => {
+            results.data.assignments.forEach((element) => {
+              element.startedDate = moment(element.startedDate).format(
+                "DD/MM/YYYY"
+              );
+              element.endedDate = moment(element.endedDate).format(
+                "DD/MM/YYYY"
+              );
+            });
+            setData(results.data.assignments);
+            setLoading(false);
+            setPagination({
+              ...params.pagination,
+              total: results.data.totalItem,
+            });
+          });
+      }
+    });
   };
 
   // Status menu on click
@@ -85,12 +96,21 @@ const AssignmentTable = (props) => {
     });
   };
 
+  // Can assignment disable
+  const assignmentDisable = (record) => {
+    if (record.status === "Waiting For Acceptance") {
+      setAssignmentCanDisable(true);
+      setAssignmentId(record.id);
+    } else setAssignmentCanDisable(false);
+  };
+
   // Table columns
   const columns = [
     {
       title: "Assignment Code",
       dataIndex: "assignmentCode",
       ellipsis: true,
+      width: "15%",
       defaultSortOrder: "ascend",
       sorter: true,
     },
@@ -101,26 +121,39 @@ const AssignmentTable = (props) => {
       sorter: true,
     },
     {
+      title: "Category",
+      width: "10%",
+      dataIndex: "category",
+    },
+    {
       title: "Start Date",
-      width: "15%",
+      width: "10%",
       dataIndex: "startedDate",
       sorter: true,
     },
     {
       title: "End Date",
-      width: "15%",
+      width: "10%",
       dataIndex: "endedDate",
       sorter: true,
     },
     {
       title: "Sprint",
-      width: "10%",
+      width: "8%",
       dataIndex: "sprintName",
     },
     {
       title: "Status",
-      width: "10%",
+      width: "18%",
       dataIndex: "status",
+      render: (id, record) =>
+        record.status === "WaitingForAcceptance" ? (
+          <div className="status-waiting">Waiting For Acceptance</div>
+        ) : record.status === "Active" ? (
+          <div className="status-active">Active</div>
+        ) : (
+          <div className="status-complete">Complete</div>
+        ),
     },
     {
       title: "Action",
@@ -129,24 +162,16 @@ const AssignmentTable = (props) => {
       width: "15%",
       render: (id, record) => (
         <div className="table-button-group">
-          {/* {record.advisor.id === props.user.id ? ( */}
           <i
             className="fa-solid fa-pen-to-square fa-lg edit-button"
-            //   onClick={() => navigate(`update/${id}`)}
+            onClick={() => navigate(`update/${id}`)}
           ></i>
-          {/* ) : (
-            <i className="fa-solid fa-pen-to-square fa-lg edit-button disabled edit-button-disabled"></i>
-          )} */}
-          {/* {record.scrumMaster.id === null ? ( */}
           <i
-            className="fa-solid fa-xmark fa-xl delete-button"
+            className="fa-solid fa-trash fa-lg delete-button"
             data-toggle="modal"
             data-target="#disableAssignmentModal"
-            //   onClick={() => setAssignmentId(id)}
+            onClick={() => assignmentDisable(record)}
           ></i>
-          {/* ) : (
-            <i className="fa-solid fa-xmark fa-xl delete-button disabled delete-button-disabled"></i>
-          )} */}
           <i
             className="fa-solid fa-circle-exclamation fa-lg detail-button"
             // onClick={() => navigate(`${id}`)}
@@ -235,7 +260,7 @@ const AssignmentTable = (props) => {
     });
   }, []);
 
-  return (
+  return isUserAssign === true ? (
     <div className="assignment-table">
       <p className="header-assignment-list">Assignment List</p>
 
@@ -321,34 +346,47 @@ const AssignmentTable = (props) => {
               </button>
             </div>
             <div className="modal-body">
-              Are you sure you want to disable this assignment?
+              {assignmentCanDisable === true
+                ? "Are you sure you want to disable this assignment?"
+                : "This assignment is currently assigned to a developer"}
             </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-confirm-scrum-master"
-                data-dismiss="modal"
-                onClick={() => {
-                  assignmentService.disable(assignmentId).then(() => {
-                    fetchData({
-                      pagination,
+            {assignmentCanDisable === true ? (
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-confirm-scrum-master"
+                  data-dismiss="modal"
+                  onClick={() => {
+                    assignmentService.disable(assignmentId).then(() => {
+                      fetchData({
+                        pagination,
+                      });
                     });
-                  });
-                }}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="btn btn-cancel"
-                data-dismiss="modal"
-              >
-                No
-              </button>
-            </div>
+                  }}
+                >
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-cancel"
+                  data-dismiss="modal"
+                >
+                  No
+                </button>
+              </div>
+            ) : (
+              <div className="modal-footer"></div>
+            )}
           </div>
         </div>
       </div>
+    </div>
+  ) : (
+    <div className="no-assign-error">
+      <div>
+        <i class="fa-solid fa-users-slash fa-xl"></i>
+      </div>
+      <p>User is not assigned to a project!</p>
     </div>
   );
 };

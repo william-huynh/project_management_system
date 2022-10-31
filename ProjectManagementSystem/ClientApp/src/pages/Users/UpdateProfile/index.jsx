@@ -7,7 +7,7 @@ import * as yup from "yup";
 import "./index.css";
 
 const UpdateProfile = (props) => {
-  let { id } = useParams();
+  const { id } = useParams();
   const role = props.user.role[0];
   const navigate = useNavigate();
   const [userDetail, setUserDetail] = useState(null);
@@ -154,7 +154,8 @@ const UpdateProfile = (props) => {
       userService
         .updateProfile(id, data)
         .then((response) => {
-          window.location.reload();
+          getUserDetail(id);
+          alert("Profile updated successfully!");
         })
         .catch((e) => {
           console.log(e);

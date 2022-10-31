@@ -50,8 +50,8 @@
   border-bottom-right-radius: 5px;
 }
 
-#projectDetailModal .modal-dialog {
-  max-width: 50vw;
+#disableProjectModal .modal-content {
+  border-radius: 5px;
 }
 
 .project-detail-picture {

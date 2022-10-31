@@ -10,46 +10,46 @@ const Navbar = (props) => {
   const navigate = useNavigate();
   // const location = useLocation();
 
-  const renderTitle = (title) => {
-    const urlTitle = title.split("/");
-    switch (urlTitle[1]) {
-      case "":
-        return "Home";
-      case "users":
-        switch (urlTitle[2]) {
-          case "add":
-            return "Manage User > Add User";
-          case "update":
-            return "Manage User > Edit User";
-          default:
-            return "Manage User";
-        }
-      case "assets":
-        switch (urlTitle[2]) {
-          case "add":
-            return "Manage Asset > Add Asset";
-          case "update":
-            return "Manage Asset > Edit Asset";
-          default:
-            return "Manage Asset";
-        }
-      case "assignments":
-        switch (urlTitle[2]) {
-          case "add":
-            return "Manage Assignment > Add Assignment";
-          case "update":
-            return "Manage Assignment > Edit Assignment";
-          default:
-            return "Manage Assignment";
-        }
-      case "requests":
-        return "Request for Returning";
-      case "reports":
-        return "Report";
-      default:
-        break;
-    }
-  };
+  // const renderTitle = (title) => {
+  //   const urlTitle = title.split("/");
+  //   switch (urlTitle[1]) {
+  //     case "":
+  //       return "Home";
+  //     case "users":
+  //       switch (urlTitle[2]) {
+  //         case "add":
+  //           return "Manage User > Add User";
+  //         case "update":
+  //           return "Manage User > Edit User";
+  //         default:
+  //           return "Manage User";
+  //       }
+  //     case "assets":
+  //       switch (urlTitle[2]) {
+  //         case "add":
+  //           return "Manage Asset > Add Asset";
+  //         case "update":
+  //           return "Manage Asset > Edit Asset";
+  //         default:
+  //           return "Manage Asset";
+  //       }
+  //     case "assignments":
+  //       switch (urlTitle[2]) {
+  //         case "add":
+  //           return "Manage Assignment > Add Assignment";
+  //         case "update":
+  //           return "Manage Assignment > Edit Assignment";
+  //         default:
+  //           return "Manage Assignment";
+  //       }
+  //     case "requests":
+  //       return "Request for Returning";
+  //     case "reports":
+  //       return "Report";
+  //     default:
+  //       break;
+  //   }
+  // };
 
   const logout = () => {
     axios.post("/api/users/logout").then((res) => {
@@ -124,7 +124,7 @@ const Navbar = (props) => {
         <div className="collapse navbar-collapse" id="basicExampleNav">
           <div className="navbar-nav ml-auto">
             <div className="nav-item dropdown">
-              <a
+              <button
                 className="nav-link dropdown-toggle"
                 id="navbarDropdownMenu"
                 data-toggle="dropdown"
@@ -133,25 +133,25 @@ const Navbar = (props) => {
                 style={{ color: "white", fontSize: 16, fontWeight: "bold" }}
               >
                 {user.userName}
-              </a>
+              </button>
               <div
                 className="dropdown-menu dropdown-primary"
                 aria-labelledby="navbarDropdownMenu"
                 style={{ left: "auto", right: 0, textAlign: "right" }}
               >
-                <a
+                <button
                   className="dropdown-item"
                   onClick={() => navigate(`profile/${user.id}`)}
                 >
                   User Profile
-                </a>
-                <a
+                </button>
+                <button
                   className="dropdown-item"
                   data-toggle="modal"
                   data-target="#logoutModal"
                 >
                   Logout
-                </a>
+                </button>
               </div>
             </div>
           </div>
