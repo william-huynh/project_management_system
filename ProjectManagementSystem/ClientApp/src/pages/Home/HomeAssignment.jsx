@@ -16,9 +16,10 @@ const HomeAssignment = (props) => {
   const navigate = useNavigate();
   const [isUserAssign, setIsUserAssign] = useState(false);
   const [assignmentId, setAssignmentId] = useState();
-  const [assignmentCanDisable, setAssignmentCanDisable] = useState(false);
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
+  const [sprint, setSprint] = useState([]);
+  const [category, setCategory] = useState([]);
   const [statusMenuType, setStatusMenuType] = useState("Status");
   const [sprintMenuType, setSprintMenuType] = useState("Sprint");
   const [categoryMenuType, setCategoryMenuType] = useState("Category");
@@ -61,6 +62,19 @@ const HomeAssignment = (props) => {
     });
   };
 
+  // Fetch filters
+  const fetchFilter = (id) => {
+    assignmentService.getFilters(id).then((result) => {
+      var allFilter = { label: "All", key: "All" };
+      var sprintFilter = result.data.sprints;
+      var categoryFilter = result.data.categories;
+      sprintFilter.unshift(allFilter);
+      categoryFilter.unshift(allFilter);
+      setSprint(result.data.sprints);
+      setCategory(result.data.categories);
+    });
+  };
+
   // Status menu on click
   const handleStatusMenuClick = (e) => {
     setPagination((pagination.status = e.key));
@@ -96,21 +110,13 @@ const HomeAssignment = (props) => {
     });
   };
 
-  // Can assignment disable
-  const assignmentDisable = (record) => {
-    if (record.status === "Waiting For Acceptance") {
-      setAssignmentCanDisable(true);
-      setAssignmentId(record.id);
-    } else setAssignmentCanDisable(false);
-  };
-
   // Table columns
   const columns = [
     {
-      title: "Assignment Code",
+      title: "Code",
       dataIndex: "assignmentCode",
       ellipsis: true,
-      width: "15%",
+      width: "8%",
       defaultSortOrder: "ascend",
       sorter: true,
     },
@@ -121,36 +127,49 @@ const HomeAssignment = (props) => {
       sorter: true,
     },
     {
+      title: "Type",
+      width: "10%",
+      ellipsis: true,
+      // dataIndex: "category",
+    },
+    {
       title: "Category",
       width: "10%",
+      ellipsis: true,
       dataIndex: "category",
     },
     {
       title: "Start Date",
       width: "10%",
       dataIndex: "startedDate",
-      sorter: true,
     },
     {
       title: "End Date",
       width: "10%",
       dataIndex: "endedDate",
-      sorter: true,
     },
     {
       title: "Sprint",
       width: "8%",
+      ellipsis: true,
+      sorter: true,
       dataIndex: "sprintName",
     },
     {
       title: "Status",
-      width: "18%",
+      width: "10%",
+      ellipsis: true,
+      sorter: true,
       dataIndex: "status",
       render: (id, record) =>
-        record.status === "WaitingForAcceptance" ? (
-          <div className="status-waiting">Waiting For Acceptance</div>
-        ) : record.status === "Active" ? (
-          <div className="status-active">Active</div>
+        record.status === "Pending" ? (
+          <div className="status-waiting">Pending</div>
+        ) : record.status === "Todo" ? (
+          <div className="status-todo">To Do</div>
+        ) : record.status === "InProgress" ? (
+          <div className="status-progress">In Progress</div>
+        ) : record.status === "InReview" ? (
+          <div className="status-review">In Review</div>
         ) : (
           <div className="status-complete">Complete</div>
         ),
@@ -161,7 +180,7 @@ const HomeAssignment = (props) => {
       key: "id",
       width: "15%",
       render: (id, record) =>
-        record.status === "WaitingForAcceptance" ? (
+        record.status === "Pending" ? (
           <div className="table-button-group">
             <i
               className="fa-solid fa-check fa-xl detail-button"
@@ -203,8 +222,20 @@ const HomeAssignment = (props) => {
           key: "All",
         },
         {
-          label: "Active",
-          key: "Active",
+          label: "Pending",
+          key: "Pending",
+        },
+        {
+          label: "To do",
+          key: "Todo",
+        },
+        {
+          label: "In Progress",
+          key: "InProgress",
+        },
+        {
+          label: "In Review",
+          key: "InReview",
         },
         {
           label: "Complete",
@@ -215,45 +246,11 @@ const HomeAssignment = (props) => {
   );
 
   // Filter sprint menu
-  const sprintMenu = (
-    <Menu
-      onClick={handleSprintMenuClick}
-      items={[
-        {
-          label: "All",
-          key: "All",
-        },
-        {
-          label: "Sprint 01",
-          key: "Sprint 01",
-        },
-        {
-          label: "Sprint 02",
-          key: "Sprint 02",
-        },
-      ]}
-    />
-  );
+  const sprintMenu = <Menu onClick={handleSprintMenuClick} items={sprint} />;
 
   // Filter category menu
   const categoryMenu = (
-    <Menu
-      onClick={handleCategoryMenuClick}
-      items={[
-        {
-          label: "All",
-          key: "All",
-        },
-        {
-          label: "UI",
-          key: "UI",
-        },
-        {
-          label: "Database",
-          key: "Database",
-        },
-      ]}
-    />
+    <Menu onClick={handleCategoryMenuClick} items={category} />
   );
 
   // Table on change
@@ -270,6 +267,7 @@ const HomeAssignment = (props) => {
     fetchData({
       pagination,
     });
+    fetchFilter(userId);
   }, []);
 
   return isUserAssign === true ? (
@@ -316,6 +314,15 @@ const HomeAssignment = (props) => {
           <FilterOutlined />
         </Button>
       </Dropdown>
+
+      {/* Change to board view button */}
+      <Button
+        className="create-assignment-button"
+        type="primary"
+        onClick={() => navigate("/board")}
+      >
+        Change to board view
+      </Button>
 
       {/* Search bar */}
       <Search onSearch={onSearch} className="search-box" />
@@ -457,7 +464,7 @@ const HomeAssignment = (props) => {
   ) : (
     <div className="no-assign-error">
       <div>
-        <i class="fa-solid fa-users-slash fa-xl"></i>
+        <i className="fa-solid fa-users-slash fa-xl"></i>
       </div>
       <p>User is not assigned to a project!</p>
     </div>

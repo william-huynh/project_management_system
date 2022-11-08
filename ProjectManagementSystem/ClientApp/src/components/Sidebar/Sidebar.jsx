@@ -1,9 +1,18 @@
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import userService from "../../services/userService";
 
 import "./Sidebar.css";
 
 const Sidebar = (props) => {
   const user = props.user;
+  const [projectId, setProjectId] = useState(null);
+
+  useEffect(() => {
+    userService
+      .getProjectId(user.id)
+      .then((response) => setProjectId(response.data));
+  }, []);
 
   return (
     <div
@@ -46,6 +55,13 @@ const Sidebar = (props) => {
             <NavLink to="/problems">
               <li>Manage Problems</li>
             </NavLink>
+            {projectId === null ? (
+              <div></div>
+            ) : (
+              <NavLink to={`/projects/${projectId}`}>
+                <li>Project Detail</li>
+              </NavLink>
+            )}
           </ul>
         </div>
       ) : (
@@ -54,6 +70,13 @@ const Sidebar = (props) => {
             <NavLink to="/">
               <li>Home</li>
             </NavLink>
+            {projectId === null ? (
+              <div></div>
+            ) : (
+              <NavLink to={`/projects/${projectId}`}>
+                <li>Project Detail</li>
+              </NavLink>
+            )}
           </ul>
         </div>
       )}

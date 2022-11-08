@@ -7,6 +7,7 @@ namespace ProjectManagementSystem.Models.Assignment
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Status { get; set; }
         public int Point { get; set; }
         public string CategoryId { get; set; }
         public string SprintId { get; set; }

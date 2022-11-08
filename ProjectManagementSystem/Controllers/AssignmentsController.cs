@@ -21,11 +21,11 @@ namespace ProjectManagementSystem.Controllers
         }
 
         [HttpGet]
-        [Route("get-categories")]
+        [Route("get-categories/{userId}")]
         // [Authorize(Roles = "ScrumMaster")]
-        public async Task<IActionResult> GetCategoriesList()
+        public async Task<IActionResult> GetCategoriesList(string userId)
         {
-            var categories = await _assignmentService.GetCategoriesListAsync();
+            var categories = await _assignmentService.GetCategoriesListAsync(userId);
             return Ok(categories);
         }
 
@@ -40,12 +40,21 @@ namespace ProjectManagementSystem.Controllers
         }
 
         [HttpGet]
-        [Route("get-sprints")]
+        [Route("get-sprints/{userId}")]
         // [Authorize(Roles = "ScrumMaster")]
-        public async Task<IActionResult> GetSprintsList()
+        public async Task<IActionResult> GetSprintsList(string userId)
         {
-            var sprints = await _assignmentService.GetSprintsListAsync();
+            var sprints = await _assignmentService.GetSprintsListAsync(userId);
             return Ok(sprints);
+        }
+
+        [HttpGet]
+        [Route("get-filters/{userId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> GetFiltersList(string userId)
+        {
+            var filters = await _assignmentService.GetFilterListAsync(userId);
+            return Ok(filters);
         }
 
         [HttpGet]
@@ -73,6 +82,26 @@ namespace ProjectManagementSystem.Controllers
         public async Task<IActionResult> GetAssignedAssignmentsList(int? page, int? pageSize, string keyword, [FromQuery] string[] status, [FromQuery] string[] sprint, [FromQuery] string[] category, string sortField, string sortOrder, string userId)
         {
             var assignments = await _assignmentService.GetAssignedAssignmentsListAsync(page, pageSize, keyword, status, sprint, category, sortField, sortOrder, userId);
+            if (assignments == null) return BadRequest(assignments);
+            return Ok(assignments);
+        }
+
+        [HttpGet]
+        [Route("get-assigned-board/{userId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> GetAssignedAssignmentsBoard(string userId)
+        {
+            var assignments = await _assignmentService.GetBoardAssignmentsListAsync(userId);
+            if (assignments == null) return BadRequest(assignments);
+            return Ok(assignments);
+        }
+
+        [HttpGet]
+        [Route("detail/{assignmentId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> GetAssignmentsDetail(string assignmentId)
+        {
+            var assignments = await _assignmentService.GetAssignmentDetailAsync(assignmentId);
             if (assignments == null) return BadRequest(assignments);
             return Ok(assignments);
         }
@@ -113,6 +142,16 @@ namespace ProjectManagementSystem.Controllers
         public async Task<IActionResult> AcceptAssignment(string assignmentId)
         {
             var assignment = await _assignmentService.AcceptAssignmentAsync(assignmentId);
+            if (assignment == null) return BadRequest(assignment);
+            return Ok(assignment);
+        }
+
+        [HttpPut]
+        [Route("update-status/{assignmentId}/{status}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> UpdateAssignmentStatus(string assignmentId, string status)
+        {
+            var assignment = await _assignmentService.UpdateAssignmentStatusAsync(assignmentId, status);
             if (assignment == null) return BadRequest(assignment);
             return Ok(assignment);
         }

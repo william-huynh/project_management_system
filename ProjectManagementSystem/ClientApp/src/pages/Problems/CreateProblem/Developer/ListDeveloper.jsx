@@ -36,7 +36,6 @@ const ListDeveloper = (props) => {
         `problems/developer-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&sortField=${params.sortField}&sortOrder=${params.sortOrder}`
       )
       .then((results) => {
-        console.log(results);
         setData(results.data.users);
         setLoading(false);
         setPagination({

@@ -28,9 +28,13 @@ namespace ProjectManagementSystem.Service.Services
         }
 
 
-        public async Task<List<CategoryDetailsDto>> GetCategoriesListAsync()
+        public async Task<List<CategoryDetailsDto>> GetCategoriesListAsync(string userId)
         {
-            var categories = await _db.Categories.ToListAsync();
+            var projectId = await _db.Records
+                .Where(x => x.UserId == userId && x.Project.Status == Status.Active)
+                .Select(x => x.ProjectId)
+                .FirstOrDefaultAsync();
+            var categories = await _db.Categories.Where(x => x.ProjectId == projectId).ToListAsync();
             var categoriesList = _mapper.Map<List<CategoryDetailsDto>>(categories);
             return categoriesList;
         }
@@ -48,19 +52,54 @@ namespace ProjectManagementSystem.Service.Services
             return category;
         }
 
-        public async Task<List<SprintDetailsDto>> GetSprintsListAsync()
+        public async Task<List<SprintDetailsDto>> GetSprintsListAsync(string userId)
         {
+            var projectId = await _db.Records
+                .Where(x => x.UserId == userId && x.Project.Status == Status.Active)
+                .Select(x => x.ProjectId)
+                .FirstOrDefaultAsync();
             var sprints = await _db.Sprints
-                .Where(x => x.Disable == false)
+                .Where(x => x.Disable == false && x.ProjectId == projectId)
                 .ToListAsync();
             var sprintsDto = _mapper.Map<List<SprintDetailsDto>>(sprints);
             return sprintsDto;
         }
 
+        public async Task<AssignmentFilterListDto> GetFilterListAsync(string userId)
+        {
+            var projectId = await _db.Records
+                .Where(x => x.UserId == userId && x.Project.Status == Status.Active)
+                .Select(x => x.ProjectId)
+                .FirstOrDefaultAsync();
+
+            var sprints = await _db.Sprints
+                .Where(x => x.Disable == false && x.ProjectId == projectId)
+                .Select(x => new SprintFilterDto
+                {
+                    Label = x.Name,
+                    Key = x.Name,
+                }).ToListAsync();
+
+            var categories = await _db.Categories
+                .Where(x => x.ProjectId == projectId)
+                .Select(x => new CategoryFilterDto
+                {
+                    Label = x.Name,
+                    Key = x.Name,
+                }).ToListAsync();
+
+            var filters = new AssignmentFilterListDto
+            {
+                Sprints = sprints,
+                Categories = categories,
+            };
+            return filters;
+        }
+
         public async Task<AssignmentsListDto> GetAvailableAssignmentsListAsync(int? page, int? pageSize, string sortField, string sortOrder)
         {
             var queryAssignmentsDto = _db.Assignments
-                .Where(x => x.Status == Status.Active && x.Disable == false)
+                .Where(x => x.Status != Status.Pending && x.Status != Status.Complete && x.Disable == false)
                 .OrderBy(x => x.Name)
                 .Select(x => new AssignmentDetailsDto
                 {
@@ -320,6 +359,46 @@ namespace ProjectManagementSystem.Service.Services
             return problemDto;
         }
 
+        public async Task<ProblemDetailsDto> GetProblemDetailAsync(string problemId)
+        {
+            var problem = await _db.Problems
+                .Where(x => x.Disable == false && x.Id == problemId)
+                .Select(x => new ProblemDetailsDto
+                {
+                    Id = x.Id,
+                    ProblemCode = x.ProblemCode,
+                    Name = x.Name,
+                    Description = x.Description,
+                    Category = x.Category.Name,
+                    SprintName = x.Sprint.Name,
+                    StartedDate = x.StartedDate,
+                    EndedDate = x.EndedDate,
+                    Status = ((Status)x.Status).ToString(),
+                    Developer = _db.Users
+                        .Where(u => u.Id == x.DeveloperId)
+                        .Select(u => new UserDetailsDto
+                        {
+                            Id = u.Id,
+                            UserCode = u.UserCode,
+                            FullName = u.FirstName + " " + u.LastName,
+                            UserName = u.UserName,
+                            Role = _db.Roles.FirstOrDefault(z => z.Id == _db.UserRoles.FirstOrDefault(y => y.UserId == u.Id).RoleId).Name
+                        }).FirstOrDefault(),
+                    Assignment = _db.Assignments
+                        .Where(a => a.Id == x.AssignmentId)
+                        .Select(a => new AssignmentDetailsDto
+                        {
+                            Id = a.Id,
+                            AssignmentCode = a.AssignmentCode,
+                            Name = a.Name,
+                            Category = a.Category.Name,
+                            Status = ((Status)a.Status).ToString(),
+                        }).FirstOrDefault(),
+                }).FirstOrDefaultAsync();
+
+            return problem;
+        }
+
         public async Task<Problem> CreateProblemAsync(ProblemCreateDto model)
         {
             var problemCode = await GenerateProblemCode();
@@ -331,7 +410,7 @@ namespace ProjectManagementSystem.Service.Services
                 Name = model.Name,
                 Description = model.Description,
                 Point = Convert.ToInt32(model.Point),
-                Status = Status.WaitingForAcceptance,
+                Status = Status.Pending,
                 CategoryId = model.CategoryId,
                 SprintId = model.SprintId,
                 StartedDate = model.StartedDate,
@@ -347,9 +426,11 @@ namespace ProjectManagementSystem.Service.Services
 
         public async Task<Problem> UpdateProblemAsync(ProblemUpdateDto model)
         {
+            Enum.TryParse(model.Status, out Status newStatus);
             var problem = await _db.Problems.FindAsync(model.Id);
             problem.Name = model.Name;
             problem.Description = model.Description;
+            problem.Status = newStatus;
             problem.Point = Convert.ToInt32(model.Point);
             problem.CategoryId = model.CategoryId;
             problem.SprintId = model.SprintId;

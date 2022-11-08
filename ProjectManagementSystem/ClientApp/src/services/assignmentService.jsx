@@ -26,16 +26,28 @@ const updateDetail = (id) => {
   return axios.get(API_URL + `/assignments/update-detail/${id}`);
 };
 
-const getCategories = () => {
-  return axios.get(API_URL + "/assignments/get-categories");
+const getCategories = (id) => {
+  return axios.get(API_URL + `/assignments/get-categories/${id}`);
 };
 
 const createCategory = (data) => {
   return axios.post(API_URL + "/assignments/create-category", data);
 };
 
-const getSprints = () => {
-  return axios.get(API_URL + "/assignments/get-sprints");
+const getSprints = (id) => {
+  return axios.get(API_URL + `/assignments/get-sprints/${id}`);
+};
+
+const getFilters = (id) => {
+  return axios.get(API_URL + `/assignments/get-filters/${id}`);
+};
+
+const getBoard = (id) => {
+  return axios.get(API_URL + `/assignments/get-assigned-board/${id}`);
+};
+
+const updateStatus = (id, status) => {
+  return axios.put(API_URL + `/assignments/update-status/${id}/${status}`);
 };
 
 export default {
@@ -48,4 +60,7 @@ export default {
   getCategories,
   createCategory,
   getSprints,
+  getFilters,
+  getBoard,
+  updateStatus,
 };

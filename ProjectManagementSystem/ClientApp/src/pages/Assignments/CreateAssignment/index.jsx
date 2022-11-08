@@ -9,7 +9,8 @@ import ModalDeveloper from "./Developer/ModalDeveloper";
 
 import "./index.css";
 
-const CreateAssignment = () => {
+const CreateAssignment = (props) => {
+  const userId = props.user.id;
   const navigate = useNavigate();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -57,10 +58,10 @@ const CreateAssignment = () => {
 
   // Fetch categories
   const fetchData = () => {
-    assignmentService.getCategories().then((result) => {
+    assignmentService.getCategories(userId).then((result) => {
       setCategories(result.data);
     });
-    assignmentService.getSprints().then((result) => {
+    assignmentService.getSprints(userId).then((result) => {
       setSprints(result.data);
     });
   };

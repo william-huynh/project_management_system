@@ -112,6 +112,15 @@ namespace ProjectManagementSystem.Controllers
         }
 
         [HttpGet]
+        [Route("get-project-id/{userId}")]
+        //[Authorize(Roles = "ProductOwner")]
+        public async Task<IActionResult> GetProjectId(string userId)
+        {
+            var projectId = await _userService.GetProjectIdAsync(userId);
+            return Ok(projectId);
+        }
+
+        [HttpGet]
         [Route("detail/{userId}")]
         //[Authorize(Roles = "ProductOwner")]
         public async Task<IActionResult> GetDetail(string userId)

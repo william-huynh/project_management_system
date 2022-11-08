@@ -21,11 +21,11 @@ namespace ProjectManagementSystem.Controllers
         }
 
         [HttpGet]
-        [Route("get-categories")]
+        [Route("get-categories/{userId}")]
         // [Authorize(Roles = "ScrumMaster")]
-        public async Task<IActionResult> GetCategoriesList()
+        public async Task<IActionResult> GetCategoriesList(string userId)
         {
-            var categories = await _problemService.GetCategoriesListAsync();
+            var categories = await _problemService.GetCategoriesListAsync(userId);
             return Ok(categories);
         }
 
@@ -40,12 +40,21 @@ namespace ProjectManagementSystem.Controllers
         }
 
         [HttpGet]
-        [Route("get-sprints")]
+        [Route("get-sprints/{userId}")]
         // [Authorize(Roles = "ScrumMaster")]
-        public async Task<IActionResult> GetSprintsList()
+        public async Task<IActionResult> GetSprintsList(string userId)
         {
-            var sprints = await _problemService.GetSprintsListAsync();
+            var sprints = await _problemService.GetSprintsListAsync(userId);
             return Ok(sprints);
+        }
+
+        [HttpGet]
+        [Route("get-filters/{userId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> GetFiltersList(string userId)
+        {
+            var filters = await _problemService.GetFilterListAsync(userId);
+            return Ok(filters);
         }
 
         [HttpGet]
@@ -84,6 +93,16 @@ namespace ProjectManagementSystem.Controllers
             var problems = await _problemService.GetProblemUpdateDetailAsync(problemId);
             if (problems == null) return BadRequest(problems);
             return Ok(problems);
+        }
+
+        [HttpGet]
+        [Route("detail/{problemId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> GetProblemDetail(string problemId)
+        {
+            var problem = await _problemService.GetProblemDetailAsync(problemId);
+            if (problem == null) return BadRequest(problem);
+            return Ok(problem);
         }
 
         [HttpPost]

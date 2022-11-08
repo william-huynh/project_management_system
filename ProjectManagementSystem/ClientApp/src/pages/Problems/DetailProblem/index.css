@@ -1,0 +1,23 @@
+.detail-problem-input {
+  background-color: #fff !important;
+}
+
+.detail-problem-table-heading-advisor {
+  background-color: #cf2338;
+}
+
+.detail-problem-table-heading-scrum-master {
+  background-color: #2338cf;
+}
+
+.detail-problem-table-heading-developer {
+  background-color: #38cf23;
+}
+
+.create-problem .table th {
+  font-weight: bold;
+}
+
+.create-problem .table td {
+  font-weight: normal;
+}

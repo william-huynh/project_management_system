@@ -6,7 +6,8 @@ import moment from "moment";
 
 import "./index.css";
 
-const DetailProject = () => {
+const DetailProject = (props) => {
+  const role = props.user.role[0];
   const { id } = useParams();
   const navigate = useNavigate();
   const [projectDetail, setProjectDetail] = useState(null);
@@ -49,49 +50,32 @@ const DetailProject = () => {
   }, [id]);
 
   return (
-    <div className="create-project">
-      <div className="row">
-        <div className="col-6">
-          <p className="header-project-list">Project detail</p>
-        </div>
-        <div className="col-6 text-right">
-          <button
-            className="detail-project-button mr-3"
-            onClick={() => navigate(`/projects/update/${id}`)}
-          >
-            Edit project
-          </button>
-          <button
-            className="detail-project-button"
-            onClick={() => navigate("/projects")}
-          >
-            Return to index
-          </button>
-        </div>
-      </div>
-
-      {/* <div className="row" style={{ marginTop: "0.5rem" }}>
-        <div className="col-6">
-          <button
-            className="detail-project-button"
-            onClick={() => navigate(`/projects/update/${id}`)}
-          >
-            Edit project
-          </button>
-        </div>
-        <div className="col-6 text-right">
-          <button
-            className="detail-project-button"
-            onClick={() => navigate("/projects")}
-          >
-            Return to index
-          </button>
-        </div>
-      </div> */}
+    <div className="detail-project">
+      <p
+        className={`header-project-detail ${
+          role === "Advisor"
+            ? "text-advisor"
+            : role === "ScrumMaster"
+            ? "text-scrum-master"
+            : "text-developer"
+        }`}
+      >
+        Project detail
+      </p>
       <div className="upper-form" style={{ marginTop: "1rem" }}>
-        <p className="form-title">Project information</p>
+        <p
+          className={`form-title ${
+            role === "Advisor"
+              ? "text-advisor"
+              : role === "ScrumMaster"
+              ? "text-scrum-master"
+              : "text-developer"
+          }`}
+        >
+          Project information
+        </p>
         <div className="row mt-3">
-          <div className="col-6">
+          <div className="col-7">
             <div className="input-group flex-nowrap">
               <div className="input-group-prepend">
                 <span className="input-group-text" id="addon-wrapping">
@@ -125,11 +109,11 @@ const DetailProject = () => {
               />
             </div>
           </div>
-          <div className="col-3">
+          <div className="col-2">
             <div className="input-group flex-nowrap">
               <div className="input-group-prepend">
                 <span className="input-group-text" id="addon-wrapping">
-                  Project status
+                  Status
                 </span>
               </div>
               <input
@@ -202,17 +186,35 @@ const DetailProject = () => {
         </div>
       </div>
       <div className="lower-form">
-        <p className="form-title" onClick={() => console.log(developers)}>
+        <p
+          className={`form-title ${
+            role === "Advisor"
+              ? "text-advisor"
+              : role === "ScrumMaster"
+              ? "text-scrum-master"
+              : "text-developer"
+          }`}
+        >
           Assign User
         </p>
         <table className="table table-striped mt-3">
-          <thead className="detail-project-table-heading white-text">
+          <thead
+            className={`white-text ${
+              role === "Advisor"
+                ? "detail-assignment-table-heading-advisor"
+                : role === "ScrumMaster"
+                ? "detail-assignment-table-heading-scrum-master"
+                : "detail-assignment-table-heading-developer"
+            }`}
+          >
             <tr>
               <th scope="col">User Code</th>
               <th scope="col">Full name</th>
               <th scope="col">Username</th>
               <th scope="col">Role</th>
-              <th scope="col">Action</th>
+              <th scope="col" className="text-center">
+                Action
+              </th>
             </tr>
           </thead>
           {projectDetail === null ? (
@@ -223,10 +225,10 @@ const DetailProject = () => {
                 <td>{projectDetail.advisor.userCode}</td>
                 <td>{projectDetail.advisor.fullName}</td>
                 <td>{projectDetail.advisor.userName}</td>
-                <td>{projectDetail.advisor.role}</td>
+                <td>Product Owner</td>
                 <td className="text-center">
                   <i
-                    className="fa-solid fa-circle-exclamation fa-lg user-detail-button"
+                    className="fa-solid fa-circle-exclamation fa-lg detail-button"
                     onClick={() =>
                       navigate(`/users/${projectDetail.advisor.id}`)
                     }
@@ -237,10 +239,10 @@ const DetailProject = () => {
                 <td>{projectDetail.scrumMaster.userCode}</td>
                 <td>{projectDetail.scrumMaster.fullName}</td>
                 <td>{projectDetail.scrumMaster.userName}</td>
-                <td>{projectDetail.scrumMaster.role}</td>
+                <td>Scrum Master</td>
                 <td className="text-center">
                   <i
-                    className="fa-solid fa-circle-exclamation fa-lg user-detail-button"
+                    className="fa-solid fa-circle-exclamation fa-lg detail-button"
                     onClick={() =>
                       navigate(`/users/${projectDetail.scrumMaster.id}`)
                     }
@@ -255,7 +257,7 @@ const DetailProject = () => {
                   <td>{developer.role}</td>
                   <td className="text-center">
                     <i
-                      className="fa-solid fa-circle-exclamation fa-lg user-detail-button"
+                      className="fa-solid fa-circle-exclamation fa-lg detail-button"
                       onClick={() => navigate(`/users/${developer.id}`)}
                     ></i>
                   </td>

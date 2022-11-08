@@ -7,8 +7,10 @@ import moment from "moment";
 
 import ModalDeveloper from "./Developer/ModalDeveloper";
 import ModalAssignment from "./Assignment/ModalAssignment";
+import "./index.css";
 
-const CreateProblem = () => {
+const CreateProblem = (props) => {
+  const userId = props.user.id;
   const navigate = useNavigate();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -58,10 +60,10 @@ const CreateProblem = () => {
 
   // Fetch data
   const fetchData = () => {
-    problemService.getCategories().then((result) => {
+    problemService.getCategories(userId).then((result) => {
       setCategories(result.data);
     });
-    problemService.getSprints().then((result) => {
+    problemService.getSprints(userId).then((result) => {
       setSprints(result.data);
     });
   };

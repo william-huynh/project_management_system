@@ -338,13 +338,13 @@ const SprintTable = (props) => {
       <p className="header-sprint-list">Sprint List</p>
 
       {/* Filter menu */}
-      <Dropdown overlay={menu} placement="bottom">
+      {/* <Dropdown overlay={menu} placement="bottom">
         <Button className="btn-filter" style={{ marginTop: "0.5rem" }}>
           <span></span>
           {menuType}
           <FilterOutlined />
         </Button>
-      </Dropdown>
+      </Dropdown> */}
 
       {/* Create new sprint button */}
       <Button
@@ -358,7 +358,11 @@ const SprintTable = (props) => {
       </Button>
 
       {/* Search bar */}
-      <Search onSearch={onSearch} className="search-box" />
+      <Search
+        onSearch={onSearch}
+        className="search-box"
+        style={{ marginBottom: "1rem" }}
+      />
 
       {/* Sprint table */}
       <Table

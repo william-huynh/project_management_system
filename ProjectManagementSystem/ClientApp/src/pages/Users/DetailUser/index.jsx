@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import userService from "../../../services/userService";
-import * as yup from "yup";
+import moment from "moment";
 
 import "./index.css";
 
-const DetailUser = () => {
-  let { id } = useParams();
+const DetailUser = (props) => {
+  const role = props.user.role[0];
+  const { id } = useParams();
   const navigate = useNavigate();
   const [userDetail, setUserDetail] = useState(null);
   const [advisedProject, setAdvisedProject] = useState([]);
@@ -88,19 +89,17 @@ const DetailUser = () => {
 
   return (
     <div className="detail-user">
-      <div className="row">
-        <div className="col-6">
-          <p className="header-user-list">User detail</p>
-        </div>
-        <div className="col-6 text-right">
-          <button
-            className="detail-user-header-button"
-            onClick={() => navigate("/users")}
-          >
-            Return to index
-          </button>
-        </div>
-      </div>
+      <p
+        className={`header-user-detail ${
+          role === "Advisor"
+            ? "text-advisor"
+            : role === "ScrumMaster"
+            ? "text-scrum-master"
+            : "text-developer"
+        }`}
+      >
+        User detail
+      </p>
       <div className="row" style={{ marginRight: 0 }}>
         <div className="col-3" style={{ marginTop: "1rem" }}>
           <img
@@ -110,7 +109,17 @@ const DetailUser = () => {
           />
         </div>
         <div className="col-9 upper-form">
-          <p className="form-title">User information</p>
+          <p
+            className={`form-title ${
+              role === "Advisor"
+                ? "text-advisor"
+                : role === "ScrumMaster"
+                ? "text-scrum-master"
+                : "text-developer"
+            }`}
+          >
+            User information
+          </p>
           <div className="row mt-3">
             <div className="col-6">
               <div className="input-group flex-nowrap">
@@ -267,7 +276,17 @@ const DetailUser = () => {
         </div>
       </div>
       <div className="lower-form">
-        <p className="form-title">Project information</p>
+        <p
+          className={`form-title ${
+            role === "Advisor"
+              ? "text-advisor"
+              : role === "ScrumMaster"
+              ? "text-scrum-master"
+              : "text-developer"
+          }`}
+        >
+          Project information
+        </p>
         <div className="row mt-3">
           <div className="col-6">
             <div className="input-group">
@@ -298,14 +317,24 @@ const DetailUser = () => {
           {userDetail !== null && userDetail.role === "Product Owner" ? (
             // Table for Product Owner
             <table className="table table-striped mt-3">
-              <thead className="detail-project-table-heading white-text">
+              <thead
+                className={`white-text ${
+                  role === "Advisor"
+                    ? "detail-assignment-table-heading-advisor"
+                    : role === "ScrumMaster"
+                    ? "detail-assignment-table-heading-scrum-master"
+                    : "detail-assignment-table-heading-developer"
+                }`}
+              >
                 <tr>
                   <th scope="col">Project code</th>
                   <th scope="col">Project name</th>
                   <th scope="col">Start date</th>
                   <th scope="col">End date</th>
                   <th scope="col">Status</th>
-                  <th scope="col">Action</th>
+                  <th scope="col" className="text-center">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -313,8 +342,8 @@ const DetailUser = () => {
                   <tr>
                     <td>{project.projectCode}</td>
                     <td>{project.name}</td>
-                    <td>{project.startedDate}</td>
-                    <td>{project.endedDate}</td>
+                    <td>{moment(project.startedDate).format("DD-MM-YYYY")}</td>
+                    <td>{moment(project.endedDate).format("DD-MM-YYYY")}</td>
                     <td
                       className={`${
                         project.status === "Active"
@@ -326,7 +355,7 @@ const DetailUser = () => {
                     </td>
                     <td className="text-center">
                       <i
-                        className="fa-solid fa-circle-exclamation fa-lg user-detail-button"
+                        className="fa-solid fa-circle-exclamation fa-lg detail-button"
                         onClick={() => navigate(`/projects/${project.id}`)}
                       ></i>
                     </td>
@@ -337,7 +366,15 @@ const DetailUser = () => {
           ) : userDetail !== null && userDetail.role !== "Product Owner" ? (
             // Table for Scrum Master and Developer
             <table className="table table-striped mt-3">
-              <thead className="detail-project-table-heading white-text">
+              <thead
+                className={`white-text ${
+                  role === "Advisor"
+                    ? "detail-assignment-table-heading-advisor"
+                    : role === "ScrumMaster"
+                    ? "detail-assignment-table-heading-scrum-master"
+                    : "detail-assignment-table-heading-developer"
+                }`}
+              >
                 <tr>
                   <th scope="col">Project code</th>
                   <th scope="col">Project name</th>
@@ -345,7 +382,9 @@ const DetailUser = () => {
                   <th scope="col">Start date</th>
                   <th scope="col">End date</th>
                   <th scope="col">Status</th>
-                  <th scope="col">Action</th>
+                  <th scope="col" className="text-center">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -354,8 +393,8 @@ const DetailUser = () => {
                     <td>{project.projectCode}</td>
                     <td>{project.name}</td>
                     <td>{project.advisorName}</td>
-                    <td>{project.startedDate}</td>
-                    <td>{project.endedDate}</td>
+                    <td>{moment(project.startedDate).format("DD-MM-YYYY")}</td>
+                    <td>{moment(project.endedDate).format("DD-MM-YYYY")}</td>
                     <td
                       className={`${
                         project.status === "Active"
@@ -367,8 +406,8 @@ const DetailUser = () => {
                     </td>
                     <td className="text-center">
                       <i
-                        className="fa-solid fa-circle-exclamation fa-lg user-detail-button"
-                        onClick={() => navigate(`/users/${project.id}`)}
+                        className="fa-solid fa-circle-exclamation fa-lg detail-button"
+                        onClick={() => navigate(`/projects/${project.id}`)}
                       ></i>
                     </td>
                   </tr>

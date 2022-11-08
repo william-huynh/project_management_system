@@ -63,6 +63,21 @@
   color: limegreen;
 }
 
+.status-todo {
+  font-weight: bold;
+  color: magenta;
+}
+
+.status-progress {
+  font-weight: bold;
+  color: limegreen;
+}
+
+.status-review {
+  font-weight: bold;
+  color: blueviolet;
+}
+
 .status-complete {
   font-weight: bold;
   color: blue;

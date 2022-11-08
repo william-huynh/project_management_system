@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectManagementSystem.Models.Assignment;
+using ProjectManagementSystem.Models.User;
+using System;
 
 namespace ProjectManagementSystem.Models.Problem
 {
@@ -14,9 +16,11 @@ namespace ProjectManagementSystem.Models.Problem
         public int Point { get; set; }
         public string Status { get; set; }
         public string AssignmentId { get; set; }
+        public AssignmentDetailsDto Assignment { get; set; }
         public string SprintId { get; set; }
         public string SprintName { get; set; }
         public string DeveloperId { get; set; }
+        public UserDetailsDto Developer { get; set; }
         public bool Disable { get; set; }
     }
 }

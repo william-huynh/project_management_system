@@ -18,10 +18,13 @@ import SprintTable from "./pages/Sprints/ListSprint";
 import AssignmentTable from "./pages/Assignments/ListAssignments";
 import CreateAssignment from "./pages/Assignments/CreateAssignment";
 import UpdateAssignment from "./pages/Assignments/UpdateAssignment";
+import DetailAssignment from "./pages/Assignments/DetailAssignment";
 import ProblemTable from "./pages/Problems/ListProblems";
 import CreateProblem from "./pages/Problems/CreateProblem";
 import UpdateProblem from "./pages/Problems/UpdateProblem";
+import DetailProblem from "./pages/Problems/DetailProblem";
 import HomeAssignment from "./pages/Home/HomeAssignment";
+import HomeBoard from "./pages/Home/HomeBoard";
 
 import loading from "./assets/loading.gif";
 import "./App.css";
@@ -83,13 +86,23 @@ const App = () => {
                     path="/projects"
                     element={<ProjectTable user={user} />}
                   />
-                  <Route path="/users/:id" element={<DetailUser />} />
+                  <Route
+                    path="/users/:id"
+                    element={<DetailUser user={user} />}
+                  />
                   <Route path="/projects/add" element={<CreateProject />} />
                   <Route
                     path="/projects/update/:id"
                     element={<UpdateProject />}
                   />
-                  <Route path="/projects/:id" element={<DetailProject />} />
+                  <Route
+                    path="/projects/:id"
+                    element={<DetailProject user={user} />}
+                  />
+                  <Route
+                    path="/assignments/:id"
+                    element={<DetailAssignment user={user} />}
+                  />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </div>
@@ -105,6 +118,7 @@ const App = () => {
                     path="/"
                     element={<HomeAssignment user={user} />}
                   />
+                  <Route path="/board" element={<HomeBoard user={user} />} />
                   <Route
                     path="/profile/:id"
                     element={<UpdateProfile user={user} />}
@@ -126,6 +140,10 @@ const App = () => {
                     element={<UpdateAssignment user={user} />}
                   />
                   <Route
+                    path="/assignments/:id"
+                    element={<DetailAssignment user={user} />}
+                  />
+                  <Route
                     path="/problems"
                     element={<ProblemTable user={user} />}
                   />
@@ -136,6 +154,18 @@ const App = () => {
                   <Route
                     path="/problems/update/:id"
                     element={<UpdateProblem user={user} />}
+                  />
+                  <Route
+                    path="/problems/:id"
+                    element={<DetailProblem user={user} />}
+                  />
+                  <Route
+                    path="/users/:id"
+                    element={<DetailUser user={user} />}
+                  />
+                  <Route
+                    path="/projects/:id"
+                    element={<DetailProject user={user} />}
                   />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>

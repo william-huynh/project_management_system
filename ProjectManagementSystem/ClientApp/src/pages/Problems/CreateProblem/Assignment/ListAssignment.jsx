@@ -36,7 +36,6 @@ const ListAssignment = (props) => {
         `problems/assignment-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&sortField=${params.sortField}&sortOrder=${params.sortOrder}`
       )
       .then((results) => {
-        console.log(results);
         setData(results.data.assignments);
         setLoading(false);
         setPagination({

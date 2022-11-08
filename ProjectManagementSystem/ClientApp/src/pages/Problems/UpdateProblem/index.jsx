@@ -7,7 +7,8 @@ import moment from "moment";
 
 import ModalDeveloper from "./Developer/ModalDeveloper";
 
-const UpdateProblem = () => {
+const UpdateProblem = (props) => {
+  const userId = props.user.id;
   const { id } = useParams();
   const navigate = useNavigate();
   const [formState, setFormState] = useState(true);
@@ -45,9 +46,9 @@ const UpdateProblem = () => {
   // Fetch categories
   const fetchData = () => {
     problemService.updateDetail(id).then((result) => {
-      console.log(result.data);
       formik.setFieldValue("name", result.data.name);
       formik.setFieldValue("description", result.data.description);
+      formik.setFieldValue("status", result.data.status);
       formik.setFieldValue("point", result.data.point);
       formik.setFieldValue(
         "startedDate",
@@ -67,10 +68,10 @@ const UpdateProblem = () => {
       setSelectedDeveloper(result.data.developerName);
       setSelectedAssignment(result.data.assignmentName);
     });
-    problemService.getCategories().then((result) => {
+    problemService.getCategories(userId).then((result) => {
       setCategories(result.data);
     });
-    problemService.getSprints().then((result) => {
+    problemService.getSprints(userId).then((result) => {
       setSprints(result.data);
     });
   };
@@ -80,6 +81,7 @@ const UpdateProblem = () => {
       id: id,
       name: "",
       description: "",
+      status: "",
       point: "",
       categoryId: "",
       sprintId: "",
@@ -107,6 +109,9 @@ const UpdateProblem = () => {
 
       // Point validation
       point: yup.string().required("User point is required"),
+
+      // Status validation
+      status: yup.string().required("Status is required"),
 
       // Start date validation
       startedDate: yup.date().required("Start date is required"),
@@ -184,36 +189,74 @@ const UpdateProblem = () => {
           <div className="col-7">
             <div className="upper-form">
               <p className="form-title">Problem information</p>
-              <div className="mt-3">
-                <div className="input-group flex-nowrap">
-                  <div className="input-group-prepend">
-                    <span className="input-group-text" id="addon-wrapping">
-                      Name
-                    </span>
+              <div className="row mt-3">
+                <div className="col-7">
+                  <div className="input-group flex-nowrap">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="addon-wrapping">
+                        Name
+                      </span>
+                    </div>
+                    <input
+                      id="name"
+                      name="name"
+                      value={formik.values.name}
+                      onChange={formik.handleChange}
+                      type="text"
+                      className={`form-control ${
+                        formik.errors.name && formik.touched.name === true
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      aria-label="name"
+                      aria-describedby="addon-wrapping"
+                    />
                   </div>
-                  <input
-                    id="name"
-                    name="name"
-                    value={formik.values.name}
-                    onChange={formik.handleChange}
-                    type="text"
-                    className={`form-control ${
-                      formik.errors.name && formik.touched.name === true
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    aria-label="name"
-                    aria-describedby="addon-wrapping"
-                  />
+                  {formik.errors.name && formik.touched.name && (
+                    <p
+                      className="text-danger mb-0 font-weight-normal"
+                      style={{ marginLeft: "4.4rem" }}
+                    >
+                      {formik.errors.name}
+                    </p>
+                  )}
                 </div>
-                {formik.errors.name && formik.touched.name && (
-                  <p
-                    className="text-danger mb-0 font-weight-normal"
-                    style={{ marginLeft: "4.4rem" }}
-                  >
-                    {formik.errors.name}
-                  </p>
-                )}
+                <div className="col-5">
+                  <div className="input-group flex-nowrap">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="addon-wrapping">
+                        Status
+                      </span>
+                    </div>
+                    <select
+                      id="status"
+                      name="status"
+                      value={formik.values.status}
+                      onChange={formik.handleChange}
+                      type="text"
+                      className={`form-control ${
+                        formik.errors.status && formik.touched.status === true
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      aria-label="name"
+                      aria-describedby="addon-wrapping"
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Todo">To do</option>
+                      <option value="InProgress">In Progress</option>
+                      <option value="InReview">In Review</option>
+                    </select>
+                  </div>
+                  {formik.errors.status && formik.touched.status && (
+                    <p
+                      className="text-danger mb-0 font-weight-normal"
+                      style={{ marginLeft: "4.4rem" }}
+                    >
+                      {formik.errors.status}
+                    </p>
+                  )}
+                </div>
               </div>
               <div className="mt-3">
                 <div className="input-group flex-nowrap">

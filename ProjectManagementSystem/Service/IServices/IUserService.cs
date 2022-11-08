@@ -12,6 +12,7 @@ namespace ProjectManagementSystem.Service.IServices
         Task<bool> CheckDeveloperAssignedAsync(string userId);
         Task<bool> CanAdvisorDisableAsync(string userId);
         Task<bool> CanDeveloperDisableAsync(string userId);
+        Task<string> GetProjectIdAsync(string userId);
         Task<UserDetailsDto> GetUserDetailsAsync(string userId);
         Task<UserUpdateDetail> GetUserUpdateDetailsAsync(string userId);
         Task<User> CreateUserAsync(UserCreateDto model);

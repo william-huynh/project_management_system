@@ -20,16 +20,20 @@ namespace ProjectManagementSystem.Service.Services
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mapper;
 
-        public AssignmentService (ApplicationDbContext db, IMapper mapper)
+        public AssignmentService(ApplicationDbContext db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
         }
 
 
-        public async Task<List<CategoryDetailsDto>> GetCategoriesListAsync()
+        public async Task<List<CategoryDetailsDto>> GetCategoriesListAsync(string userId)
         {
-            var categories = await _db.Categories.ToListAsync();
+            var projectId = await _db.Records
+                .Where(x => x.UserId == userId && x.Project.Status == Status.Active)
+                .Select(x => x.ProjectId)
+                .FirstOrDefaultAsync();
+            var categories = await _db.Categories.Where(x => x.ProjectId == projectId).ToListAsync();
             var categoriesList = _mapper.Map<List<CategoryDetailsDto>>(categories);
             return categoriesList;
         }
@@ -47,13 +51,48 @@ namespace ProjectManagementSystem.Service.Services
             return category;
         }
 
-        public async Task<List<SprintDetailsDto>> GetSprintsListAsync()
+        public async Task<List<SprintDetailsDto>> GetSprintsListAsync(string userId)
         {
+            var projectId = await _db.Records
+                .Where(x => x.UserId == userId && x.Project.Status == Status.Active)
+                .Select(x => x.ProjectId)
+                .FirstOrDefaultAsync();
             var sprints = await _db.Sprints
-                .Where(x => x.Disable == false)
+                .Where(x => x.Disable == false && x.ProjectId == projectId)
                 .ToListAsync();
             var sprintsDto = _mapper.Map<List<SprintDetailsDto>>(sprints);
             return sprintsDto;
+        }
+
+        public async Task<AssignmentFilterListDto> GetFilterListAsync(string userId)
+        {
+            var projectId = await _db.Records
+                .Where(x => x.UserId == userId && x.Project.Status == Status.Active)
+                .Select(x => x.ProjectId)
+                .FirstOrDefaultAsync();
+
+            var sprints = await _db.Sprints
+                .Where(x => x.Disable == false && x.ProjectId == projectId)
+                .Select(x => new SprintFilterDto
+                {
+                    Label = x.Name,
+                    Key = x.Name,
+                }).ToListAsync();
+
+            var categories = await _db.Categories
+                .Where(x => x.ProjectId == projectId)
+                .Select(x => new CategoryFilterDto
+                {
+                    Label = x.Name,
+                    Key = x.Name,
+                }).ToListAsync();
+
+            var filters = new AssignmentFilterListDto
+            {
+                Sprints = sprints,
+                Categories = categories,
+            };
+            return filters;
         }
 
         public async Task<UsersListDto> GetAvailableDeveloperListAsync(int? page, int? pageSize, string sortField, string sortOrder)
@@ -157,22 +196,6 @@ namespace ProjectManagementSystem.Service.Services
                 .Include(x => x.Sprint)
                 .Include(x => x.Category)
                 .OrderBy(x => x.Name);
-                //.Select(x => new AssignmentDetailsDto
-                //{
-                //    Id = x.Id,
-                //    AssignmentCode = x.AssignmentCode,
-                //    Name = x.Name,
-                //    Description = x.Description,
-                //    Category = x.Category.Name,
-                //    StartedDate = x.StartedDate,
-                //    EndedDate = x.EndedDate,
-                //    Point = x.Point,
-                //    Status = ((Status)x.Status).ToString(),
-                //    ProjectId = x.ProjectId,
-                //    SprintId = x.SprintId,
-                //    SprintName = x.Sprint.Name,
-                //    DeveloperId = x.DeveloperId,
-                //});
 
             if (queryAssignmentsDetailsDto != null)
             {
@@ -396,6 +419,82 @@ namespace ProjectManagementSystem.Service.Services
             }
             return null;
         }
+        
+        public async Task<AssignmentBoardDto> GetBoardAssignmentsListAsync(string userId)
+        {
+            var todo = await _db.Assignments
+                .Where(x => x.DeveloperId == userId && x.Status == Status.Todo)
+                .Select(x => new AssignmentDetailsDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Category = x.Category.Name,
+                    EndedDate = x.EndedDate,
+                })
+                .ToListAsync();
+
+            var inProgress = await _db.Assignments
+                .Where(x => x.DeveloperId == userId && x.Status == Status.InProgress)
+                .Select(x => new AssignmentDetailsDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Category = x.Category.Name,
+                    EndedDate = x.EndedDate,
+                })
+                .ToListAsync();
+
+            var inReview = await _db.Assignments
+                .Where(x => x.DeveloperId == userId && x.Status == Status.InReview)
+                .Select(x => new AssignmentDetailsDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Category = x.Category.Name,
+                    EndedDate = x.EndedDate,
+                })
+                .ToListAsync();
+
+            var assignment = new AssignmentBoardDto
+            {
+                Todo = todo,
+                InProgress = inProgress,
+                InReview = inReview,
+            };
+
+            return assignment;
+        }
+
+        public async Task<AssignmentDetailsDto> GetAssignmentDetailAsync(string assignmentId)
+        {
+            var assignment = await _db.Assignments
+                .Where(x => x.Disable == false && x.Id == assignmentId)
+                .Select(x => new AssignmentDetailsDto
+                {
+                    Id = x.Id,
+                    AssignmentCode = x.AssignmentCode,
+                    Name = x.Name,
+                    Description = x.Description,
+                    Status = ((Status)x.Status).ToString(),
+                    Point = x.Point,
+                    Category = x.Category.Name,
+                    SprintName = x.Sprint.Name,
+                    StartedDate = x.StartedDate,
+                    EndedDate = x.EndedDate,
+                    Developer = _db.Users
+                        .Where(u => u.Id == x.DeveloperId)
+                        .Select(u => new UserDetailsDto
+                        {
+                            Id = u.Id,
+                            UserCode = u.UserCode,
+                            FullName = u.FirstName + " " + u.LastName,
+                            UserName = u.UserName,
+                            Role = _db.Roles.FirstOrDefault(z => z.Id == _db.UserRoles.FirstOrDefault(y => y.UserId == u.Id).RoleId).Name
+                        }).FirstOrDefault(),
+                }).FirstOrDefaultAsync();
+            
+            return assignment;
+        }
 
         public async Task<AssignmentUpdateDetail> GetAssignmentUpdateDetailAsync(string assignmentId)
         {
@@ -419,7 +518,7 @@ namespace ProjectManagementSystem.Service.Services
                 Name = model.Name,
                 Description = model.Description,
                 Point = Convert.ToInt32(model.Point),
-                Status = Status.WaitingForAcceptance,
+                Status = Status.Pending,
                 CategoryId = model.CategoryId,
                 SprintId = model.SprintId,
                 StartedDate = model.StartedDate,
@@ -434,9 +533,11 @@ namespace ProjectManagementSystem.Service.Services
 
         public async Task<Assignment> UpdateAssignmentAsync(AssignmentUpdateDto model)
         {
+            Enum.TryParse(model.Status, out Status newStatus);
             var assignment = await _db.Assignments.FindAsync(model.Id);
             assignment.Name = model.Name;
             assignment.Description = model.Description;
+            assignment.Status = newStatus;
             assignment.Point = Convert.ToInt32(model.Point);
             assignment.CategoryId = model.CategoryId;
             assignment.SprintId = model.SprintId;
@@ -451,7 +552,17 @@ namespace ProjectManagementSystem.Service.Services
         public async Task<Assignment> AcceptAssignmentAsync(string assignmentId)
         {
             var assignment = await _db.Assignments.FindAsync(assignmentId);
-            assignment.Status = Status.Active;
+            assignment.Status = Status.Todo;
+            await _db.SaveChangesAsync();
+            return assignment;
+        }
+
+        public async Task<Assignment> UpdateAssignmentStatusAsync(string assignmentId, string status)
+        {
+            var assignment = await _db.Assignments.FindAsync(assignmentId);
+            if (status == "To Do") assignment.Status = Status.Todo;
+            if (status == "In Progress") assignment.Status = Status.InProgress;
+            if (status == "In Review") assignment.Status = Status.InReview;
             await _db.SaveChangesAsync();
             return assignment;
         }

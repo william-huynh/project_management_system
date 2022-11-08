@@ -18,6 +18,8 @@ const AssignmentTable = (props) => {
   const [assignmentId, setAssignmentId] = useState();
   const [assignmentCanDisable, setAssignmentCanDisable] = useState(false);
   const [data, setData] = useState();
+  const [sprint, setSprint] = useState([]);
+  const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [statusMenuType, setStatusMenuType] = useState("Status");
   const [sprintMenuType, setSprintMenuType] = useState("Sprint");
@@ -58,6 +60,19 @@ const AssignmentTable = (props) => {
             });
           });
       }
+    });
+  };
+
+  // Fetch filters
+  const fetchFilter = (id) => {
+    assignmentService.getFilters(id).then((result) => {
+      var allFilter = { label: "All", key: "All" };
+      var sprintFilter = result.data.sprints;
+      var categoryFilter = result.data.categories;
+      sprintFilter.unshift(allFilter);
+      categoryFilter.unshift(allFilter);
+      setSprint(result.data.sprints);
+      setCategory(result.data.categories);
     });
   };
 
@@ -107,10 +122,10 @@ const AssignmentTable = (props) => {
   // Table columns
   const columns = [
     {
-      title: "Assignment Code",
+      title: "Code",
       dataIndex: "assignmentCode",
       ellipsis: true,
-      width: "15%",
+      width: "8%",
       defaultSortOrder: "ascend",
       sorter: true,
     },
@@ -126,31 +141,42 @@ const AssignmentTable = (props) => {
       dataIndex: "category",
     },
     {
+      title: "Developer",
+      width: "10%",
+      ellipsis: true,
+      dataIndex: "developerName",
+    },
+    {
       title: "Start Date",
       width: "10%",
       dataIndex: "startedDate",
-      sorter: true,
     },
     {
       title: "End Date",
       width: "10%",
       dataIndex: "endedDate",
-      sorter: true,
     },
     {
       title: "Sprint",
       width: "8%",
+      ellipsis: true,
+      sorter: true,
       dataIndex: "sprintName",
     },
     {
       title: "Status",
-      width: "18%",
+      width: "10%",
+      sorter: true,
       dataIndex: "status",
       render: (id, record) =>
-        record.status === "WaitingForAcceptance" ? (
-          <div className="status-waiting">Waiting For Acceptance</div>
-        ) : record.status === "Active" ? (
-          <div className="status-active">Active</div>
+        record.status === "Pending" ? (
+          <div className="status-waiting">Pending</div>
+        ) : record.status === "Todo" ? (
+          <div className="status-todo">To Do</div>
+        ) : record.status === "InProgress" ? (
+          <div className="status-progress">In Progress</div>
+        ) : record.status === "InReview" ? (
+          <div className="status-review">In Review</div>
         ) : (
           <div className="status-complete">Complete</div>
         ),
@@ -174,7 +200,7 @@ const AssignmentTable = (props) => {
           ></i>
           <i
             className="fa-solid fa-circle-exclamation fa-lg detail-button"
-            // onClick={() => navigate(`${id}`)}
+            onClick={() => navigate(`${id}`)}
           ></i>
         </div>
       ),
@@ -191,8 +217,20 @@ const AssignmentTable = (props) => {
           key: "All",
         },
         {
-          label: "Active",
-          key: "Active",
+          label: "Pending",
+          key: "Pending",
+        },
+        {
+          label: "To do",
+          key: "Todo",
+        },
+        {
+          label: "In Progress",
+          key: "InProgress",
+        },
+        {
+          label: "In Review",
+          key: "InReview",
         },
         {
           label: "Complete",
@@ -203,45 +241,11 @@ const AssignmentTable = (props) => {
   );
 
   // Filter sprint menu
-  const sprintMenu = (
-    <Menu
-      onClick={handleSprintMenuClick}
-      items={[
-        {
-          label: "All",
-          key: "All",
-        },
-        {
-          label: "Sprint 01",
-          key: "Sprint 01",
-        },
-        {
-          label: "Sprint 02",
-          key: "Sprint 02",
-        },
-      ]}
-    />
-  );
+  const sprintMenu = <Menu onClick={handleSprintMenuClick} items={sprint} />;
 
   // Filter category menu
   const categoryMenu = (
-    <Menu
-      onClick={handleCategoryMenuClick}
-      items={[
-        {
-          label: "All",
-          key: "All",
-        },
-        {
-          label: "UI",
-          key: "UI",
-        },
-        {
-          label: "Database",
-          key: "Database",
-        },
-      ]}
-    />
+    <Menu onClick={handleCategoryMenuClick} items={category} />
   );
 
   // Table on change
@@ -258,6 +262,7 @@ const AssignmentTable = (props) => {
     fetchData({
       pagination,
     });
+    fetchFilter(userId);
   }, []);
 
   return isUserAssign === true ? (

@@ -42,6 +42,10 @@ const checkDeveloperDisable = (id) => {
   return axios.get(API_URL + `/users/check-developer/${id}`);
 };
 
+const getProjectId = (id) => {
+  return axios.get(API_URL + `/users/get-project-id/${id}`);
+};
+
 export default {
   detail,
   create,
@@ -53,4 +57,5 @@ export default {
   checkUserAssigned,
   checkAdvisorDisable,
   checkDeveloperDisable,
+  getProjectId,
 };

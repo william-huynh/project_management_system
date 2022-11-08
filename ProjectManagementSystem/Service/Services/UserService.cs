@@ -389,6 +389,12 @@ namespace ProjectManagementSystem.Service.Services
             return false;
         }
 
+        public async Task<string> GetProjectIdAsync(string userId)
+        {
+            var projectId = await _db.Records.Where(x => x.UserId == userId).Select(x => x.ProjectId).FirstOrDefaultAsync();
+            return projectId;
+        }
+
         public async Task<User> CreateUserAsync(UserCreateDto model)
         {
             string userCode = GenerateUserCode();

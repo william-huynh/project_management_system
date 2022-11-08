@@ -1,0 +1,77 @@
+.board-table {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-left: 4rem;
+}
+
+.table-view-button-container {
+  text-align: right;
+}
+
+.board-table .create-assignment-button {
+  width: 10rem;
+  color: white;
+}
+
+.board-table .create-assignment-button:focus {
+  outline: none;
+}
+
+.board-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.board-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.board-column-header {
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+  background-color: #fafafa;
+  padding: 16px 16px;
+}
+
+.board-column-header p {
+  margin: 0;
+}
+
+.board-column-body {
+  width: 280px;
+  height: 400px;
+  overflow: auto;
+  padding: 4px;
+}
+
+.card {
+  user-select: none;
+  text-overflow: ellipsis;
+  padding: 16px;
+  margin: 0px 0px 8px 0px;
+  min-height: 50px;
+  color: white;
+}
+
+.card-name {
+  font-weight: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.card-category {
+  font-weight: 300;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}

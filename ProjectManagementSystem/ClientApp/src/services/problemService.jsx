@@ -23,16 +23,20 @@ const updateDetail = (id) => {
   return axios.get(API_URL + `/problems/update-detail/${id}`);
 };
 
-const getCategories = () => {
-  return axios.get(API_URL + "/problems/get-categories");
+const getCategories = (id) => {
+  return axios.get(API_URL + `/problems/get-categories/${id}`);
 };
 
 const createCategory = (data) => {
   return axios.post(API_URL + "/problems/create-category", data);
 };
 
-const getSprints = () => {
-  return axios.get(API_URL + "/problems/get-sprints");
+const getSprints = (id) => {
+  return axios.get(API_URL + `/problems/get-sprints/${id}`);
+};
+
+const getFilters = (id) => {
+  return axios.get(API_URL + `/assignments/get-filters/${id}`);
 };
 
 const getAssignments = () => {
@@ -48,5 +52,6 @@ export default {
   getCategories,
   createCategory,
   getSprints,
+  getFilters,
   getAssignments,
 };
