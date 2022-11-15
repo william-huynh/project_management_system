@@ -91,7 +91,7 @@ const DetailUser = (props) => {
     <div className="detail-user">
       <p
         className={`header-user-detail ${
-          role === "Advisor"
+          role === "ProductOwner"
             ? "text-advisor"
             : role === "ScrumMaster"
             ? "text-scrum-master"
@@ -111,7 +111,7 @@ const DetailUser = (props) => {
         <div className="col-9 upper-form">
           <p
             className={`form-title ${
-              role === "Advisor"
+              role === "ProductOwner"
                 ? "text-advisor"
                 : role === "ScrumMaster"
                 ? "text-scrum-master"
@@ -278,7 +278,7 @@ const DetailUser = (props) => {
       <div className="lower-form">
         <p
           className={`form-title ${
-            role === "Advisor"
+            role === "ProductOwner"
               ? "text-advisor"
               : role === "ScrumMaster"
               ? "text-scrum-master"
@@ -319,7 +319,7 @@ const DetailUser = (props) => {
             <table className="table table-striped mt-3">
               <thead
                 className={`white-text ${
-                  role === "Advisor"
+                  role === "ProductOwner"
                     ? "detail-assignment-table-heading-advisor"
                     : role === "ScrumMaster"
                     ? "detail-assignment-table-heading-scrum-master"
@@ -368,7 +368,7 @@ const DetailUser = (props) => {
             <table className="table table-striped mt-3">
               <thead
                 className={`white-text ${
-                  role === "Advisor"
+                  role === "ProductOwner"
                     ? "detail-assignment-table-heading-advisor"
                     : role === "ScrumMaster"
                     ? "detail-assignment-table-heading-scrum-master"

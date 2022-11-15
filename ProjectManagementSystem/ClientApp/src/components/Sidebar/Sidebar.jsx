@@ -24,59 +24,78 @@ const Sidebar = (props) => {
           : "sidebar green-sidebar"
       }
     >
-      {/* <img src={logo} alt="NasTech logo" className="logo" /> */}
-      <p>Project Management System</p>
       {user.role[0] === "ProductOwner" ? (
         <div className="navigation">
           <ul>
             <NavLink to="/">
-              <li>Home</li>
+              <li>
+                <i class="fa-solid fa-house mr-2"></i> Dashboard
+              </li>
             </NavLink>
             <NavLink to="/users">
-              <li>Manage User</li>
+              <li>
+                <i class="fa-solid fa-user mr-2"></i> User
+              </li>
             </NavLink>
             <NavLink to="/projects">
-              <li>Manage Project</li>
+              <li>
+                <i class="fa-solid fa-briefcase mr-2"></i> Project
+              </li>
             </NavLink>
           </ul>
         </div>
       ) : user.role[0] === "ScrumMaster" ? (
         <div className="navigation">
           <ul>
-            <NavLink to="/">
-              <li>Home</li>
+            <NavLink to={`/`}>
+              <li>
+                <i class="fa-solid fa-house mr-2"></i> Dashboard
+              </li>
+            </NavLink>
+            <NavLink to="/my-assignment">
+              <li>
+                <i class="fa-solid fa-house mr-2"></i> My Assignment
+              </li>
             </NavLink>
             <NavLink to="/sprints">
-              <li>Manage Sprints</li>
+              <li>
+                <i class="fa-solid fa-folder mr-2"></i> Sprints
+              </li>
             </NavLink>
             <NavLink to="/assignments">
-              <li>Manage Assignments</li>
+              <li>
+                <i class="fa-solid fa-clipboard-list mr-2"></i> Assignments
+              </li>
             </NavLink>
             <NavLink to="/problems">
-              <li>Manage Problems</li>
+              <li>
+                <i class="fa-solid fa-bug mr-2"></i> Problems
+              </li>
             </NavLink>
-            {projectId === null ? (
-              <div></div>
-            ) : (
-              <NavLink to={`/projects/${projectId}`}>
-                <li>Project Detail</li>
-              </NavLink>
-            )}
           </ul>
         </div>
       ) : (
         <div className="navigation">
           <ul>
             <NavLink to="/">
-              <li>Home</li>
+              <li>
+                <i class="fa-solid fa-house mr-2"></i> Home
+              </li>
             </NavLink>
             {projectId === null ? (
               <div></div>
             ) : (
               <NavLink to={`/projects/${projectId}`}>
-                <li>Project Detail</li>
+                <li>
+                  <i class="fa-solid fa-chart-pie mr-2"></i> Dashboard
+                </li>
               </NavLink>
             )}
+            <NavLink to="/problems/add">
+              <li>
+                <i class="fa-solid fa-bug mr-2"></i> Problems
+              </li>
+            </NavLink>
           </ul>
         </div>
       )}

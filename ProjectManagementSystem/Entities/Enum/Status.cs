@@ -2,11 +2,14 @@
 {
     public enum Status
     {
-        Active = 1,
-        Todo = 2,
-        InProgress = 3,
-        InReview = 4,
-        Complete = 5,
-        Pending = 6,
+        ProductBacklog = 1,
+        Backlog = 2,
+        Pending = 3,
+        Todo = 4,
+        InProgress = 5,
+        InReview = 6,
+        Complete = 7,
+        Active = 8,
+        Overdue = 9,
     }
 }

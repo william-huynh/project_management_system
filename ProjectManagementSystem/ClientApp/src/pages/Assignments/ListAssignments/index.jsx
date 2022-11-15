@@ -142,7 +142,7 @@ const AssignmentTable = (props) => {
     },
     {
       title: "Developer",
-      width: "10%",
+      width: "13%",
       ellipsis: true,
       dataIndex: "developerName",
     },

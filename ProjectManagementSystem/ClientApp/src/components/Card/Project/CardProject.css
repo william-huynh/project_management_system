@@ -1,0 +1,23 @@
+.project-card-container {
+  width: 100%;
+  background-color: #eff1f5;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.project-card-container .CircularProgressbar {
+  width: 50%;
+}
+
+.project-card-profile-picture {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #cdcdcd;
+  border-radius: 50%;
+}
+
+.project-card-bottom-detail {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: -0.5rem !important;
+}

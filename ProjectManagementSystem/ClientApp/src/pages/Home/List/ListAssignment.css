@@ -1,0 +1,47 @@
+.change-board-button {
+  color: white;
+  border: none;
+  border-radius: 5px;
+  width: 11rem;
+  height: 100%;
+  float: right;
+  margin-left: 2rem;
+}
+
+.change-board-button:focus {
+  outline: none;
+}
+
+.change-board-scrum-master {
+  background-color: #4d42e9;
+}
+
+.change-board-developer {
+  background-color: #4de942;
+}
+
+.change-board-scrum-master:hover {
+  background-color: #2338cf;
+}
+
+.change-board-developer:hover {
+  background-color: #38cf23;
+}
+
+.home-search-box {
+  border: 0.5px solid black;
+  border-radius: 5px;
+  float: right;
+  width: 200px;
+}
+
+.home-tab .home-search-box .ant-input-group .ant-input {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.home-tab .home-search-box .ant-input-group .ant-input-group-addon {
+  left: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}

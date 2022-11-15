@@ -566,6 +566,7 @@ const CreateAssignment = (props) => {
       {/* Developer selection modal */}
       <ModalDeveloper
         visible={isModalDeveloperVisible}
+        sprintId={sprintId}
         selectedDeveloper={handleSelectedDeveloper}
         handleCancel={handleCancel}
       />

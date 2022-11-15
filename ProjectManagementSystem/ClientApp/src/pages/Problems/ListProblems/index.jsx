@@ -122,10 +122,10 @@ const ProblemTable = (props) => {
   // Table columns
   const columns = [
     {
-      title: "Problem Code",
+      title: "Code",
       dataIndex: "problemCode",
       ellipsis: true,
-      width: "15%",
+      width: "8%",
       defaultSortOrder: "ascend",
       sorter: true,
     },
@@ -139,6 +139,12 @@ const ProblemTable = (props) => {
       title: "Category",
       width: "10%",
       dataIndex: "category",
+    },
+    {
+      title: "Developer",
+      width: "13%",
+      ellipsis: true,
+      dataIndex: "developerName",
     },
     {
       title: "Start Date",
@@ -159,7 +165,7 @@ const ProblemTable = (props) => {
     },
     {
       title: "Status",
-      width: "18%",
+      width: "10%",
       dataIndex: "status",
       render: (id, record) =>
         record.status === "Pending" ? (

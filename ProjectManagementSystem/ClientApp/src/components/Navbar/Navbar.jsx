@@ -8,48 +8,6 @@ const Navbar = (props) => {
   const user = props.user;
   const role = props.user.role[0];
   const navigate = useNavigate();
-  // const location = useLocation();
-
-  // const renderTitle = (title) => {
-  //   const urlTitle = title.split("/");
-  //   switch (urlTitle[1]) {
-  //     case "":
-  //       return "Home";
-  //     case "users":
-  //       switch (urlTitle[2]) {
-  //         case "add":
-  //           return "Manage User > Add User";
-  //         case "update":
-  //           return "Manage User > Edit User";
-  //         default:
-  //           return "Manage User";
-  //       }
-  //     case "assets":
-  //       switch (urlTitle[2]) {
-  //         case "add":
-  //           return "Manage Asset > Add Asset";
-  //         case "update":
-  //           return "Manage Asset > Edit Asset";
-  //         default:
-  //           return "Manage Asset";
-  //       }
-  //     case "assignments":
-  //       switch (urlTitle[2]) {
-  //         case "add":
-  //           return "Manage Assignment > Add Assignment";
-  //         case "update":
-  //           return "Manage Assignment > Edit Assignment";
-  //         default:
-  //           return "Manage Assignment";
-  //       }
-  //     case "requests":
-  //       return "Request for Returning";
-  //     case "reports":
-  //       return "Report";
-  //     default:
-  //       break;
-  //   }
-  // };
 
   const logout = () => {
     axios.post("/api/users/logout").then((res) => {
@@ -109,17 +67,19 @@ const Navbar = (props) => {
   // };
 
   return (
-    <div>
+    <div style={{ height: "8vh" }}>
       <nav
-        className={
-          user.role[0] === "ProductOwner"
-            ? "red-nav navbar navbar-expand-lg"
-            : user.role[0] === "ScrumMaster"
-            ? "blue-nav navbar navbar-expand-lg"
-            : "green-nav navbar navbar-expand-lg"
-        }
+        className={`nav-bar
+          ${
+            user.role[0] === "ProductOwner"
+              ? "red-nav navbar navbar-expand-lg"
+              : user.role[0] === "ScrumMaster"
+              ? "blue-nav navbar navbar-expand-lg"
+              : "green-nav navbar navbar-expand-lg"
+          }
+        `}
       >
-        <p className="navbar-brand">Navbar</p>
+        <p className="navbar-brand">Project Management System</p>
 
         <div className="collapse navbar-collapse" id="basicExampleNav">
           <div className="navbar-nav ml-auto">

@@ -18,10 +18,14 @@ namespace ProjectManagementSystem.Service.IServices
         Task<AssignmentsListDto> GetAvailableAssignmentsListAsync(int? page, int? pageSize, string sortField, string sortOrder);
         Task<UsersListDto> GetAvailableDeveloperListAsync(int? page, int? pageSize, string sortField, string sortOrder);
         Task<ProblemsListDto> GetProblemsListAsync(int? page, int? pageSize, string keyword, string[] status, string[] sprint, string[] category, string sortField, string sortOrder, string userId);
+        Task<ProblemsListDto> GetAssignedProblemsListAsync(int? page, int? pageSize, string keyword, string[] status, string[] sprint, string[] category, string sortField, string sortOrder, string userId);
+        Task<ProblemBoardDto> GetBoardProblemsListAsync(string userId);
         Task<ProblemUpdateDetail> GetProblemUpdateDetailAsync(string ProblemId);
         Task<ProblemDetailsDto> GetProblemDetailAsync(string problemId);
         Task<Problem> UpdateProblemAsync(ProblemUpdateDto model);
         Task<Problem> CreateProblemAsync(ProblemCreateDto model);
+        Task<Problem> AcceptProblemAsync(string problemId);
+        Task<Problem> UpdateProblemStatusAsync(string problemId, string status);
         Task<Problem> DisableProblemAsync(string ProblemId);
     }
 }

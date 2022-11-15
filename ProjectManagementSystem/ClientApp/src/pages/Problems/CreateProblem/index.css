@@ -4,10 +4,10 @@
   color: #6c757d;
 }
 
-.header-problem-list {
+.header-problem-create {
   font-size: 16px;
   font-weight: bold;
-  color: #4d42e9;
+  margin: 0;
 }
 
 .create-problem .upper-form {
@@ -19,7 +19,6 @@
 }
 
 .create-problem .form-title {
-  color: #4d42e9;
   font-size: 16px;
   font-weight: bold;
   background-color: white;
@@ -29,7 +28,7 @@
 .create-problem-button-group {
   margin-top: 1rem;
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .create-category-dropdown {

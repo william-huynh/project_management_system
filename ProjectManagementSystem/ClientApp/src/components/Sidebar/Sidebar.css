@@ -1,17 +1,7 @@
 .sidebar {
-  min-width: 220px;
-}
-
-.logo {
-  width: 70px;
-  height: 70px;
-}
-
-.sidebar p {
-  font-weight: bold;
-  font-size: 16px;
-  margin-top: 0;
-  margin-bottom: 21px;
+  min-width: 16rem;
+  min-height: 92vh;
+  background-color: #eff1f5;
 }
 
 .red-sidebar p {
@@ -26,6 +16,12 @@
   color: #67cf23;
 }
 
+.navigation {
+  position: fixed;
+  width: 16rem;
+  z-index: 1;
+}
+
 .navigation ul {
   list-style: none;
   text-decoration: none;
@@ -38,8 +34,8 @@
   font-weight: 700;
   display: flex;
   align-items: center;
-  background-color: #eff1f5;
-  padding-left: 18px;
+  /* background-color: #eff1f5; */
+  padding-left: 1.5rem;
   margin-bottom: 2px;
 }
 
@@ -63,7 +59,7 @@
 .blue-sidebar .navigation a.active li,
 .blue-sidebar .navigation a:hover li {
   transition: 0s;
-  background-color: #2346cf;
+  background-color: #2338cf;
 }
 
 .green-sidebar .navigation a.active li,

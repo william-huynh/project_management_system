@@ -43,7 +43,6 @@ const UserTable = () => {
               ? "Scrum Master"
               : "Developers";
         });
-        console.log(results);
         setData(results.data.users);
         setLoading(false);
         setPagination({

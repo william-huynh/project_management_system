@@ -60,18 +60,18 @@ namespace ProjectManagementSystem.Controllers
         [HttpGet]
         [Route("developer-list")]
         // [Authorize(Roles = "ScrumMaster")]
-        public async Task<IActionResult> GetDevelopersList(int? page, int? pageSize, string sortField, string sortOrder)
+        public async Task<IActionResult> GetDevelopersList(int? page, int? pageSize, string sortField, string sortOrder, string sprintId)
         {
-            var sprints = await _assignmentService.GetAvailableDeveloperListAsync(page, pageSize, sortField, sortOrder);
+            var sprints = await _assignmentService.GetAvailableDeveloperListAsync(page, pageSize, sortField, sortOrder, sprintId);
             return Ok(sprints);
         }
 
         [HttpGet]
         [Route("get-list")]
         // [Authorize(Roles = "ScrumMaster")]
-        public async Task<IActionResult> GetAssignmentsList(int? page, int? pageSize, string keyword, [FromQuery] string[] status, [FromQuery] string[] sprint, [FromQuery] string[] category, string sortField, string sortOrder, string userId)
+        public async Task<IActionResult> GetAssignmentsList(int? page, int? pageSize, string keyword, [FromQuery] string[] status, [FromQuery] string[] sprint, [FromQuery] string[] category, string sortField, string sortOrder, string projectId)
         {
-            var assignments = await _assignmentService.GetAssignmentsListAsync(page, pageSize, keyword, status, sprint, category, sortField, sortOrder, userId);
+            var assignments = await _assignmentService.GetAssignmentsListAsync(page, pageSize, keyword, status, sprint, category, sortField, sortOrder, projectId);
             if (assignments == null) return BadRequest(assignments);
             return Ok(assignments);
         }

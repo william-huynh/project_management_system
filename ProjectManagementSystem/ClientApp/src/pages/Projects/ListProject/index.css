@@ -1,10 +1,6 @@
 .project-table {
   flex: 1;
-  padding-left: 4rem;
-}
-
-.ant-table-wrapper td {
-  font-weight: normal;
+  padding: 1.5rem;
 }
 
 .header-project-list {
@@ -17,14 +13,90 @@
 .create-project-button {
   border: none;
   border-radius: 5px;
-  height: 34px;
   background-color: #e9424d;
-  float: right;
+  color: white;
+  outline: none;
+  padding: 5px 10px 5px 10px;
+}
+
+.summary-section {
+  display: flex;
+  justify-content: space-between;
   margin-top: 0.5rem;
-  margin-left: 2rem;
+}
+
+.summary-card {
+  width: 32%;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.summary-card-chart {
+  width: 48%;
+  border-radius: 5px;
+  display: flex;
+}
+
+.filter-card {
+  cursor: pointer;
+}
+
+.filter-card:hover {
+  transform: scale(105%);
+  transition: 1s;
+}
+
+.summary-card-chart .summary-card-title {
+  flex: 1;
+  text-align: left;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  align-self: center;
+  padding-left: 3rem;
+}
+
+.summary-card-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+}
+
+.summary-card-number {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+.list-section {
+  margin-top: 1rem;
+}
+
+/* .summary-card {
+  display: flex;
+  width: 48%;
+  height: 10rem;
+  border-radius: 5px;
+} */
+
+/* .summary-card-title {
+  flex: 1;
+  text-align: left;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  align-self: center;
+  padding-left: 3rem;
+} */
+
+.ant-table-wrapper td {
+  font-weight: normal;
 }
 
 .create-project-button:hover {
+  transform: scale(110%);
+  transition: 0.5s;
   background-color: #cf2338;
 }
 

@@ -248,6 +248,7 @@ namespace ProjectManagementSystem.Service.Services
                         ).FirstOrDefault().ProjectId)
                 .Include(x => x.Sprint)
                 .Include(x => x.Category)
+                .Include(x => x.Developer)
                 .OrderBy(x => x.Name);
 
             if (queryProblemsDetailsDto != null)
@@ -347,6 +348,177 @@ namespace ProjectManagementSystem.Service.Services
             return null;
         }
 
+        public async Task<ProblemsListDto> GetAssignedProblemsListAsync(int? page, int? pageSize, string keyword, string[] status, string[] sprint, string[] category, string sortField, string sortOrder, string userId)
+        {
+            if (status.Length == 0)
+            {
+                status = new string[] { "All" };
+            }
+
+            if (sprint.Length == 0)
+            {
+                sprint = new string[] { "All" };
+            }
+
+            if (category.Length == 0)
+            {
+                category = new string[] { "All" };
+            }
+
+            IQueryable<Problem> queryProblemsDetailsDto = _db.Problems
+                .Where(
+                    x => x.Disable == false &&
+                    x.Sprint.ProjectId == _db.Records.Where(
+                            r => r.UserId == userId &&
+                            r.Project.Status == Status.Active
+                        ).FirstOrDefault().ProjectId &&
+                    x.DeveloperId == userId)
+                .Include(x => x.Sprint)
+                .Include(x => x.Category)
+                .OrderBy(x => x.Name);
+
+            if (queryProblemsDetailsDto != null)
+            {
+                // SORT ASSIGNMENT CODE
+                if (sortOrder == "descend" && sortField == "assignmentCode")
+                {
+                    queryProblemsDetailsDto = queryProblemsDetailsDto.OrderByDescending(x => x.ProblemCode);
+                }
+                else if (sortOrder == "ascend" && sortField == "assignmentCode")
+                {
+                    queryProblemsDetailsDto = queryProblemsDetailsDto.OrderBy(x => x.ProblemCode);
+                }
+
+                // SORT NAME
+                if (sortOrder == "descend" && sortField == "name")
+                {
+                    queryProblemsDetailsDto = queryProblemsDetailsDto.OrderByDescending(x => x.Name);
+                }
+                else if (sortOrder == "ascend" && sortField == "name")
+                {
+                    queryProblemsDetailsDto = queryProblemsDetailsDto.OrderBy(x => x.Name);
+                }
+
+                // SORT STATUS
+                if (sortOrder == "descend" && sortField == "status")
+                {
+                    queryProblemsDetailsDto = queryProblemsDetailsDto.OrderByDescending(x => x.Status);
+                }
+                else if (sortOrder == "ascend" && sortField == "status")
+                {
+                    queryProblemsDetailsDto = queryProblemsDetailsDto.OrderBy(x => x.Status);
+                }
+
+                // SORT SPRINT
+                if (sortOrder == "descend" && sortField == "sprintName")
+                {
+                    queryProblemsDetailsDto = queryProblemsDetailsDto.OrderByDescending(x => x.Sprint.Name);
+                }
+                else if (sortOrder == "ascend" && sortField == "sprintName")
+                {
+                    queryProblemsDetailsDto = queryProblemsDetailsDto.OrderBy(x => x.Sprint.Name);
+                }
+
+                // FILTERS STATUS
+                if ((status.Length > 0 && !status.Contains("All")))
+                {
+                    foreach (var state in status)
+                    {
+                        Status assignmentState;
+                        queryProblemsDetailsDto = queryProblemsDetailsDto.Where(x => Enum.TryParse(state, out assignmentState) && assignmentState == x.Status);
+                    }
+                }
+
+                // FILTERS SPRINT
+                if ((sprint.Length > 0 && !sprint.Contains("All")))
+                {
+                    queryProblemsDetailsDto = queryProblemsDetailsDto.Where(x => sprint.Contains(x.Sprint.Name));
+                }
+
+                // FILTERS CATEGORY
+                if ((category.Length > 0 && !category.Contains("All")))
+                {
+                    foreach (var categoryState in category)
+                    {
+                        queryProblemsDetailsDto = queryProblemsDetailsDto.Where(x => categoryState == x.Category.Name);
+                    }
+                }
+
+                // SEARCH
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    var normalizeKeyword = keyword.Trim().ToLower();
+                    queryProblemsDetailsDto = queryProblemsDetailsDto.Where(
+                        x => x.Name.Contains(keyword) ||
+                        x.Name.Trim().ToLower().Contains(normalizeKeyword)
+                        );
+                }
+
+                var pageRecords = pageSize ?? 10;
+                var pageIndex = page ?? 1;
+                var totalPage = queryProblemsDetailsDto.Count();
+                var numberPage = Math.Ceiling((float)totalPage / pageRecords);
+                var startPage = (pageIndex - 1) * pageRecords;
+                if (totalPage > pageRecords)
+                    queryProblemsDetailsDto = queryProblemsDetailsDto.Skip(startPage).Take(pageRecords);
+                var problem = _mapper.Map<List<ProblemDetailsDto>>(queryProblemsDetailsDto);
+                if (pageIndex > numberPage) pageIndex = (int)numberPage;
+                var listProblemsDetailsDto = queryProblemsDetailsDto.ToList();
+                var problemsDto = _mapper.Map<ProblemsListDto>(problem);
+                problemsDto.TotalItem = totalPage;
+                problemsDto.NumberPage = numberPage;
+                problemsDto.CurrentPage = pageIndex;
+                problemsDto.PageSize = pageRecords;
+                return problemsDto;
+            }
+            return null;
+        }
+
+        public async Task<ProblemBoardDto> GetBoardProblemsListAsync(string userId)
+        {
+            var todo = await _db.Problems
+                .Where(x => x.DeveloperId == userId && x.Status == Status.Todo)
+                .Select(x => new ProblemDetailsDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Category = x.Category.Name,
+                    EndedDate = x.EndedDate,
+                })
+                .ToListAsync();
+
+            var inProgress = await _db.Problems
+                .Where(x => x.DeveloperId == userId && x.Status == Status.InProgress)
+                .Select(x => new ProblemDetailsDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Category = x.Category.Name,
+                    EndedDate = x.EndedDate,
+                })
+                .ToListAsync();
+
+            var inReview = await _db.Problems
+                .Where(x => x.DeveloperId == userId && x.Status == Status.InReview)
+                .Select(x => new ProblemDetailsDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Category = x.Category.Name,
+                    EndedDate = x.EndedDate,
+                })
+                .ToListAsync();
+
+            var problem = new ProblemBoardDto
+            {
+                Todo = todo,
+                InProgress = inProgress,
+                InReview = inReview,
+            };
+
+            return problem;
+        }
+
         public async Task<ProblemUpdateDetail> GetProblemUpdateDetailAsync(string problemId)
         {
             var problem = await _db.Problems.FindAsync(problemId);
@@ -420,6 +592,24 @@ namespace ProjectManagementSystem.Service.Services
             };
 
             await _db.AddAsync(problem);
+            await _db.SaveChangesAsync();
+            return problem;
+        }
+
+        public async Task<Problem> AcceptProblemAsync(string problemId)
+        {
+            var problem = await _db.Problems.FindAsync(problemId);
+            problem.Status = Status.Todo;
+            await _db.SaveChangesAsync();
+            return problem;
+        }
+
+        public async Task<Problem> UpdateProblemStatusAsync(string problemId, string status)
+        {
+            var problem = await _db.Problems.FindAsync(problemId);
+            if (status == "To Do") problem.Status = Status.Todo;
+            if (status == "In Progress") problem.Status = Status.InProgress;
+            if (status == "In Review") problem.Status = Status.InReview;
             await _db.SaveChangesAsync();
             return problem;
         }

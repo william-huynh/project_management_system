@@ -111,12 +111,13 @@ namespace ProjectManagementSystem.Service.Services
             return user;
         }
 
-        public async Task<UsersListDto> GetUsersListAsync(int? page, int? pageSize, string keyword, string[] roles, string sortField, string sortOrder)
+        public async Task<UsersListDto> GetUsersListAsync(int? page, int? pageSize, string keyword, string[] roles, string sortField, string sortOrder, string projectId)
         {
             if (roles.Length == 0)
             {
                 roles = new string[] { "All" };
             }
+
             var queryUsersDetailsDto = _db.Users
                 .Where(
                     x => x.Disable == false
@@ -134,6 +135,7 @@ namespace ProjectManagementSystem.Service.Services
                     ProjectId = _db.Records.FirstOrDefault(r => r.UserId == x.Id && r.Project.Status == Status.Active && r.Project.Disable == false).ProjectId,
                     ProjectAdvisorId = _db.Projects.FirstOrDefault(p => p.AdvisorId == x.Id && p.Status == Status.Active && p.Disable == false).Id,
                 });
+                
             if (queryUsersDetailsDto != null)
             {
                 // SORT USER CODE
@@ -174,6 +176,12 @@ namespace ProjectManagementSystem.Service.Services
                 else if (sortOrder == "ascend" && sortField == "role")
                 {
                     queryUsersDetailsDto = queryUsersDetailsDto.OrderBy(x => x.Role);
+                }
+
+                // GET ASSIGN
+                if (projectId != null)
+                {
+                    queryUsersDetailsDto = queryUsersDetailsDto.Where(x => x.ProjectId == projectId);
                 }
 
                 // FILTERS

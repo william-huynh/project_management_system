@@ -22,9 +22,9 @@ namespace ProjectManagementSystem.Controllers
         [HttpGet]
         [Route("getlist")]
         // [Authorize(Roles = "ProductOwner")]
-        public async Task<IActionResult> GetList(int? page, int? pageSize, string keyword, [FromQuery] string[] status, string sortField, string sortOrder)
+        public async Task<IActionResult> GetList(int? page, int? pageSize, [FromQuery] string[] status, string advisorId)
         {
-           var projects = await _projectService.GetProjectsListAsync(page, pageSize, keyword, status, sortField, sortOrder);
+           var projects = await _projectService.GetProjectsListAsync(page, pageSize, status, advisorId);
            if (projects == null) return BadRequest(projects);
            return Ok(projects);
         }
@@ -42,26 +42,26 @@ namespace ProjectManagementSystem.Controllers
         [HttpGet]
         [Route("detail/{projectId}")]
         // [Authorize(Roles = "ProductOwner")]
-        public async Task<IActionResult> GetDetail(string projectId)
+        public async Task<IActionResult> GetDashboardDetail(string projectId)
         {
-            var project = await _projectService.GetProjectDetailsAsync(projectId);
+            var project = await _projectService.GetProjectDashboardDetailsAsync(projectId);
             if (project == null) return BadRequest(project);
             return Ok(project);
         }
 
         [HttpGet]
-        [Route("project-disable-check/{projectId}")]
+        [Route("summary/{advisorId}")]
         // [Authorize(Roles = "ProductOwner")]
-        public async Task<IActionResult> GetCanProjectDisable(string projectId)
+        public async Task<IActionResult> GetProjectSummary(string advisorId)
         {
-            var project = await _projectService.GetProjectCanDisableAsync(projectId);
+            var project = await _projectService.GetProjectSummaryAsync(advisorId);
             return Ok(project);
         }
 
         [HttpPost]
         [Route("create-project")]
         // [Authorize(Roles = "ProductOwner")]
-        public async Task<IActionResult> CreateProject([FromBody] ProjectCreateDto project)
+        public async Task<IActionResult> CreateProject([FromBody] ProjectWriteDto project)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var projectCreated = await _projectService.CreateProjectAsync(project);
@@ -81,7 +81,7 @@ namespace ProjectManagementSystem.Controllers
         [HttpPut]
         [Route("update/{projectId}")]
         // [Authorize(Roles = "ProductOwner")]
-        public async Task<IActionResult> UpdateProject([FromBody] ProjectUpdateDto project)
+        public async Task<IActionResult> UpdateProject([FromBody] ProjectWriteDto project)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var projectUpdated = await _projectService.UpdateProjectAsync(project);

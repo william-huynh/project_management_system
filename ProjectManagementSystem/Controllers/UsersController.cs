@@ -57,9 +57,9 @@ namespace ProjectManagementSystem.Controllers
         [HttpGet]
         [Route("getlist")]
         // [Authorize(Roles = "ProductOwner")]
-        public async Task<IActionResult> GetList(int? page, int? pageSize, string keyword, [FromQuery] string[] roles, string sortField, string sortOrder)
+        public async Task<IActionResult> GetList(int? page, int? pageSize, string keyword, [FromQuery] string[] roles, string sortField, string sortOrder, string projectId)
         {
-           var users = await _userService.GetUsersListAsync(page, pageSize, keyword, roles, sortField, sortOrder);
+           var users = await _userService.GetUsersListAsync(page, pageSize, keyword, roles, sortField, sortOrder, projectId);
            if (users == null) return BadRequest(users);
            return Ok(users);
         }

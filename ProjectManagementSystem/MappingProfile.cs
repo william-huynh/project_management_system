@@ -58,6 +58,7 @@ namespace ProjectManagementSystem
 
             // Problem mapping profile
             CreateMap<Problem, ProblemDetailsDto>()
+                .ForMember(dest => dest.DeveloperName, act => act.MapFrom(src => src.Developer.FirstName + " " + src.Developer.LastName))
                 .ForMember(dest => dest.Category, act => act.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.Status, act => act.MapFrom(src => ((Status)src.Status).ToString()));
 

@@ -6,7 +6,7 @@ namespace ProjectManagementSystem.Service.IServices
 {
     public interface IUserService
     {
-        Task<UsersListDto> GetUsersListAsync(int? page, int? pageSize, string keyword, string[] roles, string sortField, string sortOrder);
+        Task<UsersListDto> GetUsersListAsync(int? page, int? pageSize, string keyword, string[] roles, string sortField, string sortOrder, string projectId);
         Task<UsersListDto> GetAvailableScrumMastersListAsync(int? page, int? pageSize, string sortField, string sortOrder);
         Task<UsersListDto> GetAvailableDevelopersListAsync(int? page, int? pageSize, string sortField, string sortOrder, string developer1Id, string developer2Id, string developer3Id, string developer4Id);
         Task<bool> CheckDeveloperAssignedAsync(string userId);

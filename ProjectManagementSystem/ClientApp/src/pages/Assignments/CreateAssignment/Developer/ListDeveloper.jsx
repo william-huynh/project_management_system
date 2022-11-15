@@ -33,7 +33,7 @@ const ListDeveloper = (props) => {
     setLoading(true);
     axiosInstance
       .get(
-        `assignments/developer-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&sortField=${params.sortField}&sortOrder=${params.sortOrder}`
+        `assignments/developer-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&sortField=${params.sortField}&sortOrder=${params.sortOrder}&sprintId=${props.sprintId}`
       )
       .then((results) => {
         console.log(results);

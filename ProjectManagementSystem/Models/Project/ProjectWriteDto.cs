@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 namespace ProjectManagementSystem.Models.Project
 {
-    public class ProjectUpdateDto
+    public class ProjectWriteDto
     {
         public string Id { get; set; }
         public string Name { get; set; }

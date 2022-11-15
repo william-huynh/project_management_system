@@ -1,6 +1,6 @@
 .user-table {
   flex: 1;
-  padding-left: 4rem;
+  padding: 1.5rem;
 }
 
 .ant-table-wrapper td {

@@ -217,7 +217,7 @@ const UpdateProject = () => {
 
   return (
     <div className="create-project">
-      <p className="header-project-list">Create new project</p>
+      <p className="header-project-list">Update project</p>
       <form onSubmit={formik.handleSubmit} className="create-project-form">
         <div className="upper-form">
           <p className="form-title">Project information</p>
@@ -553,7 +553,7 @@ const UpdateProject = () => {
           <button
             className="btn btn-cancel"
             onClick={() => {
-              navigate("/projects");
+              navigate(`/projects/${id}`);
             }}
           >
             Cancel

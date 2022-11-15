@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../axios";
-import assignmentService from "../../services/assignmentService";
-import userService from "../../services/userService";
+import axiosInstance from "../../../axios";
+import problemService from "../../../services/problemService";
 import moment from "moment";
 
 import { FilterOutlined } from "@ant-design/icons";
 import { Table, Dropdown, Menu, Input, Button } from "antd";
 import "antd/dist/antd.css";
 
-const HomeAssignment = (props) => {
+const ListProblem = (props) => {
   const role = props.user.role[0];
-  const userId = props.user.id;
-  const { Search } = Input;
+  const { id } = props.user;
   const navigate = useNavigate();
-  const [isUserAssign, setIsUserAssign] = useState(false);
-  const [assignmentId, setAssignmentId] = useState();
+  const { Search } = Input;
+  const [problemId, setProblemId] = useState();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [sprint, setSprint] = useState([]);
@@ -35,36 +33,29 @@ const HomeAssignment = (props) => {
   // Fetch data
   const fetchData = (params = {}) => {
     setLoading(true);
-    userService.checkUserAssigned(userId).then((response) => {
-      setIsUserAssign(response.data);
-      if (response.data == true) {
-        axiosInstance
-          .get(
-            `assignments/get-assigned-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sprint=${params.pagination.sprint}&category=${params.pagination.category}&sortField=${params.sortField}&sortOrder=${params.sortOrder}&userId=${props.user.id}`
-          )
-          .then((results) => {
-            results.data.assignments.forEach((element) => {
-              element.startedDate = moment(element.startedDate).format(
-                "DD/MM/YYYY"
-              );
-              element.endedDate = moment(element.endedDate).format(
-                "DD/MM/YYYY"
-              );
-            });
-            setData(results.data.assignments);
-            setLoading(false);
-            setPagination({
-              ...params.pagination,
-              total: results.data.totalItem,
-            });
-          });
-      }
-    });
+    axiosInstance
+      .get(
+        `problems/get-assigned-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sprint=${params.pagination.sprint}&category=${params.pagination.category}&sortField=${params.sortField}&sortOrder=${params.sortOrder}&userId=${props.user.id}`
+      )
+      .then((results) => {
+        results.data.problems.forEach((element) => {
+          element.startedDate = moment(element.startedDate).format(
+            "DD/MM/YYYY"
+          );
+          element.endedDate = moment(element.endedDate).format("DD/MM/YYYY");
+        });
+        setData(results.data.problems);
+        setLoading(false);
+        setPagination({
+          ...params.pagination,
+          total: results.data.totalItem,
+        });
+      });
   };
 
   // Fetch filters
   const fetchFilter = (id) => {
-    assignmentService.getFilters(id).then((result) => {
+    problemService.getFilters(id).then((result) => {
       var allFilter = { label: "All", key: "All" };
       var sprintFilter = result.data.sprints;
       var categoryFilter = result.data.categories;
@@ -114,7 +105,7 @@ const HomeAssignment = (props) => {
   const columns = [
     {
       title: "Code",
-      dataIndex: "assignmentCode",
+      dataIndex: "problemCode",
       ellipsis: true,
       width: "8%",
       defaultSortOrder: "ascend",
@@ -127,16 +118,16 @@ const HomeAssignment = (props) => {
       sorter: true,
     },
     {
-      title: "Type",
-      width: "10%",
-      ellipsis: true,
-      // dataIndex: "category",
-    },
-    {
       title: "Category",
       width: "10%",
       ellipsis: true,
       dataIndex: "category",
+    },
+    {
+      title: "Developer",
+      width: "10%",
+      ellipsis: true,
+      // dataIndex: "category",
     },
     {
       title: "Start Date",
@@ -185,18 +176,18 @@ const HomeAssignment = (props) => {
             <i
               className="fa-solid fa-check fa-xl detail-button"
               data-toggle="modal"
-              data-target="#acceptAssignmentModal"
-              onClick={() => setAssignmentId(id)}
+              data-target="#acceptProblemModal"
+              onClick={() => setProblemId(id)}
             ></i>
             <i
               className="fa-solid fa-xmark fa-xl delete-button"
               data-toggle="modal"
-              data-target="#denyAssignmentModal"
-              onClick={() => setAssignmentId(id)}
+              data-target="#denyProblemModal"
+              onClick={() => setProblemId(id)}
             ></i>
             <i
               className="fa-solid fa-circle-exclamation fa-lg edit-button"
-              // onClick={() => navigate(`${id}`)}
+              onClick={() => navigate(`/problems/${id}`)}
             ></i>
           </div>
         ) : (
@@ -205,7 +196,7 @@ const HomeAssignment = (props) => {
             <i className="fa-solid fa-xmark fa-xl delete-button-disabled"></i>
             <i
               className="fa-solid fa-circle-exclamation fa-lg edit-button"
-              // onClick={() => navigate(`${id}`)}
+              onClick={() => navigate(`/problems/${id}`)}
             ></i>
           </div>
         ),
@@ -267,67 +258,44 @@ const HomeAssignment = (props) => {
     fetchData({
       pagination,
     });
-    fetchFilter(userId);
+    fetchFilter(id);
   }, []);
 
-  return isUserAssign === true ? (
-    <div className="assignment-table">
-      <p
-        className={`${
-          role === "ScrumMaster"
-            ? "header-assignment-list"
-            : "header-assignment-list-developer"
-        }`}
-      >
-        Assignment List
-      </p>
+  return (
+    <div>
+      <div className="mt-3">
+        {/* Filter status menu */}
+        <Dropdown overlay={statusMenu} placement="bottom">
+          <Button className="btn-filter">
+            <span></span>
+            {statusMenuType}
+            <FilterOutlined />
+          </Button>
+        </Dropdown>
 
-      {/* Filter status menu */}
-      <Dropdown overlay={statusMenu} placement="bottom">
-        <Button className="btn-filter" style={{ marginTop: "0.5rem" }}>
-          <span></span>
-          {statusMenuType}
-          <FilterOutlined />
-        </Button>
-      </Dropdown>
+        {/* Filter sprint menu */}
+        <Dropdown overlay={sprintMenu} placement="bottom">
+          <Button className="btn-filter" style={{ marginLeft: "2rem" }}>
+            <span></span>
+            {sprintMenuType}
+            <FilterOutlined />
+          </Button>
+        </Dropdown>
 
-      {/* Filter sprint menu */}
-      <Dropdown overlay={sprintMenu} placement="bottom">
-        <Button
-          className="btn-filter"
-          style={{ marginTop: "0.5rem", marginLeft: "2rem" }}
-        >
-          <span></span>
-          {sprintMenuType}
-          <FilterOutlined />
-        </Button>
-      </Dropdown>
+        {/* Filter category menu */}
+        <Dropdown overlay={categoryMenu} placement="bottom">
+          <Button className="btn-filter" style={{ marginLeft: "2rem" }}>
+            <span></span>
+            {categoryMenuType}
+            <FilterOutlined />
+          </Button>
+        </Dropdown>
 
-      {/* Filter category menu */}
-      <Dropdown overlay={categoryMenu} placement="bottom">
-        <Button
-          className="btn-filter"
-          style={{ marginTop: "0.5rem", marginLeft: "2rem" }}
-        >
-          <span></span>
-          {categoryMenuType}
-          <FilterOutlined />
-        </Button>
-      </Dropdown>
+        {/* Search bar */}
+        <Search onSearch={onSearch} className="home-search-box" />
+      </div>
 
-      {/* Change to board view button */}
-      <Button
-        className="create-assignment-button"
-        type="primary"
-        onClick={() => navigate("/board")}
-      >
-        Change to board view
-      </Button>
-
-      {/* Search bar */}
-      <Search onSearch={onSearch} className="search-box" />
-
-      {/* Assignment table */}
+      {/* Problem table */}
       <Table
         columns={columns}
         dataSource={data}
@@ -337,24 +305,24 @@ const HomeAssignment = (props) => {
         onChange={onChange}
       />
 
-      {/* Accept assignment modal */}
+      {/* Accept problem modal */}
       <div
         className="modal fade"
-        id="acceptAssignmentModal"
+        id="acceptProblemModal"
         tabIndex="-1"
         role="dialog"
-        aria-labelledby="acceptAssignmentModal"
+        aria-labelledby="acceptProblemModal"
         aria-hidden="true"
       >
         <div
           className="modal-dialog modal-dialog-centered"
           role="document"
-          id="accept-assignment-modal"
+          id="accept-problem-modal"
         >
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLongTitle">
-                Accept Assignment
+                Accept Problem
               </h5>
               <button
                 type="button"
@@ -366,7 +334,7 @@ const HomeAssignment = (props) => {
               </button>
             </div>
             <div className="modal-body">
-              Do you want to accept this assignment?
+              Do you want to accept this problem?
             </div>
             <div className="modal-footer">
               <button
@@ -378,7 +346,7 @@ const HomeAssignment = (props) => {
                 }`}
                 data-dismiss="modal"
                 onClick={() => {
-                  assignmentService.accept(assignmentId).then(() => {
+                  problemService.accept(problemId).then(() => {
                     fetchData({
                       pagination,
                     });
@@ -399,24 +367,24 @@ const HomeAssignment = (props) => {
         </div>
       </div>
 
-      {/* Deny assignment modal */}
+      {/* Deny problem modal */}
       <div
         className="modal fade"
-        id="denyAssignmentModal"
+        id="denyProblemModal"
         tabIndex="-1"
         role="dialog"
-        aria-labelledby="denyAssignmentModal"
+        aria-labelledby="denyProblemModal"
         aria-hidden="true"
       >
         <div
           className="modal-dialog modal-dialog-centered"
           role="document"
-          id="deny-assignment-modal"
+          id="deny-problem-modal"
         >
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLongTitle">
-                Deny Assignment
+                Deny Problem
               </h5>
               <button
                 type="button"
@@ -428,7 +396,7 @@ const HomeAssignment = (props) => {
               </button>
             </div>
             <div className="modal-body">
-              Do you want to turn down this assignment?
+              Do you want to turn down this problem?
             </div>
             <div className="modal-footer">
               <button
@@ -440,7 +408,7 @@ const HomeAssignment = (props) => {
                 }`}
                 data-dismiss="modal"
                 onClick={() => {
-                  assignmentService.disable(assignmentId).then(() => {
+                  problemService.disable(problemId).then(() => {
                     fetchData({
                       pagination,
                     });
@@ -460,15 +428,8 @@ const HomeAssignment = (props) => {
           </div>
         </div>
       </div>
-    </div>
-  ) : (
-    <div className="no-assign-error">
-      <div>
-        <i className="fa-solid fa-users-slash fa-xl"></i>
-      </div>
-      <p>User is not assigned to a project!</p>
     </div>
   );
 };
 
-export default HomeAssignment;
+export default ListProblem;

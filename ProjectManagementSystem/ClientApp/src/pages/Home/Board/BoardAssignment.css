@@ -1,21 +1,6 @@
 .board-table {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding-left: 4rem;
-}
-
-.table-view-button-container {
-  text-align: right;
-}
-
-.board-table .create-assignment-button {
-  width: 10rem;
-  color: white;
-}
-
-.board-table .create-assignment-button:focus {
-  outline: none;
+  padding: 1.5rem 1.5rem 0 1.5rem;
 }
 
 .board-container {
@@ -45,7 +30,7 @@
 
 .board-column-body {
   width: 280px;
-  height: 400px;
+  height: 390px;
   overflow: auto;
   padding: 4px;
 }

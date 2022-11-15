@@ -29,7 +29,7 @@
 .create-assignment-button-group {
   margin-top: 1rem;
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .create-category-dropdown {

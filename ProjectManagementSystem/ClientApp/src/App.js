@@ -23,8 +23,9 @@ import ProblemTable from "./pages/Problems/ListProblems";
 import CreateProblem from "./pages/Problems/CreateProblem";
 import UpdateProblem from "./pages/Problems/UpdateProblem";
 import DetailProblem from "./pages/Problems/DetailProblem";
-import HomeAssignment from "./pages/Home/HomeAssignment";
-import HomeBoard from "./pages/Home/HomeBoard";
+import Home from "./pages/Home/List/Home";
+import HomeBoard from "./pages/Home/Board/HomeBoard";
+import Dashboard from "./pages/Home/Dashboard/Dashboard";
 
 import loading from "./assets/loading.gif";
 import "./App.css";
@@ -103,6 +104,10 @@ const App = () => {
                     path="/assignments/:id"
                     element={<DetailAssignment user={user} />}
                   />
+                  <Route
+                    path="/problems/:id"
+                    element={<DetailProblem user={user} />}
+                  />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </div>
@@ -113,11 +118,8 @@ const App = () => {
               <div className="body">
                 <Sidebar user={user} />
                 <Routes>
-                  <Route
-                    exact
-                    path="/"
-                    element={<HomeAssignment user={user} />}
-                  />
+                  <Route exact path="/" element={<Dashboard user={user} />} />
+                  {/* <Route exact path="/" element={<Home user={user} />} /> */}
                   <Route path="/board" element={<HomeBoard user={user} />} />
                   <Route
                     path="/profile/:id"
@@ -177,10 +179,27 @@ const App = () => {
               <div className="body">
                 <Sidebar user={user} />
                 <Routes>
+                  <Route exact path="/" element={<Home user={user} />} />
+                  <Route path="/board" element={<HomeBoard user={user} />} />
                   <Route
-                    exact
-                    path="/"
-                    element={<HomeAssignment user={user} />}
+                    path="/assignments/:id"
+                    element={<DetailAssignment user={user} />}
+                  />
+                  <Route
+                    path="/problems/add"
+                    element={<CreateProblem user={user} />}
+                  />
+                  <Route
+                    path="/problems/:id"
+                    element={<DetailProblem user={user} />}
+                  />
+                  <Route
+                    path="/projects/:id"
+                    element={<DetailProject user={user} />}
+                  />
+                  <Route
+                    path="/users/:id"
+                    element={<DetailUser user={user} />}
                   />
                   <Route
                     path="/profile/:id"

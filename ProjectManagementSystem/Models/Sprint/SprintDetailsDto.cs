@@ -10,5 +10,9 @@ namespace ProjectManagementSystem.Models.Sprint
         public DateTime EndedDate { get; set; }
         public string MaxPoint { get; set; }
         public string Status { get; set; }
+        public int AssignmentsNumber { get; set; }
+        public int ProblemsNumber { get; set; }
+        public int AssignmentsCompleteNumber { get; set; }
+        public int ProblemsCompleteNumber { get; set; }
     }
 }

@@ -41,8 +41,6 @@ const SprintTable = (props) => {
     let date = end.getDate() - start.getDate();
     if (year > 0) date += 365 * year;
     if (month > 0) date += 30 * month;
-    console.log(start);
-    console.log(end);
     return date;
   }
 

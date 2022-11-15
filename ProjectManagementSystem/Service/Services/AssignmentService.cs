@@ -95,28 +95,34 @@ namespace ProjectManagementSystem.Service.Services
             return filters;
         }
 
-        public async Task<UsersListDto> GetAvailableDeveloperListAsync(int? page, int? pageSize, string sortField, string sortOrder)
+        public async Task<UsersListDto> GetAvailableDeveloperListAsync(int? page, int? pageSize, string sortField, string sortOrder, string sprintId)
         {
-            var scrumMasterRoleId = await _db.Roles.Where(r => r.Name == "ScrumMaster").Select(x => x.Id).FirstOrDefaultAsync();
-            var developerRoleId = await _db.Roles.Where(r => r.Name == "Developer").Select(x => x.Id).FirstOrDefaultAsync();
-            var developerList = await _db.UserRoles.Where(u => u.RoleId == scrumMasterRoleId || u.RoleId == developerRoleId).Select(u => u.UserId).ToListAsync();
-            var test = await _db.Users.Where(x => developerList.Contains(x.Id)).ToListAsync();
+            var productOwnerRoleId = await _db.Roles.Where(r => r.Name == "ProductOwner").Select(x => x.Id).FirstOrDefaultAsync();
+            var developerList = await _db.UserRoles.Where(u => u.RoleId != productOwnerRoleId).Select(u => u.UserId).ToListAsync();
 
-            var queryUsersDetailsDto = _db.Users
+            var sprint = await _db.Sprints.FindAsync(sprintId);
+
+            var test = _db.Assignments.Where(a => a.DeveloperId == "b6632bd0-acc3-4382-83da-de0425a1afdb").Select(a => a.Point).ToList();
+            var testSum = test.Sum();
+            var moreTest = _db.Assignments.Where(a => a.DeveloperId == "b6632bd0-acc3-4382-83da-de0425a1afdb").Sum(a => a.Point);
+
+            var queryUsersDetailsDto = _db.Records
                 .Where(
-                    x => x.Disable == false && 
-                    developerList.Contains(x.Id)
-                ).OrderBy(x => x.FirstName + " " + x.LastName)
+                    x => x.ProjectId == sprint.ProjectId &&
+                    x.Project.Status == Status.Active &&
+                    developerList.Contains(x.UserId) &&
+                    _db.Assignments.Where(a => a.DeveloperId == x.UserId).Sum(a => a.Point) + _db.Problems.Where(a => a.DeveloperId == x.UserId).Sum(a => a.Point) < sprint.MaxPoint
+                ).OrderBy(x => x.User.FirstName + " " + x.User.LastName)
                 .Select(x => new UserDetailsDto
                 {
-                    Id = x.Id,
-                    UserCode = x.UserCode,
-                    UserName = x.UserName,
-                    FullName = x.FirstName + " " + x.LastName,
-                    Gender = ((Gender)x.Gender).ToString(),
-                    DateOfBirth = x.DateOfBirth,
-                    Disabled = x.Disable,
-                    Role = _db.Roles.FirstOrDefault(r => r.Id == _db.UserRoles.FirstOrDefault(u => u.UserId == x.Id).RoleId).Name
+                    Id = x.UserId,
+                    UserCode = x.User.UserCode,
+                    UserName = x.User.UserName,
+                    FullName = x.User.FirstName + " " + x.User.LastName,
+                    Gender = ((Gender)x.User.Gender).ToString(),
+                    DateOfBirth = x.User.DateOfBirth,
+                    Disabled = x.User.Disable,
+                    Role = _db.Roles.FirstOrDefault(r => r.Id == _db.UserRoles.FirstOrDefault(u => u.UserId == x.UserId).RoleId).Name
                 });
             if (queryUsersDetailsDto != null)
             {
@@ -169,7 +175,7 @@ namespace ProjectManagementSystem.Service.Services
             return null;
         }
 
-        public async Task<AssignmentsListDto> GetAssignmentsListAsync(int? page, int? pageSize, string keyword, string[] status, string[] sprint, string[] category, string sortField, string sortOrder, string userId)
+        public async Task<AssignmentsListDto> GetAssignmentsListAsync(int? page, int? pageSize, string keyword, string[] status, string[] sprint, string[] category, string sortField, string sortOrder, string projectId)
         {
             if (status.Length == 0)
             {
@@ -189,12 +195,10 @@ namespace ProjectManagementSystem.Service.Services
             IQueryable<Assignment> queryAssignmentsDetailsDto = _db.Assignments
                 .Where(
                     x => x.Disable == false &&
-                    x.Sprint.ProjectId == _db.Records.Where(
-                            r => r.UserId == userId &&
-                            r.Project.Status == Status.Active
-                        ).FirstOrDefault().ProjectId)
+                    x.Sprint.ProjectId == projectId)
                 .Include(x => x.Sprint)
                 .Include(x => x.Category)
+                .Include(x => x.Developer)
                 .OrderBy(x => x.Name);
 
             if (queryAssignmentsDetailsDto != null)

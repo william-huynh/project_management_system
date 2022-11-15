@@ -14,8 +14,8 @@ namespace ProjectManagementSystem.Service.IServices
         Task<Category> CreateCategoryAsync(CategoryCreateDto model);
         Task<List<SprintDetailsDto>> GetSprintsListAsync(string userId);
         Task<AssignmentFilterListDto> GetFilterListAsync(string userId);
-        Task<UsersListDto> GetAvailableDeveloperListAsync(int? page, int? pageSize, string sortField, string sortOrder);
-        Task<AssignmentsListDto> GetAssignmentsListAsync(int? page, int? pageSize, string keyword, string[] status, string[] sprint, string[] category, string sortField, string sortOrder, string userId);
+        Task<UsersListDto> GetAvailableDeveloperListAsync(int? page, int? pageSize, string sortField, string sortOrder, string sprintId);
+        Task<AssignmentsListDto> GetAssignmentsListAsync(int? page, int? pageSize, string keyword, string[] status, string[] sprint, string[] category, string sortField, string sortOrder, string projectId);
         Task<AssignmentsListDto> GetAssignedAssignmentsListAsync(int? page, int? pageSize, string keyword, string[] status, string[] sprint, string[] category, string sortField, string sortOrder, string userId);
         Task<AssignmentBoardDto> GetBoardAssignmentsListAsync(string userId);
         Task<AssignmentDetailsDto> GetAssignmentDetailAsync(string assignmentId);

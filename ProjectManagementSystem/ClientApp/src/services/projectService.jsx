@@ -18,12 +18,12 @@ const disable = (id) => {
   return axios.put(API_URL + `/projects/disable-project/${id}`);
 };
 
-const getUpdateDetail = (id) => {
-  return axios.get(API_URL + `/projects/update-detail/${id}`);
+const summary = (id) => {
+  return axios.get(API_URL + `/projects/summary/${id}`);
 };
 
-const canDisable = (id) => {
-  return axios.get(API_URL + `/projects/project-disable-check/${id}`);
+const getUpdateDetail = (id) => {
+  return axios.get(API_URL + `/projects/update-detail/${id}`);
 };
 
 export default {
@@ -32,5 +32,5 @@ export default {
   update,
   disable,
   getUpdateDetail,
-  canDisable,
+  summary,
 };

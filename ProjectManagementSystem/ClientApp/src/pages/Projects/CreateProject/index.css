@@ -1,13 +1,7 @@
 .create-project {
   flex: 1;
-  padding-left: 4rem;
+  padding: 1.5rem;
   color: #6c757d;
-}
-
-.header-project-list {
-  font-size: 16px;
-  font-weight: bold;
-  color: #cf2338;
 }
 
 .create-project .upper-form {
@@ -29,7 +23,7 @@
 .create-project-button-group {
   margin-top: 1rem;
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .btn-search-advisor {

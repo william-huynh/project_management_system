@@ -1,3 +1,11 @@
+.nav-bar {
+  height: 8vh;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 5;
+}
+
 .red-nav {
   background-color: #cf2338;
 }
@@ -15,7 +23,7 @@
   font-size: 16px;
   color: white;
   margin: 0;
-  margin-left: 2rem;
+  margin-left: 0.5rem;
 }
 
 #navbarDropdownMenu {

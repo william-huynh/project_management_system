@@ -10,6 +10,7 @@ import ModalAssignment from "./Assignment/ModalAssignment";
 import "./index.css";
 
 const CreateProblem = (props) => {
+  const role = props.user.role[0];
   const userId = props.user.id;
   const navigate = useNavigate();
   const today = new Date();
@@ -24,12 +25,10 @@ const CreateProblem = (props) => {
   const [sprints, setSprints] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const newCategoryNameRef = useRef();
 
   const [isModalDeveloperVisible, setIsModalDeveloperVisible] = useState(false);
   const [selectedDeveloper, setSelectedDeveloper] = useState("");
   const [developerId, setDeveloperId] = useState(null);
-  const [developerError, setDeveloperError] = useState(false);
   const [isModalAssignmentVisible, setIsModalAssignmentVisible] =
     useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState("");
@@ -108,12 +107,7 @@ const CreateProblem = (props) => {
       endedDate: yup.date().required("End date is required"),
     }),
     onSubmit: (data) => {
-      if (
-        assignmentId !== null &&
-        categoryId !== null &&
-        sprintId !== null &&
-        developerId !== null
-      ) {
+      if (assignmentId !== null && categoryId !== null && sprintId !== null) {
         data.assignmentId = assignmentId;
         data.developerId = developerId;
         data.categoryId = categoryId;
@@ -131,7 +125,6 @@ const CreateProblem = (props) => {
         if (assignmentId === null) setAssignmentError(true);
         if (categoryId === null) setCategoryError(true);
         if (sprintId === null) setSprintError(true);
-        if (developerId === null) setDeveloperError(true);
       }
     },
   });
@@ -142,12 +135,32 @@ const CreateProblem = (props) => {
 
   return (
     <div className="create-problem">
-      <p className="header-problem-list">Create new problem</p>
+      <p
+        className={`header-problem-create ${
+          role === "Advisor"
+            ? "text-advisor"
+            : role === "ScrumMaster"
+            ? "text-scrum-master"
+            : "text-developer"
+        }`}
+      >
+        Create new problem
+      </p>
       <form onSubmit={formik.handleSubmit}>
         <div className="row">
           <div className="col-7">
             <div className="upper-form">
-              <p className="form-title">Problem information</p>
+              <p
+                className={`form-title ${
+                  role === "Advisor"
+                    ? "text-advisor"
+                    : role === "ScrumMaster"
+                    ? "text-scrum-master"
+                    : "text-developer"
+                }`}
+              >
+                Problem information
+              </p>
               <div className="mt-3">
                 <div className="input-group flex-nowrap">
                   <div className="input-group-prepend">
@@ -301,7 +314,15 @@ const CreateProblem = (props) => {
                 </div>
               </div>
             </div>
-            <div className="lower-form">
+            <div
+              className={`lower-form ${
+                role === "Advisor"
+                  ? "text-advisor"
+                  : role === "ScrumMaster"
+                  ? "text-scrum-master"
+                  : "text-developer"
+              }`}
+            >
               <p className="form-title">Sprint information</p>
               <div className="mt-3">
                 <div className="input-group flex-nowrap">
@@ -428,49 +449,65 @@ const CreateProblem = (props) => {
             />
           </div>
         </div>
-        <div className="lower-form">
-          <p className="form-title">Assign User & Assignment</p>
+        <div
+          className={`lower-form ${
+            role === "Advisor"
+              ? "text-advisor"
+              : role === "ScrumMaster"
+              ? "text-scrum-master"
+              : "text-developer"
+          }`}
+        >
+          {role === "Developer" ? (
+            <p className="form-title">Assign Assignment</p>
+          ) : (
+            <p className="form-title">Assign User & Assignment</p>
+          )}
 
           {/* Developer selection */}
-          <div>
-            <div className="input-group flex-nowrap mt-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text" id="addon-wrapping">
-                  Developer
-                </span>
+          {role === "Developer" ? (
+            <div></div>
+          ) : (
+            <div>
+              <div className="input-group flex-nowrap mt-3">
+                <div className="input-group-prepend">
+                  <span className="input-group-text" id="addon-wrapping">
+                    Developer
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  className="form-control"
+                  style={{ borderRight: "none" }}
+                  aria-label="Developer select"
+                  aria-describedby="scrumMasterSelect"
+                  value={selectedDeveloper}
+                />
+                <div className="input-group-append">
+                  <button
+                    className="btn btn-md px-3 py-2 z-depth-0 btn-search-scrum-master"
+                    type="button"
+                    onClick={() => setIsModalDeveloperVisible(true)}
+                  >
+                    <i className="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                </div>
               </div>
-              <input
-                type="text"
-                className="form-control"
-                style={{ borderRight: "none" }}
-                aria-label="Developer select"
-                aria-describedby="scrumMasterSelect"
-                value={selectedDeveloper}
-              />
-              <div className="input-group-append">
-                <button
-                  className="btn btn-md px-3 py-2 z-depth-0 btn-search-scrum-master"
-                  type="button"
-                  onClick={() => setIsModalDeveloperVisible(true)}
+              {/* {developerError ? (
+                <p
+                  className="text-danger mb-0"
+                  style={{
+                    fontWeight: "normal",
+                    marginLeft: "6.4rem",
+                  }}
                 >
-                  <i className="fa-solid fa-magnifying-glass"></i>
-                </button>
-              </div>
+                  Assigned developer is required
+                </p>
+              ) : (
+                <div></div>
+              )} */}
             </div>
-            {developerError ? (
-              <p
-                className="text-danger mb-0"
-                style={{
-                  fontWeight: "normal",
-                  marginLeft: "6.4rem",
-                }}
-              >
-                Assigned developer is required
-              </p>
-            ) : (
-              <div></div>
-            )}
-          </div>
+          )}
 
           {/* Assignment selection */}
           <div>
@@ -515,7 +552,14 @@ const CreateProblem = (props) => {
         </div>
 
         <div className="create-project-button-group">
-          <button type="submit" className="btn btn-confirm-scrum-master">
+          <button
+            type="submit"
+            className={`btn ${
+              role === "ScrumMaster"
+                ? "btn-confirm-scrum-master"
+                : "btn-confirm-developer"
+            }`}
+          >
             Submit
           </button>
           <button

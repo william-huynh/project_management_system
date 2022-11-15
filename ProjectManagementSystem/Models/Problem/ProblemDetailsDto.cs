@@ -20,6 +20,7 @@ namespace ProjectManagementSystem.Models.Problem
         public string SprintId { get; set; }
         public string SprintName { get; set; }
         public string DeveloperId { get; set; }
+        public string DeveloperName { get; set; }
         public UserDetailsDto Developer { get; set; }
         public bool Disable { get; set; }
     }

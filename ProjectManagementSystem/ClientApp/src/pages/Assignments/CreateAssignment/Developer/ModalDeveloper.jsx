@@ -15,10 +15,15 @@ const ModalDeveloper = (props) => {
         width={800}
         className="selectDeveloperModal"
       >
-        <ListDeveloper
-          onSelectedDeveloper={props.selectedDeveloper}
-          DefaultDeveloper={props.defaultDeveloper}
-        />
+        {props.sprintId === null ? (
+          <p style={{ margin: "0" }}>Please select sprint to continue</p>
+        ) : (
+          <ListDeveloper
+            sprintId={props.sprintId}
+            onSelectedDeveloper={props.selectedDeveloper}
+            DefaultDeveloper={props.defaultDeveloper}
+          />
+        )}
       </Modal>
     </>
   );

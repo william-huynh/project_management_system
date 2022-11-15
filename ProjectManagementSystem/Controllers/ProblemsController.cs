@@ -86,6 +86,26 @@ namespace ProjectManagementSystem.Controllers
         }
 
         [HttpGet]
+        [Route("get-assigned-list")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> GetAssignedProblemsList(int? page, int? pageSize, string keyword, [FromQuery] string[] status, [FromQuery] string[] sprint, [FromQuery] string[] category, string sortField, string sortOrder, string userId)
+        {
+            var problems = await _problemService.GetAssignedProblemsListAsync(page, pageSize, keyword, status, sprint, category, sortField, sortOrder, userId);
+            if (problems == null) return BadRequest(problems);
+            return Ok(problems);
+        }
+
+        [HttpGet]
+        [Route("get-assigned-board/{userId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> GetAssignedProblemsBoard(string userId)
+        {
+            var problems = await _problemService.GetBoardProblemsListAsync(userId);
+            if (problems == null) return BadRequest(problems);
+            return Ok(problems);
+        }
+
+        [HttpGet]
         [Route("update-detail/{problemId}")]
         // [Authorize(Roles = "ScrumMaster")]
         public async Task<IActionResult> GetProblemsUpdateDetail(string problemId)
@@ -121,6 +141,26 @@ namespace ProjectManagementSystem.Controllers
         public async Task<IActionResult> UpdateProblem([FromBody] ProblemUpdateDto model)
         {
             var problem = await _problemService.UpdateProblemAsync(model);
+            if (problem == null) return BadRequest(problem);
+            return Ok(problem);
+        }
+
+        [HttpPut]
+        [Route("accept-problem/{problemId}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> AcceptProblem(string problemId)
+        {
+            var problem = await _problemService.AcceptProblemAsync(problemId);
+            if (problem == null) return BadRequest(problem);
+            return Ok(problem);
+        }
+
+        [HttpPut]
+        [Route("update-status/{problemId}/{status}")]
+        // [Authorize(Roles = "ScrumMaster")]
+        public async Task<IActionResult> UpdateProblemStatus(string problemId, string status)
+        {
+            var problem = await _problemService.UpdateProblemStatusAsync(problemId, status);
             if (problem == null) return BadRequest(problem);
             return Ok(problem);
         }

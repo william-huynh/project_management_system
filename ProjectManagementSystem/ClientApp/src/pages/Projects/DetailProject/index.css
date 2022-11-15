@@ -39,14 +39,12 @@
   color: cyan;
 }
 
-.detail-project-table-heading {
-  background-color: #cf2338;
+.dashboard-upper .dropdown-menu {
+  width: 100%;
+  min-width: 12.5rem;
 }
 
-.detail-project .table th {
-  font-weight: bold;
-}
-
-.detail-project .table td {
-  font-weight: normal;
+.dashboard-upper .dropdown-menu li {
+  background-color: transparent;
+  text-align: right;
 }
