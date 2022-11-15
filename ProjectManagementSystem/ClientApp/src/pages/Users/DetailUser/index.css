@@ -1,0 +1,72 @@
+.detail-user {
+  flex: 1;
+  padding-left: 4rem;
+  color: #6c757d;
+}
+
+.header-user-detail {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.text-advisor {
+  color: #cf2338;
+}
+
+.text-scrum-master {
+  color: #2338cf;
+}
+
+.text-developer {
+  color: #38cf23;
+}
+
+.detail-user .upper-form {
+  margin-top: 1rem;
+}
+
+.detail-user .lower-form {
+  margin-top: 1.5rem;
+}
+
+.detail-user .form-title {
+  font-size: 16px;
+  font-weight: bold;
+  background-color: white;
+  margin-top: -0.75rem;
+}
+
+.detail-user-input {
+  background-color: #fff !important;
+}
+
+.detail-user .table .detail-user-table-status-active {
+  font-weight: bold;
+  color: limegreen;
+}
+
+.detail-user .table .detail-user-table-status-complete {
+  font-weight: bold;
+  color: cyan;
+}
+
+.detail-project-table-heading-advisor {
+  background-color: #cf2338;
+}
+
+.detail-project-table-heading-scrum-master {
+  background-color: #2338cf;
+}
+
+.detail-project-table-heading-developer {
+  background-color: #38cf23;
+}
+
+.detail-user .table th {
+  font-weight: bold;
+}
+
+.detail-user .table td {
+  font-weight: normal;
+}

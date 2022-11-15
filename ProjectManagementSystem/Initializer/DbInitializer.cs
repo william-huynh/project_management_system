@@ -22,9 +22,10 @@ namespace ProjectManagementSystem.Initializer
 
         public void Initialize()
         {
-            var projectOwner = new User()
+            var productOwner = new User()
             {
                 UserName = "advisor",
+                UserCode = "UC0001",
                 NormalizedUserName = "advisor",
                 Email = "advisor@gmail.com",
                 NormalizedEmail = "advisor@gmail.com",
@@ -38,6 +39,7 @@ namespace ProjectManagementSystem.Initializer
             var scrumMaster = new User()
             {
                 UserName = "scrumMaster",
+                UserCode = "UC0002",
                 NormalizedUserName = "scrumMaster",
                 Email = "scrumMaster@gmail.com",
                 NormalizedEmail = "scrumMaster@gmail.com",
@@ -51,6 +53,7 @@ namespace ProjectManagementSystem.Initializer
             var developer = new User()
             {
                 UserName = "developer",
+                UserCode = "UC0003",
                 NormalizedUserName = "developer",
                 Email = "developer@gmail.com",
                 NormalizedEmail = "developer@gmail.com",
@@ -61,19 +64,19 @@ namespace ProjectManagementSystem.Initializer
                 Gender = Gender.Male,
             };
 
-            _roleManager.CreateAsync(new IdentityRole("ProjectOwner")).GetAwaiter().GetResult();
+            _roleManager.CreateAsync(new IdentityRole("ProductOwner")).GetAwaiter().GetResult();
             _roleManager.CreateAsync(new IdentityRole("ScrumMaster")).GetAwaiter().GetResult();
             _roleManager.CreateAsync(new IdentityRole("Developer")).GetAwaiter().GetResult();
 
-            _userManager.CreateAsync(projectOwner, "Advisor@root123").GetAwaiter().GetResult();
+            _userManager.CreateAsync(productOwner, "Advisor@root123").GetAwaiter().GetResult();
             _userManager.CreateAsync(scrumMaster, "Scrum@master123").GetAwaiter().GetResult();
             _userManager.CreateAsync(developer, "Developer@root123").GetAwaiter().GetResult();
 
-            var roleProjectOwner = _roleManager.FindByNameAsync("ProjectOwner").GetAwaiter().GetResult();
+            var roleProductOwner = _roleManager.FindByNameAsync("ProductOwner").GetAwaiter().GetResult();
             var roleScrumMaster = _roleManager.FindByNameAsync("ScrumMaster").GetAwaiter().GetResult();
             var roleDeveloper = _roleManager.FindByNameAsync("Developer").GetAwaiter().GetResult();
 
-            _userManager.AddToRoleAsync(projectOwner, roleProjectOwner.Name).GetAwaiter().GetResult();
+            _userManager.AddToRoleAsync(productOwner, roleProductOwner.Name).GetAwaiter().GetResult();
             _userManager.AddToRoleAsync(scrumMaster, roleScrumMaster.Name).GetAwaiter().GetResult();
             _userManager.AddToRoleAsync(developer, roleDeveloper.Name).GetAwaiter().GetResult();
         }

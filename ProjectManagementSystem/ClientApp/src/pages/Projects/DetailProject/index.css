@@ -1,0 +1,50 @@
+.header-project-detail {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.detail-project {
+  flex: 1;
+  padding-left: 4rem;
+  color: #6c757d;
+}
+
+.detail-project .upper-form {
+  margin-top: 1.5rem;
+}
+
+.detail-project .lower-form {
+  margin-top: 1rem;
+}
+
+.detail-project .form-title {
+  font-size: 16px;
+  font-weight: bold;
+  background-color: white;
+  margin-top: -0.75rem;
+}
+
+.detail-project-input {
+  background-color: #fff !important;
+}
+
+.detail-project-status-active {
+  font-weight: bold;
+  color: limegreen;
+}
+
+.detail-project-status-complete {
+  font-weight: bold;
+  color: cyan;
+}
+
+.dashboard-upper .dropdown-menu {
+  width: 100%;
+  min-width: 12.5rem;
+}
+
+.dashboard-upper .dropdown-menu li {
+  background-color: transparent;
+  text-align: right;
+}

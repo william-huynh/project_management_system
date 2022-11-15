@@ -1,0 +1,24 @@
+.selectDeveloperModalProject .ant-table tr {
+  cursor: pointer;
+}
+
+.selectDeveloperModalProject .ant-btn-primary {
+  width: 6rem;
+  height: 3rem;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  background-color: #e9424d;
+  box-shadow: none !important;
+}
+
+.selectDeveloperModalProject .ant-btn-default {
+  display: none;
+}
+
+.selectDeveloperModalProject .ant-btn-primary:hover,
+.selectDeveloperModalProject .ant-btn-primary:active {
+  color: white;
+  background-color: #cf2338;
+}

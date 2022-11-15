@@ -1,0 +1,44 @@
+.update-profile {
+  flex: 1;
+  padding-left: 4rem;
+  color: #6c757d;
+}
+
+.header-profile {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.text-product-owner {
+  color: #cf2338;
+}
+
+.text-scrum-master {
+  color: #2346cf;
+}
+
+.text-developer {
+  color: #67cf23;
+}
+
+.update-profile .lower-form,
+.update-profile .upper-form {
+  margin-top: 1.5rem;
+}
+
+.update-profile .form-title {
+  font-size: 16px;
+  font-weight: bold;
+  background-color: white;
+  margin-top: -0.75rem;
+}
+
+.project-info-title {
+  font-weight: bold;
+  padding-left: 0.5rem;
+  padding-right: 0.8rem;
+}
+
+.project-info-value {
+  font-weight: normal;
+}

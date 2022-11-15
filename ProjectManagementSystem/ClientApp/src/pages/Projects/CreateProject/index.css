@@ -1,0 +1,50 @@
+.create-project {
+  flex: 1;
+  padding: 1.5rem;
+  color: #6c757d;
+}
+
+.create-project .upper-form {
+  margin-top: 1.5rem;
+}
+
+.create-project .lower-form {
+  margin-top: 1rem;
+}
+
+.create-project .form-title {
+  color: #cf2338;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: white;
+  margin-top: -0.75rem;
+}
+
+.create-project-button-group {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-search-advisor {
+  margin: 0;
+  border: 1px solid #ced4da;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.btn-search-advisor:hover,
+.btn-search-advisor:active {
+  border: 1px solid #e9424d;
+  transition: 0.8s;
+}
+
+.update-project-assign-input {
+  height: 100%;
+}
+
+.update-project-remove-user {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+}

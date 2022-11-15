@@ -1,0 +1,147 @@
+.user-table {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+.ant-table-wrapper td {
+  font-weight: normal;
+}
+
+.header-user-list {
+  font-size: 16px;
+  font-weight: bold;
+  color: #cf2338;
+  margin: 0;
+}
+
+.btn-filter {
+  display: inline-flex;
+  align-items: center;
+  width: 10rem;
+  justify-content: space-between;
+}
+
+.create-user-button {
+  border: none;
+  border-radius: 5px;
+  height: 34px;
+  background-color: #e9424d;
+  float: right;
+  margin-top: 0.5rem;
+  margin-left: 2rem;
+}
+
+.create-user-button:hover {
+  background-color: #cf2338;
+}
+
+.user-table .ant-table-wrapper {
+  margin-top: 1rem;
+}
+
+.search-box {
+  border: 0.5px solid black;
+  border-radius: 5px;
+  float: right;
+  margin-top: 0.5rem;
+  width: 200px;
+}
+
+.search-box input {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.search-box .ant-input-group-addon,
+.search-box > .ant-button {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.user-table
+  > .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child {
+  left: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.user-table
+  .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child
+  .ant-input-search-button:not(.ant-btn-primary) {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.table-button-group {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.edit-button {
+  color: orange;
+  cursor: pointer;
+}
+
+.delete-button {
+  color: red;
+  cursor: pointer;
+}
+
+.detail-button {
+  color: limegreen;
+  cursor: pointer;
+}
+
+.edit-button-disabled {
+  color: rgba(255, 165, 0, 0.2);
+}
+
+.delete-button-disabled {
+  color: rgba(255, 0, 0, 0.2);
+}
+
+.detail-button-disabled {
+  color: rgba(50, 205, 50, 0.2);
+}
+
+.property {
+  width: 30%;
+  display: inline-block;
+  text-align: right;
+  font-weight: bold;
+}
+
+.value {
+  text-align: left;
+  padding-left: 10px;
+  display: inline-block;
+}
+
+#userDetailModal .modal-dialog {
+  max-width: 50vw;
+}
+
+.user-detail-picture {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.role-product-owner {
+  font-weight: bold;
+  color: #cf2338;
+}
+
+.role-scrum-master {
+  font-weight: bold;
+  color: #4d42e9;
+}
+
+.role-developer {
+  font-weight: bold;
+  color: #4de942;
+}

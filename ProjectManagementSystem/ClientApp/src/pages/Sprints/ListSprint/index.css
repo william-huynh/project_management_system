@@ -1,0 +1,80 @@
+.sprint-table {
+  flex: 1;
+  padding-left: 4rem;
+}
+
+.header-sprint-list {
+  font-size: 16px;
+  font-weight: bold;
+  color: #4d42e9;
+  margin: 0;
+}
+
+.create-sprint-button {
+  border: none;
+  border-radius: 5px;
+  height: 34px;
+  background-color: #4d42e9;
+  float: right;
+  margin-top: 0.5rem;
+  margin-left: 2rem;
+}
+
+.create-sprint-button:hover {
+  background-color: #2338cf;
+}
+
+.sprint-table .ant-table-wrapper {
+  margin-top: 1rem;
+}
+
+.sprint-table
+  > .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child {
+  left: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.sprint-table
+  .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child
+  .ant-input-search-button:not(.ant-btn-primary) {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+#create-sprint-modal {
+  max-width: 700px;
+}
+
+#create-sprint-modal #name {
+  background-color: #fff !important;
+}
+
+.no-assign-error {
+  flex: 1;
+  padding-left: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-assign-error div {
+  margin-top: 3rem;
+  margin-bottom: 15px;
+}
+
+.no-assign-error div i {
+  font-size: 30px;
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.no-assign-error p {
+  font-size: 18px;
+  font-weight: normal;
+  color: rgba(0, 0, 0, 0.25);
+}

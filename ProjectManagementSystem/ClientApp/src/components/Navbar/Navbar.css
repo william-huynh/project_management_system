@@ -1,6 +1,9 @@
-.navigation-bar {
-  display: flex;
-  padding: 20px 40px;
+.nav-bar {
+  height: 8vh;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 5;
 }
 
 .red-nav {
@@ -8,201 +11,95 @@
 }
 
 .blue-nav {
-  background-color: #2346cf;
+  background-color: #2338cf;
 }
 
 .green-nav {
-  background-color: #67cf23;
+  background-color: #38cf23;
 }
 
-.navigation-bar p {
+.navbar-brand {
   font-weight: bold;
   font-size: 16px;
-  flex: 1;
   color: white;
   margin: 0;
+  margin-left: 0.5rem;
 }
 
-.dropdown {
-  text-align: right;
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-}
-
-.username-container {
-  display: flex;
-}
-
-.username-container div {
-  display: flex;
-  align-items: center;
+#navbarDropdownMenu {
   color: white;
-  margin-left: 10px;
-}
-
-.dropdown ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  top: 46px;
-  right: 0px;
-  height: 95px;
-  width: 180px;
-  background-color: white;
-  font-weight: bold;
-  position: absolute;
-
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
-  z-index: 1;
-}
-
-.dropdown li a {
-  color: #000;
-  text-decoration: none;
-}
-
-.dropdown li {
-  border-bottom: none;
-  padding: 10px 16px 14px 16px;
-}
-
-.dropdown li p {
-  color: black;
-}
-
-.dropdown li:hover {
-  cursor: pointer;
-  background-color: #cf2338;
-  color: white;
-}
-
-.dropdown li:hover p {
-  color: white;
-}
-
-.dropdown ul a {
-  text-decoration: none;
-}
-
-.modal-log-out .modal-dialog {
-  position: absolute;
-  right: 40%;
-  top: 28%;
-  width: 260px;
-}
-
-.modal-title {
-  color: #cf2338;
-  font-weight: bold;
   font-size: 16px;
-  margin-bottom: 0;
+  font-weight: bold;
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 
-.modal-button-group-container {
-  display: flex;
+#logout-modal {
+  max-width: 350px;
 }
 
-.modal-log-out .modal-button-group-container {
-  justify-content: space-between;
+#logout-modal .modal-content {
+  border-radius: 5px;
 }
 
-.modal .modal-logout-button-container {
-  text-align: right;
-  margin-right: 16px;
+.modal-body {
+  font-size: 16px;
+  font-weight: normal;
 }
 
-.modal .modal-logout-button-container button {
-  border: 1px solid #e9424d;
+.btn-confirm-advisor {
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
   background-color: #e9424d;
+  box-shadow: none !important;
+}
+
+.btn-confirm-scrum-master {
   color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  background-color: #4d42e9;
+  box-shadow: none !important;
 }
 
-.modal .modal-logout-button-container button:hover {
-  border: 1px solid #cf2338;
-  background-color: #cf2338;
+.btn-confirm-developer {
   color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  background-color: #4de942;
+  box-shadow: none !important;
 }
 
-.modal .modal-cancel-button-container {
-  text-align: right;
-}
-
-.modal .modal-cancel-button-container button {
-  border: 1px solid gray;
+.btn-cancel {
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
   background-color: gray;
-  color: white;
+  box-shadow: none !important;
 }
 
-.modal .modal-cancel-button-container button:hover {
-  border: 1px solid #666666;
+.btn-confirm-advisor:hover,
+.btn-confirm-advisor:active {
+  color: white;
+  background-color: #cf2338;
+}
+
+.btn-confirm-scrum-master:hover,
+.btn-confirm-scrum-master:active {
+  color: white;
+  background-color: #2338cf;
+}
+
+.btn-confirm-developer:hover,
+.btn-confirm-developer:active {
+  color: white;
+  background-color: #38cf23;
+}
+
+.btn-cancel:hover,
+.btn-cancel:active {
+  color: white;
   background-color: #666666;
-  color: white;
-}
-
-.modal-change-password .modal-dialog {
-  position: absolute;
-  right: 33%;
-  top: 20%;
-  width: 500px;
-}
-
-.modal-change-password .modal-body {
-  background-color: white;
-}
-
-.modal-change-password .modal-body .row {
-  margin-bottom: 20px;
-}
-
-.modal-change-password .modal-body .form-label {
-  padding-right: 0;
-}
-
-.modal-change-password .modal-change-password-error-list {
-  padding-left: 0;
-}
-
-.modal-change-password .modal-change-password-error-list ul,
-.modal-success .modal-body p {
-  margin-bottom: 0;
-}
-
-.modal-change-password .modal-button-group-container,
-.modal-success .modal-button-group-container {
-  justify-content: end;
-}
-
-.modal-change-password .modal-button-group-container div {
-  margin-top: 0;
-}
-
-.modal-success .modal-dialog {
-  position: absolute;
-  right: 33%;
-  top: 20%;
-  width: 410px;
-}
-
-.dialog-demo .p-button {
-  margin: 0 0.5rem 0 0;
-  min-width: 10rem;
-}
-
-.dialog-demo p {
-  margin: 0;
-  line-height: 1.5;
-}
-
-.dialog-demo .p-dialog .p-button {
-  min-width: 6rem;
-}
-
-.change-password-input {
-  display: block;
-  margin-top: 30px;
-}
-
-.p-password input {
-  width: 100%;
 }

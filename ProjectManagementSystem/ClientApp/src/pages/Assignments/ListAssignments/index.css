@@ -1,0 +1,99 @@
+.assignment-table {
+  flex: 1;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.header-assignment-list {
+  font-size: 16px;
+  font-weight: bold;
+  color: #4d42e9;
+  margin: 0;
+}
+
+.header-assignment-list-developer {
+  font-size: 16px;
+  font-weight: bold;
+  color: #4de942;
+  margin: 0;
+}
+
+.create-assignment-button {
+  border: none;
+  border-radius: 5px;
+  height: 34px;
+  background-color: #4d42e9;
+  float: right;
+  margin-top: 0.5rem;
+  margin-left: 2rem;
+}
+
+.create-assignment-button:hover {
+  background-color: #2338cf;
+}
+
+.assignment-table .ant-table-wrapper {
+  margin-top: 1rem;
+}
+
+.assignment-table
+  > .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child {
+  left: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.assignment-table
+  .ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child
+  .ant-input-search-button:not(.ant-btn-primary) {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.status-product-backlog {
+  font-weight: bold;
+  color: gray;
+}
+
+.status-backlog {
+  font-weight: bold;
+  color: brown;
+}
+
+.status-waiting {
+  font-weight: bold;
+  color: orange;
+}
+
+.status-active {
+  font-weight: bold;
+  color: limegreen;
+}
+
+.status-overdue {
+  font-weight: bold;
+  color: red;
+}
+
+.status-todo {
+  font-weight: bold;
+  color: magenta;
+}
+
+.status-progress {
+  font-weight: bold;
+  color: limegreen;
+}
+
+.status-review {
+  font-weight: bold;
+  color: blueviolet;
+}
+
+.status-complete {
+  font-weight: bold;
+  color: blue;
+}

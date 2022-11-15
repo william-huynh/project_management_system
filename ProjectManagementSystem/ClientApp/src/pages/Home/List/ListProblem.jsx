@@ -1,0 +1,435 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../axios";
+import problemService from "../../../services/problemService";
+import moment from "moment";
+
+import { FilterOutlined } from "@ant-design/icons";
+import { Table, Dropdown, Menu, Input, Button } from "antd";
+import "antd/dist/antd.css";
+
+const ListProblem = (props) => {
+  const role = props.user.role[0];
+  const { id } = props.user;
+  const navigate = useNavigate();
+  const { Search } = Input;
+  const [problemId, setProblemId] = useState();
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [sprint, setSprint] = useState([]);
+  const [category, setCategory] = useState([]);
+  const [statusMenuType, setStatusMenuType] = useState("Status");
+  const [sprintMenuType, setSprintMenuType] = useState("Sprint");
+  const [categoryMenuType, setCategoryMenuType] = useState("Category");
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    status: "All",
+    sprint: "All",
+    category: "All",
+    keyword: "",
+  });
+
+  // Fetch data
+  const fetchData = (params = {}) => {
+    setLoading(true);
+    axiosInstance
+      .get(
+        `problems/get-assigned-list?&page=${params.pagination.current}&pageSize=${params.pagination.pageSize}&keyword=${params.pagination.keyword}&status=${params.pagination.status}&sprint=${params.pagination.sprint}&category=${params.pagination.category}&sortField=${params.sortField}&sortOrder=${params.sortOrder}&userId=${props.user.id}`
+      )
+      .then((results) => {
+        results.data.problems.forEach((element) => {
+          element.startedDate = moment(element.startedDate).format(
+            "DD/MM/YYYY"
+          );
+          element.endedDate = moment(element.endedDate).format("DD/MM/YYYY");
+        });
+        setData(results.data.problems);
+        setLoading(false);
+        setPagination({
+          ...params.pagination,
+          total: results.data.totalItem,
+        });
+      });
+  };
+
+  // Fetch filters
+  const fetchFilter = (id) => {
+    problemService.getFilters(id).then((result) => {
+      var allFilter = { label: "All", key: "All" };
+      var sprintFilter = result.data.sprints;
+      var categoryFilter = result.data.categories;
+      sprintFilter.unshift(allFilter);
+      categoryFilter.unshift(allFilter);
+      setSprint(result.data.sprints);
+      setCategory(result.data.categories);
+    });
+  };
+
+  // Status menu on click
+  const handleStatusMenuClick = (e) => {
+    setPagination((pagination.status = e.key));
+    setStatusMenuType(e.key);
+    fetchData({
+      pagination,
+    });
+  };
+
+  // Sprint menu on click
+  const handleSprintMenuClick = (e) => {
+    setPagination((pagination.sprint = e.key));
+    setSprintMenuType(e.key);
+    fetchData({
+      pagination,
+    });
+  };
+
+  // Category menu on click
+  const handleCategoryMenuClick = (e) => {
+    setPagination((pagination.category = e.key));
+    setCategoryMenuType(e.key);
+    fetchData({
+      pagination,
+    });
+  };
+
+  // On search enter
+  const onSearch = (value) => {
+    setPagination((pagination.keyword = value), (pagination.current = 1));
+    fetchData({
+      pagination,
+    });
+  };
+
+  // Table columns
+  const columns = [
+    {
+      title: "Code",
+      dataIndex: "problemCode",
+      ellipsis: true,
+      width: "8%",
+      defaultSortOrder: "ascend",
+      sorter: true,
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      ellipsis: true,
+      sorter: true,
+    },
+    {
+      title: "Category",
+      width: "10%",
+      ellipsis: true,
+      dataIndex: "category",
+    },
+    {
+      title: "Developer",
+      width: "10%",
+      ellipsis: true,
+      // dataIndex: "category",
+    },
+    {
+      title: "Start Date",
+      width: "10%",
+      dataIndex: "startedDate",
+    },
+    {
+      title: "End Date",
+      width: "10%",
+      dataIndex: "endedDate",
+    },
+    {
+      title: "Sprint",
+      width: "8%",
+      ellipsis: true,
+      sorter: true,
+      dataIndex: "sprintName",
+    },
+    {
+      title: "Status",
+      width: "10%",
+      ellipsis: true,
+      sorter: true,
+      dataIndex: "status",
+      render: (id, record) =>
+        record.status === "Pending" ? (
+          <div className="status-waiting">Pending</div>
+        ) : record.status === "Todo" ? (
+          <div className="status-todo">To Do</div>
+        ) : record.status === "InProgress" ? (
+          <div className="status-progress">In Progress</div>
+        ) : record.status === "InReview" ? (
+          <div className="status-review">In Review</div>
+        ) : (
+          <div className="status-complete">Complete</div>
+        ),
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      width: "15%",
+      render: (id, record) =>
+        record.status === "Pending" ? (
+          <div className="table-button-group">
+            <i
+              className="fa-solid fa-check fa-xl detail-button"
+              data-toggle="modal"
+              data-target="#acceptProblemModal"
+              onClick={() => setProblemId(id)}
+            ></i>
+            <i
+              className="fa-solid fa-xmark fa-xl delete-button"
+              data-toggle="modal"
+              data-target="#denyProblemModal"
+              onClick={() => setProblemId(id)}
+            ></i>
+            <i
+              className="fa-solid fa-circle-exclamation fa-lg edit-button"
+              onClick={() => navigate(`/problems/${id}`)}
+            ></i>
+          </div>
+        ) : (
+          <div className="table-button-group">
+            <i className="fa-solid fa-check fa-lg detail-button-disabled"></i>
+            <i className="fa-solid fa-xmark fa-xl delete-button-disabled"></i>
+            <i
+              className="fa-solid fa-circle-exclamation fa-lg edit-button"
+              onClick={() => navigate(`/problems/${id}`)}
+            ></i>
+          </div>
+        ),
+    },
+  ];
+
+  // Filter status menu
+  const statusMenu = (
+    <Menu
+      onClick={handleStatusMenuClick}
+      items={[
+        {
+          label: "All",
+          key: "All",
+        },
+        {
+          label: "Pending",
+          key: "Pending",
+        },
+        {
+          label: "To do",
+          key: "Todo",
+        },
+        {
+          label: "In Progress",
+          key: "InProgress",
+        },
+        {
+          label: "In Review",
+          key: "InReview",
+        },
+        {
+          label: "Complete",
+          key: "Complete",
+        },
+      ]}
+    />
+  );
+
+  // Filter sprint menu
+  const sprintMenu = <Menu onClick={handleSprintMenuClick} items={sprint} />;
+
+  // Filter category menu
+  const categoryMenu = (
+    <Menu onClick={handleCategoryMenuClick} items={category} />
+  );
+
+  // Table on change
+  const onChange = (newPagination, filters, sorter, extra) => {
+    fetchData({
+      sortField: sorter.field,
+      sortOrder: sorter.order,
+      pagination: newPagination,
+      ...filters,
+    });
+  };
+
+  useEffect(() => {
+    fetchData({
+      pagination,
+    });
+    fetchFilter(id);
+  }, []);
+
+  return (
+    <div>
+      <div className="mt-3">
+        {/* Filter status menu */}
+        <Dropdown overlay={statusMenu} placement="bottom">
+          <Button className="btn-filter">
+            <span></span>
+            {statusMenuType}
+            <FilterOutlined />
+          </Button>
+        </Dropdown>
+
+        {/* Filter sprint menu */}
+        <Dropdown overlay={sprintMenu} placement="bottom">
+          <Button className="btn-filter" style={{ marginLeft: "2rem" }}>
+            <span></span>
+            {sprintMenuType}
+            <FilterOutlined />
+          </Button>
+        </Dropdown>
+
+        {/* Filter category menu */}
+        <Dropdown overlay={categoryMenu} placement="bottom">
+          <Button className="btn-filter" style={{ marginLeft: "2rem" }}>
+            <span></span>
+            {categoryMenuType}
+            <FilterOutlined />
+          </Button>
+        </Dropdown>
+
+        {/* Search bar */}
+        <Search onSearch={onSearch} className="home-search-box" />
+      </div>
+
+      {/* Problem table */}
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey={(record) => record.id}
+        pagination={pagination}
+        loading={loading}
+        onChange={onChange}
+      />
+
+      {/* Accept problem modal */}
+      <div
+        className="modal fade"
+        id="acceptProblemModal"
+        tabIndex="-1"
+        role="dialog"
+        aria-labelledby="acceptProblemModal"
+        aria-hidden="true"
+      >
+        <div
+          className="modal-dialog modal-dialog-centered"
+          role="document"
+          id="accept-problem-modal"
+        >
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLongTitle">
+                Accept Problem
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              Do you want to accept this problem?
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className={`btn ${
+                  role === "ScrumMaster"
+                    ? "btn-confirm-scrum-master"
+                    : "btn-confirm-developer"
+                }`}
+                data-dismiss="modal"
+                onClick={() => {
+                  problemService.accept(problemId).then(() => {
+                    fetchData({
+                      pagination,
+                    });
+                  });
+                }}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className="btn btn-cancel"
+                data-dismiss="modal"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Deny problem modal */}
+      <div
+        className="modal fade"
+        id="denyProblemModal"
+        tabIndex="-1"
+        role="dialog"
+        aria-labelledby="denyProblemModal"
+        aria-hidden="true"
+      >
+        <div
+          className="modal-dialog modal-dialog-centered"
+          role="document"
+          id="deny-problem-modal"
+        >
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLongTitle">
+                Deny Problem
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              Do you want to turn down this problem?
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className={`btn ${
+                  role === "ScrumMaster"
+                    ? "btn-confirm-scrum-master"
+                    : "btn-confirm-developer"
+                }`}
+                data-dismiss="modal"
+                onClick={() => {
+                  problemService.disable(problemId).then(() => {
+                    fetchData({
+                      pagination,
+                    });
+                  });
+                }}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className="btn btn-cancel"
+                data-dismiss="modal"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ListProblem;

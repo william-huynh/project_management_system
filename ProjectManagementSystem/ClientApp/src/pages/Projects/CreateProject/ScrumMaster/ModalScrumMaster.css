@@ -1,0 +1,31 @@
+.ant-modal-wrap .ant-modal {
+  position: absolute;
+  right: 50%;
+  top: 20%;
+  transform: translateX(50%) !important;
+}
+
+.selectScrumMasterModal .ant-table tr {
+  cursor: pointer;
+}
+
+.selectScrumMasterModal .ant-btn-primary {
+  width: 6rem;
+  height: 3rem;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  background-color: #e9424d;
+  box-shadow: none !important;
+}
+
+.selectScrumMasterModal .ant-btn-default {
+  display: none;
+}
+
+.selectScrumMasterModal .ant-btn-primary:hover,
+.selectScrumMasterModal .ant-btn-primary:active {
+  color: white;
+  background-color: #cf2338;
+}

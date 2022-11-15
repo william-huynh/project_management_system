@@ -1,0 +1,23 @@
+.detail-assignment-input {
+  background-color: #fff !important;
+}
+
+.detail-assignment-table-heading-advisor {
+  background-color: #cf2338;
+}
+
+.detail-assignment-table-heading-scrum-master {
+  background-color: #2338cf;
+}
+
+.detail-assignment-table-heading-developer {
+  background-color: #38cf23;
+}
+
+.create-assignment .table th {
+  font-weight: bold;
+}
+
+.create-assignment .table td {
+  font-weight: normal;
+}
